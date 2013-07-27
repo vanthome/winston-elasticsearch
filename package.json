@@ -1,0 +1,37 @@
+{
+  "name": "winston-elasticsearch",
+  "version": "0.0.1",
+  "description": "An Elasticsearch transport for winston",
+  "author": "Openify.it <info@openify.it>",
+  "contributors": [
+    {
+      "name": "Jacques-Olivier D. Bernier",
+      "email": "jdesjardinsbernier@openify.it"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/OpenifyIt/winston-elasticsearch.git"
+  },
+  "keywords": [
+    "logging",
+    "sysadmin",
+    "tools",
+    "winston",
+    "elasticsearch"
+  ],
+  "dependencies": {
+    "elastical": "0.0.11"
+  },
+  "devDependencies": {
+    "winston": "0.5.x",
+    "vows": "0.6.x"
+  },
+  "main": "./lib/winston-mongodb",
+  "scripts": {
+    "test": "vows test/*-test.js --spec"
+  },
+  "engines": {
+    "node": ">= 0.4.0"
+  }
+}
