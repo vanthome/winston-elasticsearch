@@ -27,10 +27,7 @@
     "winston": "0.5.x",
     "vows": "0.6.x"
   },
-  "main": "./lib/winston-mongodb",
-  "scripts": {
-    "test": "vows test/*-test.js --spec"
-  },
+  "main": "./index.js",
   "engines": {
     "node": ">= 0.4.0"
   }

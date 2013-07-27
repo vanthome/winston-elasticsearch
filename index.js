@@ -9,17 +9,22 @@ var Elasticsearch = module.exports = winston.transports.Elasticsearch = function
     this.indexName = options.indexName || 'logs'
     this.typeName = options.typeName || 'log'
 
-    //Elastical options
-    this.host = options.host || 'localhost';
-    this.elasticalOptions = {}
-    this.elasticalOptions.port = options.port || 9200;
-    this.elasticalOptions.auth = options.auth || '';
-    this.elasticalOptions.protocol = options.protocol || 'http';
-    this.elasticalOptions.curlDebug = !!options.curlDebug;
-    this.elasticalOptions.basePath = options.basePath || '';
-    this.elasticalOptions.timeout = options.timeout || 60000;
+    if(options.client){
+        this.client = options.client;
+    }
+    else{
+        //Elastical options
+        this.host = options.host || 'localhost';
+        this.elasticalOptions = {}
+        this.elasticalOptions.port = options.port || 9200;
+        this.elasticalOptions.auth = options.auth || '';
+        this.elasticalOptions.protocol = options.protocol || 'http';
+        this.elasticalOptions.curlDebug = !!options.curlDebug;
+        this.elasticalOptions.basePath = options.basePath || '';
+        this.elasticalOptions.timeout = options.timeout || 60000;
 
-    this.client = new elastical.Client(this.host, this.elasticalOptions);
+        this.client = new elastical.Client(this.host, this.elasticalOptions);
+    }
 };
 util.inherits(Elasticsearch, winston.Transport);
 
