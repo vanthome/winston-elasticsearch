@@ -5,14 +5,27 @@ var cluster   =  require('cluster');
 var _basename   = require('path').basename;
 var _dirname    = require('path').dirname;
 
+/**
+ * Constructor
+ *
+ * 
+ */
 var Elasticsearch = module.exports = winston.transports.Elasticsearch = function Elasticsearch( options ) {
 
   options = options || {};
   
+  // Enforce context
+  if( !( this instanceof Elasticsearch ) ) {
+    return new Elasticsearch( options );  
+  }
+  
+  // Set defaults
   this.level = options.level || 'info';
-  this.fireAndForget = !!options.fireAndForget;
   this.indexName = options.indexName || 'logs'
-  this.typeName = options.typeName || 'log'
+  this.fireAndForget = !!options.fireAndForget;
+
+  // Only set typeName if provided, otherwise we will use "level" for types.
+  this.typeName = options.typeName || null;
   
   // Could get more sexy and grab the name from the parent's package.
   this.source = options.source || _dirname( process.mainModule.filename ) || module.filename;
@@ -36,6 +49,7 @@ var Elasticsearch = module.exports = winston.transports.Elasticsearch = function
     timeout: options.timeout || 60000
   });
   
+  // Return for good measure.
 
   return this;
   
@@ -59,15 +73,13 @@ Elasticsearch.prototype.log = function log( level, msg, meta, callback ) {
             
   // Using some Logstash naming conventions. (https://gist.github.com/jordansissel/2996677) with some useful variables for debugging.
   var entry = {
-    _index: this.indexName,
-    _type: this.typeName,
     level: level,
     source: self.source,
     timestamp: +new Date, // double-check that format will not cause issues w/ ES
-    message: msg,
-    tags: meta && meta.tags ? meta.tags : null
+    message: msg
   }
   
+  // Add auto-generated fields unless disabled
   if( !this.disable_fields ) {
     entry.fields = {
       worker: cluster.isWorker,
@@ -81,9 +93,15 @@ Elasticsearch.prototype.log = function log( level, msg, meta, callback ) {
       heapUsed: process.memoryUsage().heapUsed
     };    
   }
-        
+
+  // Add tags only if they exist
+  if( meta && meta.tags ) {
+    entry.tags = meta && meta.tags;
+  }
+  
+   
   // Need to debug callbacks, they seem to be always called in the incorect context.
-  this.client.index( this.indexName, this.typeName, entry, function done( error, res ) {
+  this.client.index( this.indexName, this.typeName || entry.level || 'log', entry, function done( error, res ) {
     
     // If we are ignoring callbacks
     if( callback && self.fireAndForget ){

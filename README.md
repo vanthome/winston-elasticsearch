@@ -1,22 +1,20 @@
-#winston-elasticsearch
-
+# winston-elasticsearch
 An ElasticSearch transport for Winston.
 
 ## How to install
-  npm install --save winston winston-elasticsearch
+    npm install --save winston winston-elasticsearch
 
 ## How to use
+More example(s) available in the examples directory.
 
-  var winston = require('winston');
-  var Elasticsearch = require('winston-elasticsearch');
-  
-  var logger = new winston.Logger({
-    transports: [
-      new Elasticsearch({
-        level: 'info'
-      })
-    ]
-  });
+    var winston = require( 'winston' );
+    var Elasticsearch = require( 'winston-elasticsearch' );
+    
+    var logger = new winston.Logger({
+      transports: [
+        new Elasticsearch({ level: 'info' })
+      ]
+    });
 
 ## Options
 * *level* ['info'] log level
@@ -25,6 +23,5 @@ An ElasticSearch transport for Winston.
 * *typeName* ['log'] Elasticsearch type
 * *client* An instance of [elastical client](https://github.com/ramv/node-elastical) if given all the following options are ignored.
 * *elastical.* [See elastical options](http://raw.github.com.everydayimmirror.in/ramv/node-elastical/master/docs/classes/Client.html)
-    
 * *source* An identifier for the system/site/request that triggered the entry. Defaults to directory name of the main module filename of main module if not set.
 * *disable_fields* Disables the automatically generated and added fields that include PID, user, memory usage, runtime, etc.
