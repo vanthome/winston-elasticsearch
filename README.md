@@ -9,7 +9,7 @@ More example(s) available in the examples directory.
 
     var winston = require( 'winston' );
     var Elasticsearch = require( 'winston-elasticsearch' );
-    
+
     var logger = new winston.Logger({
       transports: [
         new Elasticsearch({ level: 'info' })
@@ -22,6 +22,12 @@ More example(s) available in the examples directory.
 * *indexName* ['logs'] Elasticsearch index
 * *typeName* ['log'] Elasticsearch type
 * *client* An instance of [elastical client](https://github.com/ramv/node-elastical) if given all the following options are ignored.
-* *elastical.* [See elastical options](http://raw.github.com.everydayimmirror.in/ramv/node-elastical/master/docs/classes/Client.html)
+* *host* Ignored if `client` is set. [See elastical options](http://raw.github.com.everydayimmirror.in/ramv/node-elastical/master/docs/classes/Client.html)
+* *port* Ignored if `client` is set. [See elastical options](http://raw.github.com.everydayimmirror.in/ramv/node-elastical/master/docs/classes/Client.html)
+* *auth* Ignored if `client` is set. [See elastical options](http://raw.github.com.everydayimmirror.in/ramv/node-elastical/master/docs/classes/Client.html)
+* *protocol* Ignored if `client` is set. [See elastical options](http://raw.github.com.everydayimmirror.in/ramv/node-elastical/master/docs/classes/Client.html)
+* *curlDebug* Ignored if `client` is set. [See elastical options](http://raw.github.com.everydayimmirror.in/ramv/node-elastical/master/docs/classes/Client.html)
+* *basePath* Ignored if `client` is set. [See elastical options](http://raw.github.com.everydayimmirror.in/ramv/node-elastical/master/docs/classes/Client.html)
+* *timeout* Ignored if `client` is set. [See elastical options](http://raw.github.com.everydayimmirror.in/ramv/node-elastical/master/docs/classes/Client.html)
 * *source* An identifier for the system/site/request that triggered the entry. Defaults to directory name of the main module filename of main module if not set.
 * *disable_fields* Disables the automatically generated and added fields that include PID, user, memory usage, runtime, etc.
