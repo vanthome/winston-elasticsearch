@@ -24,6 +24,40 @@ var Elasticsearch = module.exports = winston.transports.Elasticsearch = function
   this.level = options.level || 'info';
   this.indexName = options.indexName || 'logs'
   this.fireAndForget = !!options.fireAndForget;
+  
+  this.rotatePattern = options.rotatePattern || '';
+  var now = new Date();
+  this._year   = now.getFullYear();
+  this._month  = now.getMonth();
+  this._date   = now.getDate();
+  this._hour   = now.getHours();
+  this._minute = now.getMinutes();
+
+  var token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhM])\1?/g,
+      pad = function (val, len) {
+              val = String(val);
+              len = len || 2;
+              while (val.length < len) val = "0" + val;
+              return val;
+      };
+
+  this.getFormattedDate = function() {
+    var flags = {
+      yy:   String(this._year).slice(2),
+      yyyy: this._year,
+      M:    this._month + 1,
+      MM:   pad(this._month + 1),
+      d:    this._date,
+      dd:   pad(this._date),
+      H:    this._hour,
+      HH:   pad(this._hour),
+      m:    this._minute,
+      mm:   pad(this._minute)
+    };
+    return this.rotatePattern.replace(token, function ($0) {
+      return $0 in flags ? flags[$0] : $0.slice(1, $0.length - 1);
+    });
+  };
 
   // Only set typeName if provided, otherwise we will use "level" for types.
   this.typeName = options.typeName || null;
@@ -104,9 +138,8 @@ Elasticsearch.prototype.log = function log( level, msg, meta, callback ) {
     entry['@fields'] = xtend(entry['@fields'], meta);
   }
 
-
   // Need to debug callbacks, they seem to be always called in the incorect context.
-  this.client.index( this.indexName, this.typeName || entry.level || 'log', entry, function done( error, res ) {
+  this.client.index( this.indexName + this.getFormattedDate(), this.typeName || entry.level || 'log', entry, function done( error, res ) {
 
     // If we are ignoring callbacks
     if( callback && self.fireAndForget ){
