@@ -25,7 +25,7 @@
     "elasticsearch"
   ],
   "dependencies": {
-    "elastical": "0.0.11",
+    "elasticsearch": "3.0.2",
     "xtend": "~2.0.6"
   },
   "devDependencies": {
