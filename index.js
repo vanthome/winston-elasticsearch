@@ -104,7 +104,14 @@ Elasticsearch.prototype.log = function log(level, msg, meta, callback) {
             self.client.search({
                 index: self.indexName,
                 from: self.maxLogs,
-                size: 1
+                size: 1,
+                body: {
+                    sort: {
+                        '@timestamp': {
+                            order : 'dasc'
+                        }
+                    }
+                }
             }, function (err, res) {
                 if (err) {
                     return callback(err);
@@ -116,8 +123,8 @@ Elasticsearch.prototype.log = function log(level, msg, meta, callback) {
                         body: {
                             query: {
                                 range: {
-                                    "@timestamp": {
-                                        lt: res.hits.hits[0]._source['@timestamp']
+                                    '@timestamp': {
+                                        lte: res.hits.hits[0]._source['@timestamp']
                                     }
                                 }
                             }
