@@ -1,7 +1,8 @@
 var util = require('util'),
     cluster = require('cluster'),
     winston = require('winston'),
-    elasticsearch = require('elasticsearch');
+    elasticsearch = require('elasticsearch'),
+    xtend = require('xtend');
 
 /**
  * Constructor
