@@ -33,7 +33,7 @@ var Elasticsearch = module.exports = winston.transports.Elasticsearch = function
     }
 
     // Create elasticsearch client
-    this.client = new elasticsearch.Client(options.client);
+    this.client = new elasticsearch.Client(options);
 
     return this;
 };
