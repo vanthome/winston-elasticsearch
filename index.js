@@ -87,8 +87,8 @@ Elasticsearch.prototype.log = function log(level, msg, meta, callback) {
 
     tryCatch (function () {
         self.client.index({
-            index: this.indexName,
-            type: this.typeName,
+            index: self.indexName,
+            type: self.typeName,
             body: entry
         }, tryCatch(function (err) {
             if (err || !self.maxLogs || self.maxLogs === Infinity) {
