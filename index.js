@@ -33,16 +33,9 @@ var Elasticsearch = module.exports = winston.transports.Elasticsearch = function
     }
 
     // Create elasticsearch client
-    this.client = new elasticsearch.Client({
-        host: options.host || 'localhost',
-        port: options.port || 9200,
-        auth: options.auth || '',
-        protocol: options.protocol || 'http',
-        timeout: options.timeout || 60000
-    });
+    this.client = new elasticsearch.Client(options.client);
 
     return this;
-
 };
 
 util.inherits(Elasticsearch, winston.Transport);
@@ -54,8 +47,8 @@ util.inherits(Elasticsearch, winston.Transport);
  *
  */
 Elasticsearch.prototype.log = function log(level, msg, meta, callback) {
-    var self = this;
-    var args = Array.prototype.slice.call(arguments, 0);
+    var self = this,
+        args = Array.prototype.slice.call(arguments, 0);
 
     // Not sure if Winston always passed a callback and regulates number of args, but we are on the safe side here
     callback = 'function' === typeof args[args.length - 1] ? args[args.length - 1] : function fallback() {};
@@ -97,52 +90,40 @@ Elasticsearch.prototype.log = function log(level, msg, meta, callback) {
         type: this.typeName,
         body: entry
     }, function (err) {
-        if (err) {
+        if (err || !self.maxLogs || self.maxLogs === Infinity) {
             return callback(err);
         }
-
-        if (self.maxLogs) {
-            self.client.search({
+        
+        self.client.search({
+            index: self.indexName,
+            from: self.maxLogs,
+            size: 1,
+            body: {
+                sort: {
+                    '@timestamp': {
+                        order : 'dasc'
+                    }
+                }
+            }
+        }, function (err, res) {
+            if (err || !res.hits.hits.length) {
+                return callback(err);
+            }
+            
+            self.client.deleteByQuery({
                 index: self.indexName,
-                from: self.maxLogs,
-                size: 1,
                 body: {
-                    sort: {
-                        '@timestamp': {
-                            order : 'dasc'
+                    query: {
+                        range: {
+                            '@timestamp': {
+                                lte: res.hits.hits[0]._source['@timestamp']
+                            }
                         }
                     }
                 }
-            }, function (err, res) {
-                if (err) {
-                    return callback(err);
-                }
-
-                if (res.hits.hits.length == 1) {
-                    self.client.deleteByQuery({
-                        index: self.indexName,
-                        body: {
-                            query: {
-                                range: {
-                                    '@timestamp': {
-                                        lte: res.hits.hits[0]._source['@timestamp']
-                                    }
-                                }
-                            }
-                        }
-                    }, function (err) {
-                        return callback(err);
-                    });
-                } else {
-                    callback();
-                }
-            });
-        } else {
-            callback();
-        }
+            }, callback);
+        });
     });
 
     return this;
-
 };
-
