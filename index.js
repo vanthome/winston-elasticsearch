@@ -85,45 +85,57 @@ Elasticsearch.prototype.log = function log(level, msg, meta, callback) {
         entry['@fields'] = xtend(entry['@fields'], meta);
     }
 
-    self.client.index({
-        index: this.indexName,
-        type: this.typeName,
-        body: entry
-    }, function (err) {
-        if (err || !self.maxLogs || self.maxLogs === Infinity) {
-            return callback(err);
-        }
-        
-        self.client.search({
-            index: self.indexName,
-            from: self.maxLogs,
-            size: 1,
-            body: {
-                sort: {
-                    '@timestamp': {
-                        order : 'dasc'
-                    }
-                }
-            }
-        }, function (err, res) {
-            if (err || !res.hits.hits.length) {
+    tryCatch (function () {
+        self.client.index({
+            index: this.indexName,
+            type: this.typeName,
+            body: entry
+        }, tryCatch(function (err) {
+            if (err || !self.maxLogs || self.maxLogs === Infinity) {
                 return callback(err);
             }
             
-            self.client.deleteByQuery({
+            self.client.search({
                 index: self.indexName,
+                from: self.maxLogs,
+                size: 1,
                 body: {
-                    query: {
-                        range: {
-                            '@timestamp': {
-                                lte: res.hits.hits[0]._source['@timestamp']
-                            }
+                    sort: {
+                        '@timestamp': {
+                            order : 'dasc'
                         }
                     }
                 }
-            }, callback);
-        });
-    });
+            }, function (err, res) {
+                if (err || !res.hits.hits.length) {
+                    return callback(err);
+                }
+                
+                tryCatch (function () {
+                    self.client.deleteByQuery({
+                        index: self.indexName,
+                        body: {
+                            query: {
+                                range: {
+                                    '@timestamp': {
+                                        lte: res.hits.hits[0]._source['@timestamp']
+                                    }
+                                }
+                            }
+                        }
+                    }, callback);
+                }, callback);
+            });
+        }, callback));
+    }, callback);
 
     return this;
 };
+
+function tryCatch (func, callback) {
+    try {
+        func();
+    } catch (e) {
+        callback(e);
+    }
+}
