@@ -44,6 +44,7 @@ var Elasticsearch = module.exports = winston.transports.Elasticsearch = function
   this.client = new elastical.Client( options.host || 'localhost', {
     port: options.port || 9200,
     auth: options.auth || '',
+    headers: options.headers,
     protocol: options.protocol || 'http',
     curlDebug: !!options.curlDebug,
     basePath: options.basePath || '', // <- ?
@@ -122,4 +123,3 @@ Elasticsearch.prototype.log = function log( level, msg, meta, callback ) {
   return this;
 
 };
-
