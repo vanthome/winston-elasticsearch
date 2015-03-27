@@ -81,7 +81,7 @@ Elasticsearch.prototype.log = function log( level, msg, meta, callback ) {
 
   // Add auto-generated fields unless disabled
   if( !this.disable_fields ) {
-    entry['fields'] = {
+    entry = xtend(entry, {
       worker: cluster.isWorker,
       pid: process.pid,
       path: module.parent.filename,
@@ -91,7 +91,7 @@ Elasticsearch.prototype.log = function log( level, msg, meta, callback ) {
       rss: process.memoryUsage().rss,
       heapTotal: process.memoryUsage().heapTotal,
       heapUsed: process.memoryUsage().heapUsed
-    };
+    });
   }
 
   // Add tags only if they exist
@@ -100,7 +100,7 @@ Elasticsearch.prototype.log = function log( level, msg, meta, callback ) {
   }
 
   if( meta ) {
-    entry['fields'] = xtend(entry['fields'], meta);
+    entry = xtend(entry, meta);
   }
 
 
