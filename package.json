@@ -6,7 +6,7 @@
   "contributors": [
     {
       "name": "Jacques-Olivier D. Bernier",
-      "email": "jdesjardinsbernier@openify.it"
+      "url": "https://github.com/jackdbernier"
     },
     {
       "name": "Andy Potanin",
@@ -15,7 +15,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/OpenifyIt/winston-elasticsearch.git"
+    "url": "http://github.com/jackdbernier/winston-elasticsearch.git"
   },
   "keywords": [
     "logging",
