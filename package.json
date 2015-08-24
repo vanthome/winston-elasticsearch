@@ -2,7 +2,7 @@
   "name": "winston-elasticsearch",
   "version": "0.1.1",
   "description": "An Elasticsearch transport for winston",
-  "author": "Openify.it <info@openify.it>",
+  "author": "Jacques-Olivier D. Bernier",
   "contributors": [
     {
       "name": "Jacques-Olivier D. Bernier",
