@@ -75,14 +75,13 @@ Elasticsearch.prototype.log = function log( level, msg, meta, callback ) {
   // Using some Logstash naming conventions. (https://gist.github.com/jordansissel/2996677) with some useful variables for debugging.
   var entry = {
     level: level,
-    '@source': self.source,
     '@timestamp': new Date().toISOString(),
-    '@message': msg
+    'message': msg
   }
 
   // Add auto-generated fields unless disabled
   if( !this.disable_fields ) {
-    entry['@fields'] = {
+    entry = xtend(entry, {
       worker: cluster.isWorker,
       pid: process.pid,
       path: module.parent.filename,
@@ -92,16 +91,16 @@ Elasticsearch.prototype.log = function log( level, msg, meta, callback ) {
       rss: process.memoryUsage().rss,
       heapTotal: process.memoryUsage().heapTotal,
       heapUsed: process.memoryUsage().heapUsed
-    };
+    });
   }
 
   // Add tags only if they exist
   if( meta && meta.tags ) {
-    entry['@tags'] = meta && meta.tags;
+    entry['tags'] = meta && meta.tags;
   }
 
   if( meta ) {
-    entry['@fields'] = xtend(entry['@fields'], meta);
+    entry = xtend(entry, meta);
   }
 
 
