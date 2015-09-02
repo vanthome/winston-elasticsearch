@@ -1,33 +1,151 @@
 # winston-elasticsearch
-An ElasticSearch transport for Winston.
 
-## How to install
+[![Version npm][version]](http://browsenpm.org/package/winston-elasticsearch)[![Build Status][build]](https://travis-ci.org/winston-elasticsearch/winston-elasticsearch)[![Dependencies][david]](https://david-dm.org/winston-elasticsearch/winston-elasticsearch)[![Coverage Status][cover]](https://coveralls.io/r/winston-elasticsearch/winston-elasticsearch?branch=master)
+
+[version]: http://img.shields.io/npm/v/winston-elasticsearch.svg?style=flat-square
+[build]: http://img.shields.io/travis/winston-elasticsearch/winston-elasticsearch/master.svg?style=flat-square
+[david]: https://img.shields.io/david/winston-elasticsearch/winston-elasticsearch.svg?style=flat-square
+[cover]: http://img.shields.io/coveralls/winston-elasticsearch/winston-elasticsearch/master.svg?style=flat-square
+
+An [ElasticSearch](https://www.elastic.co/products/elasticsearch)
+transport for the [winston](https://github.com/winstonjs/winston) logging toolkit.
+
+## Features
+
+- [logstash](https://www.elastic.co/products/logstash) compatible message structure.
+- Thus consumable with [kibana](https://www.elastic.co/products/kibana).
+- Date pattern based index names.
+- Custom transformer function to transform logged data into a different message structure.
+
+### Unsupported / Todo
+
+- Querying.
+- Buffering of messages in case of unavailable ES.
+- Message batching; sending log messages as batches of 1000 messages using the clients bulk() method.
+
+## Installation
+
     npm install --save winston winston-elasticsearch
 
-## How to use
-More example(s) available in the examples directory.
+## Usage
 
-    var winston = require( 'winston' );
-    var Elasticsearch = require( 'winston-elasticsearch' );
+    var winston = require('winston');
+    var Elasticsearch = require('winston-elasticsearch');
+
+    var esTransportOpts = {
+      level: 'info'
+    };
+    winston.add(winston.transports.Elasticsearch, esTransportOpts);
+
+    // - or -
 
     var logger = new winston.Logger({
       transports: [
-        new Elasticsearch({ level: 'info' })
+        new Elasticsearch(esTransportOpts)
       ]
     });
 
 ## Options
-* *level* ['info'] log level
-* *fireAndForget* [false] if set to true, it sends the data in back ground. If a callback is passed, it gets callback at the begining of the function without parameters.
-* *indexName* ['logs'] Elasticsearch index
-* *typeName* ['log'] Elasticsearch type
-* *client* An instance of [elastical client](https://github.com/ramv/node-elastical) if given all the following options are ignored.
-* *host* Ignored if `client` is set. [See elastical options](http://raw.github.com.everydayimmirror.in/ramv/node-elastical/master/docs/classes/Client.html)
-* *port* Ignored if `client` is set. [See elastical options](http://raw.github.com.everydayimmirror.in/ramv/node-elastical/master/docs/classes/Client.html)
-* *auth* Ignored if `client` is set. [See elastical options](http://raw.github.com.everydayimmirror.in/ramv/node-elastical/master/docs/classes/Client.html)
-* *protocol* Ignored if `client` is set. [See elastical options](http://raw.github.com.everydayimmirror.in/ramv/node-elastical/master/docs/classes/Client.html)
-* *curlDebug* Ignored if `client` is set. [See elastical options](http://raw.github.com.everydayimmirror.in/ramv/node-elastical/master/docs/classes/Client.html)
-* *basePath* Ignored if `client` is set. [See elastical options](http://raw.github.com.everydayimmirror.in/ramv/node-elastical/master/docs/classes/Client.html)
-* *timeout* Ignored if `client` is set. [See elastical options](http://raw.github.com.everydayimmirror.in/ramv/node-elastical/master/docs/classes/Client.html)
-* *source* An identifier for the system/site/request that triggered the entry. Defaults to directory name of the main module filename of main module if not set.
-* *disable_fields* Disables the automatically generated and added fields that include PID, user, memory usage, runtime, etc.
+
+- `level` [`info`] Messages logged with a severity greater or equal to the given one are logged to ES; others are discarded.
+- `indexPrefix` [`logs`] the prefix to use to generate the index name according to the pattern `<indexPrefix>-<indexSuffixPattern>`.
+- `indexSuffixPattern` [`YYYY.MM.DD`] a [Moment.js](http://momentjs.com/) compatible date/ time pattern.
+- `messageType` [`log`] the type (path after the index path) under which the messages are stored under the index.
+- `fireAndForget` [false] if set to `true`, a callback function passed to the `log()` function is immediately executed without a parameters.
+- `transformer` [see below] a transformer function to transform logged data into a different message structure.
+- `ensureMappingTemplate` [`true`] If set to `true`, the given `mappingTemplate` is checked/ uploaded to ES when the module is sending the fist log message to make sure the log messages are mapped in a sensible manner.
+- `mappingTemplate` [see file `index-template-mapping.json`] the mapping template as parsed JSON.
+- `client` An [elasticsearch client](https://www.npmjs.com/package/elasticsearch) instance. If given, all following options are ignored.
+- `clientOpts` An object hash passed to the ES client. See [its docs](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/configuration.html) for supported options.
+- `consistency` [`one`] The consistency hint used to store messages in ES. Possible values `one`, `quorum`, `all`.
+
+## Important
+
+When changing the `indexPrefix` and/ or the `transformer`, make sure to provide a matching `mappingTemplate`.
+
+## Transformer
+
+The transformer function allows to transform the log data structure as provided by winston
+into a sturcture more appropriate for indexing in ES.
+
+The default transformer function's transformation is shwon below.
+
+Input:
+
+````
+{
+  "message": "Some message",
+  "level": "info",
+  "meta": {
+    "method": "GET",
+    "url": "/sitemap.xml",
+    ...
+    }
+  }
+}
+````
+
+Output:
+
+````
+{
+  "@timestamp": "2015-09-30T05:09:08.282Z",
+  "message": "Some message",
+  "severity": "info",
+  "fields": {
+    "method": "GET",
+    "url": "/sitemap.xml",
+    ...
+  }
+}
+````
+The `@timestamp` is generated in the transformer.
+Note that in current logstash versions, the only "standard fields" are @timestamp and @version,
+anything else ist just free.
+
+A custom trunsformer function can be provided in the options hash.
+
+## Events
+
+- `error`: in case of any error.
+
+## Example
+
+An example assuming default settings.
+
+### Log Action
+
+````
+logger.info('Some message', <req meta data>);
+````
+
+### Generated Message
+
+The log message generated by this module has the following structure:
+
+````
+{
+  "@timestamp": "2015-09-30T05:09:08.282Z",
+  "message": "Some message",
+  "severity": "info",
+  "fields": {
+    "method": "GET",
+    "url": "/sitemap.xml",
+    "headers": {
+      "host": "www.example.com",
+      "user-agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+      "accept": "*/*",
+      "accept-encoding": "gzip,deflate",
+      "from": "googlebot(at)googlebot.com",
+      "if-modified-since": "Tue, 30 Sep 2015 11:34:56 GMT",
+      "x-forwarded-for": "66.249.78.19"
+    }
+  }
+}
+````
+
+### Target Index
+
+This message would be POSTed to the following endpoint:
+
+    http://localhost:9200/logs-2015.09.30/log/

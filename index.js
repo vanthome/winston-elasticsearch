@@ -1,125 +1,212 @@
-var util        = require('util')
-var winston     = require('winston');
-var elastical   =  require('elastical');
-var cluster     =  require('cluster');
-var _basename   = require('path').basename;
-var _dirname    = require('path').dirname;
-var xtend       = require('xtend');
+'use strict';
+
+var util = require('util');
+var fs = require('fs');
+var Promise = require('promise');
+var stream = require('stream');
+var winston = require('winston');
+var moment = require('moment');
+var _ = require('lodash');
+var retry = require('retry');
+var elasticsearch = require('elasticsearch');
+
+var defaultTransformer = require('./transformer');
 
 /**
  * Constructor
- *
- *
  */
-var Elasticsearch = module.exports = winston.transports.Elasticsearch = function Elasticsearch( options ) {
-
-  options = options || {};
+var Elasticsearch = function(options) {
+  var thiz = this;
+  this.options = options || {};
 
   // Enforce context
-  if( !( this instanceof Elasticsearch ) ) {
-    return new Elasticsearch( options );
+  if (!(this instanceof Elasticsearch)) {
+    return new Elasticsearch(options);
   }
 
   // Set defaults
-  this.level = options.level || 'info';
-  this.indexName = options.indexName || 'logs'
-  this.fireAndForget = !!options.fireAndForget;
+  var defaults = {
+    level: 'info',
+    indexPrefix: 'logs',
+    indexSuffixPattern: 'YYYY.MM.DD',
+    messageType: 'log',
+    fireAndForget: false,
+    transformer: defaultTransformer,
+    ensureMappingTemplate: true,
+    consistency: 'one'
+  };
+  _.defaults(options, defaults);
 
-  // Only set typeName if provided, otherwise we will use "level" for types.
-  this.typeName = options.typeName || null;
-
-  // Could get more sexy and grab the name from the parent's package.
-  this.source = options.source || _dirname( process.mainModule.filename ) || module.filename;
-
-  // Automatically added entry fields
-  this.disable_fields = options.disable_fields || false;
-
-  // Set client and bail if ready
-  if( options.client ){
+  // Use given client or create one
+  if (options.client) {
+     if (options.client instanceof elasticsearch.Client) {
+       this.client = options.client;
+       return this;
+     } else {
+       var msg = 'Client option passed was is an instance of ES Client';
+       throw new TypeError(msg);
+     }
     this.client = options.client;
-    return this;
+  } else {
+    // As we don't want to spam stdout, create a null stream
+    // to eat any log output of the ES client
+    var NullStream = function() {
+      stream.Writable.call(this);
+    };
+    util.inherits(NullStream, stream.Writable);
+    NullStream.prototype._write = function (chunk, encoding, next) {
+      next();
+    };
+
+    var defaultClientOpts = {
+      clientOpts: {
+        log: [
+          {
+            type: 'stream',
+            level: 'error',
+            stream: new NullStream()
+          }
+        ]
+      }
+    };
+    _.defaults(options, defaultClientOpts);
+
+    // Create a new ES client
+    // http://localhost:9200 is the default of the client already
+    this.client = new elasticsearch.Client(this.options.clientOpts);
   }
 
-  // Create Elastical Client
-  this.client = new elastical.Client( options.host || 'localhost', {
-    port: options.port || 9200,
-    auth: options.auth || '',
-    protocol: options.protocol || 'http',
-    curlDebug: !!options.curlDebug,
-    basePath: options.basePath || '', // <- ?
-    timeout: options.timeout || 60000
-  });
-
-  // Return for good measure.
-
+  // Conduct connection check (sets connection state for further use)
+  this.checkEsConnection().then(function(connectionOk) {});
   return this;
-
 };
 
-util.inherits( Elasticsearch, winston.Transport );
-
+util.inherits(Elasticsearch, winston.Transport);
 
 /**
- * Handle Log Entries
- *
- *
+ * log() method
  */
-Elasticsearch.prototype.log = function log( level, msg, meta, callback ) {
+Elasticsearch.prototype.log = function log(level, message, meta, callback) {
+  var thiz = this;
 
-  var self = this;
-  var args = Array.prototype.slice.call( arguments, 0 );
+  if (callback && thiz.fireAndForget) {
+    return callback(null);
+  }
 
+  // Don't think this is needed, TODO: check.
+  // var args = Array.prototype.slice.call(arguments, 0);
   // Not sure if Winston always passed a callback and regulates number of args, but we are on the safe side here
-  callback = 'function' === typeof args[ args.length - 1 ] ? args[ args.length - 1 ] : function fallback() {};
+  // callback = 'function' === typeof args[ args.length - 1 ] ? args[ args.length - 1 ] : function fallback() {};
 
-  // Using some Logstash naming conventions. (https://gist.github.com/jordansissel/2996677) with some useful variables for debugging.
-  var entry = {
+  var logData = {
+    message: message,
     level: level,
-    '@source': self.source,
-    '@timestamp': new Date().toISOString(),
-    '@message': msg
+    meta: meta
+  };
+  var entry = this.options.transformer(logData);
+
+  var esEntry = {
+    index: this.getIndexName(this.options),
+    consistency: this.options.consistency,
+    type: this.options.messageType,
+    body: entry
+  };
+
+  // TODO: Log messages are lost until there is a connection
+  if (this.esConnection) {
+    this.client.index(esEntry).then(
+      (res) => {
+        callback(null, res);
+      },
+      (err) => {
+        if (err) {
+          thiz.esConnection = false;
+          thiz.checkEsConnection();
+        }
+        callback(err);
+    });
+  } else {
+    //console.log('NO CONNECTION---------------------------------');
   }
-
-  // Add auto-generated fields unless disabled
-  if( !this.disable_fields ) {
-    entry['@fields'] = {
-      worker: cluster.isWorker,
-      pid: process.pid,
-      path: module.parent.filename,
-      user: process.env.USER,
-      main: process.mainModule.filename,
-      uptime: process.uptime(),
-      rss: process.memoryUsage().rss,
-      heapTotal: process.memoryUsage().heapTotal,
-      heapUsed: process.memoryUsage().heapUsed
-    };
-  }
-
-  // Add tags only if they exist
-  if( meta && meta.tags ) {
-    entry['@tags'] = meta && meta.tags;
-  }
-
-  if( meta ) {
-    entry['@fields'] = xtend(entry['@fields'], meta);
-  }
-
-
-  // Need to debug callbacks, they seem to be always called in the incorect context.
-  this.client.index( this.indexName, this.typeName || entry.level || 'log', entry, function done( error, res ) {
-
-    // If we are ignoring callbacks
-    if( callback && self.fireAndForget ){
-      return callback( null );
-    }
-
-    if( callback ) {
-      return callback( error, res );
-    }
-
-  });
-
   return this;
-
 };
 
+Elasticsearch.prototype.getIndexName = function(options) {
+  var now = moment();
+  var dateString = now.format(options.indexSuffixPattern);
+  var indexName = options.indexPrefix + '-' + dateString;
+  return indexName;
+};
+
+Elasticsearch.prototype.checkEsConnection = function() {
+  var thiz = this;
+
+  var operation = retry.operation({
+    retries: 10,
+    factor: 3,
+    minTimeout: 1 * 1000,
+    maxTimeout: 60 * 1000,
+    randomize: false
+  });
+
+  return new Promise(function (fulfill, reject) {
+    operation.attempt(currentAttempt => {
+      thiz.client.ping().then(
+        (res) => {
+          thiz.esConnection = true;
+          // Ensure mapping template is existing if desired
+          if (thiz.options.ensureMappingTemplate) {
+            var mappingTemplate = thiz.options.mappingTemplate;
+            if (mappingTemplate === null || typeof mappingTemplate === 'undefined') {
+              mappingTemplate = JSON.parse(fs.readFileSync('./index-template-mapping.json', 'utf8'));
+            }
+            var tmplCheckMessage = {
+              name: 'template_' + thiz.options.indexPrefix
+            };
+            thiz.client.indices.getTemplate(tmplCheckMessage).then(
+              (res) => {
+                fulfill(res);
+              },
+              (res) => {
+              if (res.status && res.status === 404) {
+                var tmplMessage = {
+                  name: 'template_' + thiz.options.indexPrefix,
+                  create: true,
+                  body: mappingTemplate
+                };
+                thiz.client.indices.putTemplate(tmplMessage).then(
+                (res) => {
+                  //console.log('Put template...', res);
+                  fulfill(res);
+                },
+                (err) => {
+                  //console.log('Put template FAIL...', err);
+                  reject(err);
+                });
+              }
+            });
+          } else {
+            fulfill(res);
+          }
+        },
+        (err) => {
+          if (operation.retry(err)) {
+            return;
+          }
+          thiz.esConnection = false;
+          thiz.emit('error', err);
+          reject(false);
+      });
+    });
+  });
+};
+
+Elasticsearch.prototype.search = function(q) {
+  var query = {
+    index: this.getIndexName(this.options),
+    q: q
+  };
+  return this.client.search(query);
+};
+
+module.exports = winston.transports.Elasticsearch = Elasticsearch;

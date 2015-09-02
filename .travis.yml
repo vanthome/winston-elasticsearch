@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+  - "0.12"
+  - "iojs-v3"
+git:
+  depth: 10
+before_install:
+  - "npm config set loglevel error"
+services:
+  - elasticsearch
+before_script:
+  - sleep 10
+script:
+  - "npm run test-travis"
+after_script: "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"

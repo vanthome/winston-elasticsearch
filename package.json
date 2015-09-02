@@ -1,13 +1,20 @@
 {
   "name": "winston-elasticsearch",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "An Elasticsearch transport for winston",
-  "author": "Jacques-Olivier D. Bernier",
-  "contributors": [
+  "main": "index",
+  "authors": [
     {
       "name": "Jacques-Olivier D. Bernier",
       "url": "https://github.com/jackdbernier"
     },
+    {
+      "name": "Thomas Hoppe",
+      "url": "https://github.com/vanthome",
+      "email": "thomas.hoppe@n-fuse.de"
+    }
+  ],
+  "contributors": [
     {
       "name": "Andy Potanin",
       "url": "https://github.com/andypotanin"
@@ -15,25 +22,36 @@
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/jackdbernier/winston-elasticsearch.git"
+    "url": "http://github.com/vanthome/winston-elasticsearch.git"
   },
+  "license": "MIT",
   "keywords": [
     "logging",
-    "sysadmin",
-    "tools",
     "winston",
-    "elasticsearch"
+    "elasticsearch",
+    "transport",
+    "logstash"
   ],
   "dependencies": {
-    "elastical": "0.0.11",
-    "xtend": "~2.0.6"
+    "promise": "^7.0.0",
+    "lodash": "~3.10.0",
+    "moment": "^2.10.0",
+    "elasticsearch": "^8.0.0",
+    "retry": "^0.7.0"
   },
   "devDependencies": {
-    "winston": "0.5.x",
-    "vows": "0.6.x"
+    "winston": "^1.0.0",
+    "coveralls": "2.11.0",
+    "mocha": "^2.3.0",
+    "should": "^7.1.0",
+    "istanbul": "^0.3.0"
   },
-  "main": "./index.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha --harmony ./test/*",
+    "test-travis": "node --harmony node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -R spec ./test/*"
+  },
   "engines": {
-    "node": ">= 0.4.0"
+    "node": ">= 0.12.0",
+    "iojs": ">= 3.0.0"
   }
 }

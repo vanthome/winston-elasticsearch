@@ -1,15 +1,3 @@
 node_modules
-lib-cov
-*.seed
-*.log
-*.csv
-*.dat
-*.out
-*.pid
-*.gz
-
-pids
-logs
-results
-
+coverage
 npm-debug.log

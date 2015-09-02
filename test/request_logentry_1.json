@@ -1,0 +1,18 @@
+{
+  "@timestamp": "2015-09-30T05:09:08.282Z",
+  "message": "Some message",
+  "severity": "info",
+  "fields": {
+    "method": "GET",
+    "url": "/sitemap.xml",
+    "headers": {
+      "host": "www.example.com",
+      "user-agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+      "accept": "*/*",
+      "accept-encoding": "gzip,deflate",
+      "from": "googlebot(at)googlebot.com",
+      "if-modified-since": "Tue, 30 Sep 2015 11:34:56 GMT",
+      "x-forwarded-for": "66.249.78.19"
+    }
+  }
+}
