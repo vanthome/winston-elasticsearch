@@ -47,8 +47,8 @@
     "istanbul": "^0.3.0"
   },
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --harmony ./test/*",
-    "test-travis": "node --harmony node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -R spec ./test/*"
+    "test": "./node_modules/mocha/bin/mocha --harmony --harmony_arrow_functions ./test/*",
+    "test-travis": "node --harmony --harmony_arrow_functions node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -R spec ./test/*"
   },
   "engines": {
     "node": ">= 0.12.0",
