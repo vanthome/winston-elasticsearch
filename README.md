@@ -1,6 +1,6 @@
 # winston-elasticsearch
 
-[![Version npm][version]](http://browsenpm.org/package/winston-elasticsearch)[![Build Status][build]](https://travis-ci.org/winston-elasticsearch/winston-elasticsearch)[![Dependencies][david]](https://david-dm.org/winston-elasticsearch/winston-elasticsearch)[![Coverage Status][cover]](https://coveralls.io/r/winston-elasticsearch/winston-elasticsearch?branch=master)
+[![Version npm][version]](http://browsenpm.org/package/winston-elasticsearch)[![Build Status][build]](https://travis-ci.org/vanthome/winston-elasticsearch)[![Dependencies][david]](https://david-dm.org/vanthome/winston-elasticsearch)[![Coverage Status][cover]](https://coveralls.io/r/vanthome/winston-elasticsearch?branch=master)
 
 [version]: http://img.shields.io/npm/v/winston-elasticsearch.svg?style=flat-square
 [build]: http://img.shields.io/travis/vanthome/winston-elasticsearch/master.svg?style=flat-square
