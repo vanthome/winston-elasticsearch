@@ -112,22 +112,30 @@ Elasticsearch.prototype.log = function log(level, message, meta, callback) {
     body: entry
   };
 
-  // TODO: Log messages are lost until there is a connection
-  if (this.esConnection) {
-    this.client.index(esEntry).then(
-      (res) => {
-        callback(null, res);
-      },
-      (err) => {
-        if (err) {
+  var operation = retry.operation({
+    retries: 3,
+    factor: 3,
+    minTimeout: 0.5 * 1000,
+    maxTimeout: 1 * 1000,
+    randomize: false
+  });
+
+  return new Promise(function (fulfill, reject) {
+    operation.attempt(currentAttempt => {
+      thiz.client.index(esEntry).then(
+        (res) => {
+          callback(null, res);
+        },
+        (err) => {
+          if (operation.retry(err)) {
+            return;
+          }
           thiz.esConnection = false;
-          thiz.checkEsConnection();
-        }
-        callback(err);
+          thiz.emit('error', err);
+          reject(false);
+      });
     });
-  } else {
-    //console.log('NO CONNECTION---------------------------------');
-  }
+  });
   return this;
 };
 
@@ -176,17 +184,15 @@ Elasticsearch.prototype.checkEsConnection = function() {
                 };
                 thiz.client.indices.putTemplate(tmplMessage).then(
                 (res) => {
-                  //console.log('Put template...', res);
                   fulfill(res);
                 },
                 (err) => {
-                  //console.log('Put template FAIL...', err);
                   reject(err);
                 });
               }
             });
           } else {
-            fulfill(res);
+            fulfill(true);
           }
         },
         (err) => {
@@ -202,8 +208,9 @@ Elasticsearch.prototype.checkEsConnection = function() {
 };
 
 Elasticsearch.prototype.search = function(q) {
+  var indexName = this.getIndexName(this.options);
   var query = {
-    index: this.getIndexName(this.options),
+    index: indexName,
     q: q
   };
   return this.client.search(query);

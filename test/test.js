@@ -1,7 +1,7 @@
+var util = require('util');
 var fs = require('fs');
 var should = require('should');
 var winston = require('winston');
-var util = require('util');
 
 require('../index');
 var defaultTransformer = require('../transformer');
@@ -35,17 +35,22 @@ describe('winston-elasticsearch:', function() {
   describe('a logger', function() {
     it('should log to Elasticsearch', function(done) {
       this.timeout(6000);
-      logger.info('logging', 'to', 'Elasticsearch', logMessage,
+      logger.log(logMessage.level, logMessage.message, logMessage.meta,
         function (err, level, msg, meta) {
             should.not.exist(err);
-            level.should.equal('info');
-            msg.should.equal('logging to Elasticsearch');
-            done();
+            level.should.equal(logMessage.level);
+            msg.should.equal(logMessage.message);
+            // Short wait phase to make sure data is already written.
+            setTimeout(function() {
+              done();
+            }, 1500);
         });
     });
+
     describe('The logged message', function() {
       it('should be possible to retrieve', function(done) {
-        logger.transports.undefined.search('fields.fields.method:GET').then(
+        // cheesy way of obtaining the reference to the transport
+        logger.transports.undefined.search('fields.method:GET').then(
           (res) => {
             res.hits.total.should.be.above(0);
             done();

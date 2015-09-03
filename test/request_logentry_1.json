@@ -1,8 +1,7 @@
 {
-  "@timestamp": "2015-09-30T05:09:08.282Z",
-  "message": "Some message",
-  "severity": "info",
-  "fields": {
+  "message": "Some log message",
+  "level": "info",
+  "meta": {
     "method": "GET",
     "url": "/sitemap.xml",
     "headers": {
