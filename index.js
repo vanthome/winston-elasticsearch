@@ -121,12 +121,12 @@ Elasticsearch.prototype.log = function log(level, message, meta, callback) {
   });
 
   return new Promise(function (fulfill, reject) {
-    operation.attempt(currentAttempt => {
+    operation.attempt(function (currentAttempt) {
       thiz.client.index(esEntry).then(
-        (res) => {
+        function (res) {
           callback(null, res);
         },
-        (err) => {
+        function (err) {
           if (operation.retry(err)) {
             return;
           }
@@ -158,9 +158,9 @@ Elasticsearch.prototype.checkEsConnection = function() {
   });
 
   return new Promise(function (fulfill, reject) {
-    operation.attempt(currentAttempt => {
+    operation.attempt(function(currentAttempt) {
       thiz.client.ping().then(
-        (res) => {
+        function (res) {
           thiz.esConnection = true;
           // Ensure mapping template is existing if desired
           if (thiz.options.ensureMappingTemplate) {
@@ -172,10 +172,10 @@ Elasticsearch.prototype.checkEsConnection = function() {
               name: 'template_' + thiz.options.indexPrefix
             };
             thiz.client.indices.getTemplate(tmplCheckMessage).then(
-              (res) => {
+              function (res) {
                 fulfill(res);
               },
-              (res) => {
+              function (res) {
               if (res.status && res.status === 404) {
                 var tmplMessage = {
                   name: 'template_' + thiz.options.indexPrefix,
@@ -183,10 +183,10 @@ Elasticsearch.prototype.checkEsConnection = function() {
                   body: mappingTemplate
                 };
                 thiz.client.indices.putTemplate(tmplMessage).then(
-                (res) => {
+                function (res) {
                   fulfill(res);
                 },
-                (err) => {
+                function (err) {
                   reject(err);
                 });
               }
@@ -195,7 +195,7 @@ Elasticsearch.prototype.checkEsConnection = function() {
             fulfill(true);
           }
         },
-        (err) => {
+        function (err) {
           if (operation.retry(err)) {
             return;
           }
