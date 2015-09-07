@@ -1,28 +1,26 @@
 {
   "name": "winston-elasticsearch",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "An Elasticsearch transport for winston",
   "main": "index",
-  "authors": [
-    {
-      "name": "Jacques-Olivier D. Bernier",
-      "url": "https://github.com/jackdbernier"
-    },
-    {
-      "name": "Thomas Hoppe",
-      "url": "https://github.com/vanthome",
-      "email": "thomas.hoppe@n-fuse.de"
-    }
-  ],
-  "contributors": [
-    {
-      "name": "Andy Potanin",
-      "url": "https://github.com/andypotanin"
-    }
-  ],
+  "authors": [{
+    "name": "Kaushal Rajkotia",
+    "url": "https//github.com/expl0r3r"
+  }, {
+    "name": "Jacques-Olivier D. Bernier",
+    "url": "https://github.com/jackdbernier"
+  }, {
+    "name": "Thomas Hoppe",
+    "url": "https://github.com/vanthome",
+    "email": "thomas.hoppe@n-fuse.de"
+  }],
+  "contributors": [{
+    "name": "Andy Potanin",
+    "url": "https://github.com/andypotanin"
+  }],
   "repository": {
     "type": "git",
-    "url": "http://github.com/vanthome/winston-elasticsearch.git"
+    "url": "https://github.com/expl0r3r/winston-elasticsearch"
   },
   "license": "MIT",
   "keywords": [
@@ -36,7 +34,7 @@
     "promise": "^7.0.0",
     "lodash": "~3.10.0",
     "moment": "^2.10.0",
-    "elasticsearch": "^8.0.0",
+    "elasticsearch": "^8.0.x",
     "retry": "^0.7.0"
   },
   "devDependencies": {
