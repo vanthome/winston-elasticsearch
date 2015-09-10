@@ -36,6 +36,7 @@ var Elasticsearch = function(options) {
     consistency: 'one'
   };
   _.defaults(options, defaults);
+  winston.Transport.call(this, options);
 
   // Use given client or create one
   if (options.client) {
@@ -82,6 +83,8 @@ var Elasticsearch = function(options) {
 };
 
 util.inherits(Elasticsearch, winston.Transport);
+
+Elasticsearch.prototype.name = 'elasticsearch';
 
 /**
  * log() method
