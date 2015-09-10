@@ -1,3 +1,9 @@
+0.2.1 / 2015-09-10
+==================
+
+ * Add transport name.
+ * Call super constructor for inheritance.
+
 0.2.0 / 2015-09-03
 ==================
 
