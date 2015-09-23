@@ -1,4 +1,7 @@
-node_modules
-coverage
+node_modules/
 npm-debug.log
+
+coverage/
+
 .project
+.settings

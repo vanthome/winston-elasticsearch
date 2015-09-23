@@ -1,0 +1,9 @@
+{
+  "preset": "airbnb",
+  "esnext": true,
+  "disallowTrailingComma": false,
+  "requireCommaBeforeLineBreak": false,
+  "requireSpaceBetweenArguments": false,
+  "requireCurlyBraces": false,
+  "requireSpaceBetweenArguments": true
+}

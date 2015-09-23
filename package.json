@@ -1,6 +1,6 @@
 {
   "name": "winston-elasticsearch",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "An Elasticsearch transport for winston",
   "main": "index",
   "authors": [
@@ -41,17 +41,21 @@
   },
   "devDependencies": {
     "winston": "^1.0.0",
+    "jshint": "^2.8.0",
+    "jscs": "^2.1.0",
     "coveralls": "2.11.0",
     "mocha": "^2.3.0",
     "should": "^7.1.0",
     "istanbul": "^0.3.0"
   },
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --harmony --harmony_arrow_functions ./test/*",
-    "test-travis": "node --harmony --harmony_arrow_functions node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -R spec ./test/*"
+    "test": "npm run jshint && npm run jscs && npm run mocha",
+    "jshint": "./node_modules/.bin/jshint *.json *.js",
+    "jscs": "./node_modules/.bin/jscs *.js",
+    "mocha": "./node_modules/mocha/bin/mocha --harmony --harmony_arrow_functions ./test/*",
+    "coveralls": "node --harmony --harmony_arrow_functions node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec ./test/*"
   },
   "engines": {
-    "node": ">= 0.12.0",
-    "iojs": ">= 3.0.0"
+    "node": ">= 0.12.0"
   }
 }

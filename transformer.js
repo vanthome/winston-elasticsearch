@@ -17,6 +17,6 @@ var transformer = function(logData) {
   transformed.severity = logData.level;
   transformed.fields = logData.meta;
   return transformed;
-}
+};
 
 module.exports = transformer;

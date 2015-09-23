@@ -14,10 +14,12 @@
   "devel": true, // Allow developments statements e.g. `console.log();`.
 
 
-  // ECMAScript 5, 6.
+  // ECMAScript next
   "strict": false, // Require `use strict` pragma in every file.
   "globalstrict": false, // Allow global "use strict" (also enables 'strict').
   "esnext": true, // ES6 syntax
+  "futurehostile": true, // Warn about use of future language keywords.
+  "predef": [ "-Promise" ], // Allow me to redefine native Promise
 
 
   // The Good Parts.
@@ -44,14 +46,7 @@
 
 
   // Personal styling preferences.
-  "newcap": true, // Require capitalization of all constructor functions e.g. `new F()`.
-  "noempty": true, // Prohibit use of empty blocks.
+  "freeze": true, // Prohibit redefinition of native prototypes.
   "nonew": true, // Prohibit use of constructors for side-effects.
-  "nomen": true, // Prohibit use of initial or trailing underbars in names.
-  "onevar": false, // Allow only one `var` statement per function.
-  "plusplus": false, // Prohibit use of `++` & `--`.
-  "sub": false, // Tolerate all forms of subscript notation besides dot notation e.g. `dict['key']` instead of `dict.key`.
-  "trailing": true, // Prohibit trailing whitespaces.
-  "white": false, // Check against strict whitespace and indentation rules.
-  "indent": 2 // Specify indentation spacing
+  "plusplus": false // Prohibit use of `++` & `--`.
 }

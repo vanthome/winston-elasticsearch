@@ -16,7 +16,6 @@ var defaultTransformer = require('./transformer');
  * Constructor
  */
 var Elasticsearch = function(options) {
-  var thiz = this;
   this.options = options || {};
 
   // Enforce context
@@ -40,14 +39,13 @@ var Elasticsearch = function(options) {
 
   // Use given client or create one
   if (options.client) {
-     if (options.client instanceof elasticsearch.Client) {
-       this.client = options.client;
-       return this;
-     } else {
-       var msg = 'Client option passed was is an instance of ES Client';
-       throw new TypeError(msg);
-     }
-    this.client = options.client;
+    if (options.client instanceof elasticsearch.Client) {
+      this.client = options.client;
+      return this;
+    } else {
+      var msg = 'Client option passed was is an instance of ES Client';
+      throw new TypeError(msg);
+    }
   } else {
     // As we don't want to spam stdout, create a null stream
     // to eat any log output of the ES client
@@ -55,7 +53,7 @@ var Elasticsearch = function(options) {
       stream.Writable.call(this);
     };
     util.inherits(NullStream, stream.Writable);
-    NullStream.prototype._write = function (chunk, encoding, next) {
+    NullStream.prototype._write = function(chunk, encoding, next) {
       next();
     };
 
@@ -123,7 +121,7 @@ Elasticsearch.prototype.log = function log(level, message, meta, callback) {
     randomize: false
   });
 
-  return new Promise(function (fulfill, reject) {
+  return new Promise(function(fulfill, reject) {
     operation.attempt(currentAttempt => {
       thiz.client.index(esEntry).then(
         (res) => {
@@ -136,10 +134,9 @@ Elasticsearch.prototype.log = function log(level, message, meta, callback) {
           thiz.esConnection = false;
           thiz.emit('error', err);
           reject(false);
-      });
+        });
     });
   });
-  return this;
 };
 
 Elasticsearch.prototype.getIndexName = function(options) {
@@ -160,40 +157,14 @@ Elasticsearch.prototype.checkEsConnection = function() {
     randomize: false
   });
 
-  return new Promise(function (fulfill, reject) {
+  return new Promise(function(fulfill, reject) {
     operation.attempt(currentAttempt => {
       thiz.client.ping().then(
         (res) => {
           thiz.esConnection = true;
           // Ensure mapping template is existing if desired
           if (thiz.options.ensureMappingTemplate) {
-            var mappingTemplate = thiz.options.mappingTemplate;
-            if (mappingTemplate === null || typeof mappingTemplate === 'undefined') {
-              mappingTemplate = JSON.parse(fs.readFileSync('./index-template-mapping.json', 'utf8'));
-            }
-            var tmplCheckMessage = {
-              name: 'template_' + thiz.options.indexPrefix
-            };
-            thiz.client.indices.getTemplate(tmplCheckMessage).then(
-              (res) => {
-                fulfill(res);
-              },
-              (res) => {
-              if (res.status && res.status === 404) {
-                var tmplMessage = {
-                  name: 'template_' + thiz.options.indexPrefix,
-                  create: true,
-                  body: mappingTemplate
-                };
-                thiz.client.indices.putTemplate(tmplMessage).then(
-                (res) => {
-                  fulfill(res);
-                },
-                (err) => {
-                  reject(err);
-                });
-              }
-            });
+            thiz.ensureMappingTemplate(fulfill, reject);
           } else {
             fulfill(true);
           }
@@ -205,7 +176,7 @@ Elasticsearch.prototype.checkEsConnection = function() {
           thiz.esConnection = false;
           thiz.emit('error', err);
           reject(false);
-      });
+        });
     });
   });
 };
@@ -217,6 +188,38 @@ Elasticsearch.prototype.search = function(q) {
     q: q
   };
   return this.client.search(query);
+};
+
+Elasticsearch.prototype.ensureMappingTemplate = function(fulfill, reject) {
+  var thiz = this;
+  var mappingTemplate = thiz.options.mappingTemplate;
+  if (mappingTemplate === null || typeof mappingTemplate === 'undefined') {
+    var template = fs.readFileSync('./index-template-mapping.json', 'utf8');
+    mappingTemplate = JSON.parse(template);
+  }
+  var tmplCheckMessage = {
+    name: 'template_' + thiz.options.indexPrefix
+  };
+  thiz.client.indices.getTemplate(tmplCheckMessage).then(
+    (res) => {
+      fulfill(res);
+    },
+    (res) => {
+      if (res.status && res.status === 404) {
+        var tmplMessage = {
+          name: 'template_' + thiz.options.indexPrefix,
+          create: true,
+          body: mappingTemplate
+        };
+        thiz.client.indices.putTemplate(tmplMessage).then(
+        (res) => {
+          fulfill(res);
+        },
+        (err) => {
+          reject(err);
+        });
+      }
+    });
 };
 
 module.exports = winston.transports.Elasticsearch = Elasticsearch;

@@ -2,18 +2,16 @@ var util = require('util');
 var fs = require('fs');
 var should = require('should');
 var winston = require('winston');
+var elasticsearch = require('elasticsearch');
 
 require('../index');
 var defaultTransformer = require('../transformer');
 
 var logMessage = JSON.parse(fs.readFileSync('./test/request_logentry_1.json', 'utf8'));
 
-var logger = new (winston.Logger)({
-  transports: [
-    new (winston.transports.Elasticsearch)({
-    })
-  ]
-});
+/*
+ * Note: To run the tests, a running elasticsearch instance is required.
+ */
 
 describe('winston-elasticsearch:', function() {
   describe('the default transformer', function() {
@@ -32,6 +30,27 @@ describe('winston-elasticsearch:', function() {
     });
   });
 
+  describe('a transport given a faulty ES client', function() {
+    it('should throw an exception', function(done) {
+      try {
+        new (winston.transports.Elasticsearch)({
+          client: new elasticsearch.Client({
+            host: 'http://localhost:9300'
+          })
+        });
+      } catch (error) {
+        done();
+      }
+    });
+  });
+
+  var logger = new (winston.Logger)({
+    transports: [
+      new (winston.transports.Elasticsearch)({
+      })
+    ]
+  });
+
   describe('a logger', function() {
     it('should log to Elasticsearch', function(done) {
       this.timeout(6000);
@@ -47,12 +66,9 @@ describe('winston-elasticsearch:', function() {
         });
     });
 
-    describe('The logged message', function() {
-      it('should be possible to retrieve', function(done) {
-        // search for `fields.method:GET` returns 0, 
-        // even its defined as `analyzed` in the mapping
-//        logger.transports.undefined.search('fields.method:GET').then(
-        logger.transports.elasticsearch.search('severity:info').then(
+    describe('the logged message', function() {
+      it('should be found in the index', function(done) {
+        logger.transports.elasticsearch.search('message:logmessage1').then(
           (res) => {
             res.hits.total.should.be.above(0);
             done();
