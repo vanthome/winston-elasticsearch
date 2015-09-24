@@ -37,7 +37,7 @@
     "lodash": "~3.10.0",
     "moment": "^2.10.0",
     "elasticsearch": "^8.0.0",
-    "retry": "^0.7.0"
+    "retry": "^0.8.0"
   },
   "devDependencies": {
     "winston": "^1.0.0",
