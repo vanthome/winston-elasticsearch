@@ -3,7 +3,7 @@
 
  * Add jshint jscs.
  * Minor cleanups.
- 
+
 0.2.1 / 2015-09-10
 ==================
 

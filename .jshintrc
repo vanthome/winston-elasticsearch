@@ -47,5 +47,5 @@
   // Personal styling preferences.
   "freeze": true, // Prohibit redefinition of native prototypes.
   "nonew": true, // Prohibit use of constructors for side-effects.
-  "plusplus": false // Prohibit use of `++` & `--`.
+  "plusplus": false // Allow use of `++` & `--`.
 }
