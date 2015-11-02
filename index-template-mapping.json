@@ -38,8 +38,7 @@
         "fields": {
           "type": "object",
           "dynamic": true,
-          "index": "analyzed",
-          "path": "full"
+          "index": "analyzed"
         }
       }
     }
