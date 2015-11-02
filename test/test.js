@@ -30,20 +30,6 @@ describe('winston-elasticsearch:', function() {
     });
   });
 
-  describe('a transport given a faulty ES client', function() {
-    it('should throw an exception', function(done) {
-      try {
-        new (winston.transports.Elasticsearch)({
-          client: new elasticsearch.Client({
-            host: 'http://localhost:9300'
-          })
-        });
-      } catch (error) {
-        done();
-      }
-    });
-  });
-
   var logger = new (winston.Logger)({
     transports: [
       new (winston.transports.Elasticsearch)({
