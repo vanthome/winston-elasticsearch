@@ -40,13 +40,8 @@ var Elasticsearch = function(options) {
 
   // Use given client or create one
   if (options.client) {
-    if (options.client instanceof elasticsearch.Client) {
-      this.client = options.client;
-      return this;
-    } else {
-      var msg = 'Client option passed was is an instance of ES Client';
-      throw new TypeError(msg);
-    }
+    this.client = options.client;
+    return this;
   } else {
     // As we don't want to spam stdout, create a null stream
     // to eat any log output of the ES client
