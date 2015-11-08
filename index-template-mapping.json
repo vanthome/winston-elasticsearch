@@ -37,9 +37,7 @@
         "severity": { "type": "string", "index": "not_analyzed" },
         "fields": {
           "type": "object",
-          "dynamic": true,
-          "index": "analyzed",
-          "path": "full"
+          "dynamic": true
         }
       }
     }
