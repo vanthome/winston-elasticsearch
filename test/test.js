@@ -62,7 +62,7 @@ describe('winston-elasticsearch:', function() {
             // Short wait phase to make sure data is already written.
             setTimeout(function() {
               done();
-            }, 1500);
+            }, 5500);
         });
     });
 

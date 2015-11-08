@@ -1,3 +1,10 @@
+0.2.4 / 2015-11-08
+==================
+
+ * Support ES 2.0, really.
+ * Support for single index usage, without data suffix via `index` option.
+ * Fix bug when ES client is provided.
+
 0.2.3 / 2015-11-01
 ==================
 

@@ -26,6 +26,7 @@ var Elasticsearch = function(options) {
   // Set defaults
   var defaults = {
     level: 'info',
+    index: null,
     indexPrefix: 'logs',
     indexSuffixPattern: 'YYYY.MM.DD',
     messageType: 'log',
@@ -140,9 +141,12 @@ Elasticsearch.prototype.log = function log(level, message, meta, callback) {
 };
 
 Elasticsearch.prototype.getIndexName = function(options) {
-  var now = moment();
-  var dateString = now.format(options.indexSuffixPattern);
-  var indexName = options.indexPrefix + '-' + dateString;
+  var indexName = options.index;
+  if (indexName === null) {
+    var now = moment();
+    var dateString = now.format(options.indexSuffixPattern);
+    indexName = options.indexPrefix + '-' + dateString;
+  }
   return indexName;
 };
 
