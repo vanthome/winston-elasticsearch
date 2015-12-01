@@ -39,7 +39,7 @@ describe('winston-elasticsearch:', function() {
 
   describe('a logger', function() {
     it('should log to Elasticsearch', function(done) {
-      this.timeout(6000);
+      this.timeout(8000);
       logger.log(logMessage.level, logMessage.message, logMessage.meta,
         function (err, level, msg, meta) {
             should.not.exist(err);

@@ -1,6 +1,6 @@
 {
   "name": "winston-elasticsearch",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "An Elasticsearch transport for winston",
   "main": "index",
   "authors": [
@@ -36,17 +36,17 @@
     "promise": "^7.0.4",
     "lodash": "^3.10.1",
     "moment": "^2.10.6",
-    "elasticsearch": "^8.2.0",
+    "elasticsearch": "^10.0.1",
     "retry": "^0.8.0"
   },
   "devDependencies": {
-    "winston": "^1.1.2",
+    "winston": "^2.1.1",
     "jshint": "^2.8.0",
-    "jscs": "^2.4.0",
+    "jscs": "^2.6.0",
     "coveralls": "^2.11.4",
-    "mocha": "^2.3.3",
+    "mocha": "^2.3.4",
     "should": "^7.1.1",
-    "istanbul": "^0.4.0"
+    "istanbul": "^0.4.1"
   },
   "scripts": {
     "test": "npm run jshint && npm run jscs && npm run mocha",
