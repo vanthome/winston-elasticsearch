@@ -5,3 +5,6 @@ coverage/
 
 .project
 .settings
+
+*.log
+*~
