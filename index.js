@@ -193,8 +193,7 @@ Elasticsearch.prototype.ensureMappingTemplate = function(fulfill, reject) {
   var thiz = this;
   var mappingTemplate = thiz.options.mappingTemplate;
   if (mappingTemplate === null || typeof mappingTemplate === 'undefined') {
-    var template = fs.readFileSync('./index-template-mapping.json', 'utf8');
-    mappingTemplate = JSON.parse(template);
+    mappingTemplate = require('index-template-mapping.json');
   }
   var tmplCheckMessage = {
     name: 'template_' + thiz.options.indexPrefix
