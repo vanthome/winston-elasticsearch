@@ -1,3 +1,8 @@
+0.2.6 / 2016-01-19
+==================
+
+- Fix for Windows platform -- make default mapping file readable.
+
 0.2.5 / 2015-12-01
 ==================
 
