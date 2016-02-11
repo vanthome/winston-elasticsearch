@@ -5,7 +5,6 @@
   "requireCommaBeforeLineBreak": false,
   "requireSpaceBetweenArguments": false,
   "requireCurlyBraces": false,
-  "requireSpaceBetweenArguments": true,
   "disallowSpacesInsideArrayBrackets": false,
   "disallowSpacesInsideObjectBrackets": false
 }
