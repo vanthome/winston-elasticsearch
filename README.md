@@ -56,7 +56,6 @@ var logger = new winston.Logger({
 - `indexPrefix` [`logs`] the prefix to use to generate the index name according to the pattern `<indexPrefix>-<indexSuffixPattern>`.
 - `indexSuffixPattern` [`YYYY.MM.DD`] a [Moment.js](http://momentjs.com/) compatible date/ time pattern.
 - `messageType` [`log`] the type (path segment after the index path) under which the messages are stored under the index.
-- `fireAndForget` [false] if set to `true`, a callback function passed to the `log()` function is immediately executed without a parameters.
 - `transformer` [see below] a transformer function to transform logged data into a different message structure.
 - `ensureMappingTemplate` [`true`] If set to `true`, the given `mappingTemplate` is checked/ uploaded to ES when the module is sending the fist log message to make sure the log messages are mapped in a sensible manner.
 - `mappingTemplate` [see file `index-template-mapping.json` file] the mapping template to be ensured as parsed JSON.

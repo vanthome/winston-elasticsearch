@@ -30,7 +30,6 @@ var Elasticsearch = function(options) {
     indexPrefix: 'logs',
     indexSuffixPattern: 'YYYY.MM.DD',
     messageType: 'log',
-    fireAndForget: false,
     transformer: defaultTransformer,
     ensureMappingTemplate: true,
     consistency: 'one'
@@ -85,10 +84,6 @@ Elasticsearch.prototype.name = 'elasticsearch';
  */
 Elasticsearch.prototype.log = function log(level, message, meta, callback) {
   var thiz = this;
-
-  if (callback && thiz.fireAndForget) {
-    return callback(null);
-  }
 
   // Don't think this is needed, TODO: check.
   // var args = Array.prototype.slice.call(arguments, 0);
