@@ -41,10 +41,8 @@ describe('winston-elasticsearch:', function() {
     it('should log to Elasticsearch', function(done) {
       this.timeout(8000);
       logger.log(logMessage.level, logMessage.message, logMessage.meta,
-        function (err, level, msg, meta) {
+        function (err) {
             should.not.exist(err);
-            level.should.equal(logMessage.level);
-            msg.should.equal(logMessage.message);
             // Short wait phase to make sure data is already written.
             setTimeout(function() {
               done();

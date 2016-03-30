@@ -11,6 +11,7 @@ var retry = require('retry');
 var elasticsearch = require('elasticsearch');
 
 var defaultTransformer = require('./transformer');
+var BulkWriter = require('./bulk_writer');
 
 /**
  * Constructor
@@ -30,9 +31,9 @@ var Elasticsearch = function(options) {
     indexPrefix: 'logs',
     indexSuffixPattern: 'YYYY.MM.DD',
     messageType: 'log',
-    fireAndForget: false,
     transformer: defaultTransformer,
     ensureMappingTemplate: true,
+    flushInterval: 2000,
     consistency: 'one'
   };
   _.defaults(options, defaults);
@@ -41,7 +42,6 @@ var Elasticsearch = function(options) {
   // Use given client or create one
   if (options.client) {
     this.client = options.client;
-    return this;
   } else {
     // As we don't want to spam stdout, create a null stream
     // to eat any log output of the ES client
@@ -71,8 +71,13 @@ var Elasticsearch = function(options) {
     this.client = new elasticsearch.Client(this.options.clientOpts);
   }
 
+  this.bulkWriter = new BulkWriter(this.client,
+      options.flushInterval, options.consistency);
+  this.bulkWriter.start();
+
   // Conduct connection check (sets connection state for further use)
   this.checkEsConnection().then(function(connectionOk) {});
+
   return this;
 };
 
@@ -85,10 +90,6 @@ Elasticsearch.prototype.name = 'elasticsearch';
  */
 Elasticsearch.prototype.log = function log(level, message, meta, callback) {
   var thiz = this;
-
-  if (callback && thiz.fireAndForget) {
-    return callback(null);
-  }
 
   // Don't think this is needed, TODO: check.
   // var args = Array.prototype.slice.call(arguments, 0);
@@ -109,30 +110,13 @@ Elasticsearch.prototype.log = function log(level, message, meta, callback) {
     body: entry
   };
 
-  var operation = retry.operation({
-    retries: 3,
-    factor: 3,
-    minTimeout: 0.5 * 1000,
-    maxTimeout: 1 * 1000,
-    randomize: false
-  });
+  this.bulkWriter.append(
+    this.getIndexName(this.options),
+    this.options.messageType,
+    entry
+  );
 
-  return new Promise(function(fulfill, reject) {
-    operation.attempt(currentAttempt => {
-      thiz.client.index(esEntry).then(
-        (res) => {
-          callback(null, res);
-        },
-        (err) => {
-          if (operation.retry(err)) {
-            return;
-          }
-          thiz.esConnection = false;
-          thiz.emit('error', err);
-          reject(false);
-        });
-    });
-  });
+  callback(); // write is deferred, so no room for errors here :)
 };
 
 Elasticsearch.prototype.getIndexName = function(options) {
