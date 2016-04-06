@@ -1,3 +1,11 @@
+0.3.0 / 2016-03-30
+==================
+
+- Test with ES 2.3.1
+- Add time driven bulk write functionality.
+- Remove retry functionality for writes as now covered by bulk writer.
+- Tests for ES unavailable case.
+
 0.2.6 / 2016-01-19
 ==================
 

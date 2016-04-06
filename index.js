@@ -34,7 +34,8 @@ var Elasticsearch = function(options) {
     transformer: defaultTransformer,
     ensureMappingTemplate: true,
     flushInterval: 2000,
-    consistency: 'one'
+    consistency: 'one',
+    handleExceptions: false
   };
   _.defaults(options, defaults);
   winston.Transport.call(this, options);
@@ -75,8 +76,8 @@ var Elasticsearch = function(options) {
       options.flushInterval, options.consistency);
   this.bulkWriter.start();
 
-  // Conduct connection check (sets connection state for further use)
-  this.checkEsConnection().then(function(connectionOk) {});
+  // Conduct initial connection check (sets connection state for further use)
+  this.checkEsConnection().then(connectionOk => {});
 
   return this;
 };
@@ -131,9 +132,10 @@ Elasticsearch.prototype.getIndexName = function(options) {
 
 Elasticsearch.prototype.checkEsConnection = function() {
   var thiz = this;
+  thiz.esConnection = false;
 
   var operation = retry.operation({
-    retries: 10,
+    retries: 3,
     factor: 3,
     minTimeout: 1 * 1000,
     maxTimeout: 60 * 1000,

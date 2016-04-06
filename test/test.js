@@ -15,7 +15,7 @@ var logMessage = JSON.parse(fs.readFileSync('./test/request_logentry_1.json', 'u
 
 describe('winston-elasticsearch:', function() {
   describe('the default transformer', function() {
-    it('should transform logdata from winston into a lostash like structure', function (done) {
+    it('should transform log data from winston into a lostash like structure', function (done) {
       var transformed = defaultTransformer({
         message: 'some message',
         level: 'error',
@@ -30,23 +30,32 @@ describe('winston-elasticsearch:', function() {
     });
   });
 
-  var logger = new (winston.Logger)({
-    transports: [
-      new (winston.transports.Elasticsearch)({
-      })
-    ]
-  });
+  var logger = null;
 
   describe('a logger', function() {
+    it('can be instantiated', function(done) {
+      try {
+        logger = new (winston.Logger)({
+          transports: [
+              new (winston.transports.Elasticsearch)({
+            })
+          ]
+        });
+        done();
+      } catch (err) {
+        should.not.exist(err);
+      }
+    });
+
     it('should log to Elasticsearch', function(done) {
       this.timeout(8000);
       logger.log(logMessage.level, logMessage.message, logMessage.meta,
         function (err) {
-            should.not.exist(err);
-            // Short wait phase to make sure data is already written.
-            setTimeout(function() {
-              done();
-            }, 5500);
+          should.not.exist(err);
+          // Wait to make sure data is already written.
+          setTimeout(function() {
+            done();
+          }, 6500);
         });
     });
 
@@ -59,8 +68,32 @@ describe('winston-elasticsearch:', function() {
           },
           (err) => {
             should.not.exist(err);
-            done();
           });
+      });
+    });
+  });
+
+
+  var defectiveLogger = null;
+
+  describe('a defective log transport', function() {
+    it('emits an error', function(done) {
+      this.timeout(40000);
+      var transport = new (winston.transports.Elasticsearch)({
+        clientOpts: {
+         host: 'http://does-not-exist.test:9200'
+        }
+      });
+
+      transport.on('error', err => {
+        should.exist(err);
+        done();
+      });
+
+      defectiveLogger = new (winston.Logger)({
+        transports: [
+          transport
+        ]
       });
     });
   });

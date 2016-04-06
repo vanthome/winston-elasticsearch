@@ -1,7 +1,5 @@
 var Promise = require('promise');
-
-// var debug = console.log.bind(console);
-var debug = () => {};
+var debug = require('debug')('bulk writer');
 
 var BulkWriter = function(client, interval, consistency) {
   this.client = client;
@@ -11,7 +9,7 @@ var BulkWriter = function(client, interval, consistency) {
   this.bulk = []; // bulk to be flushed
   this.running = false;
   this.timer = false;
-  debug('bulk created', this);
+  debug('created', this);
 };
 
 BulkWriter.prototype.start = function() {
@@ -42,7 +40,7 @@ BulkWriter.prototype.tick = function() {
   if (!this.running) { return; }
   this.flush()
   .catch((e) => {
-    console.error('error writing bulk', e);
+    throw e;
   })
   .then(() => {
     thiz.schedule();

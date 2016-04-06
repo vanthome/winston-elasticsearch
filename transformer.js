@@ -1,8 +1,8 @@
 'use strict';
 
 /**
- Transformer function to transform logged data into a
- different message structure more appropriate for indexing in ES.
+ Transformer function to transform log data as provided by winston into
+ a message structure which is more appropriate for indexing in ES.
 
  @param {Object} logData
  @param {Object} logData.message - the log message
