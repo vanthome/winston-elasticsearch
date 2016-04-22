@@ -1,3 +1,8 @@
+0.3.1 / 2016-04-22
+==================
+
+- Fix for dependencies - move winstom from devDependencies to dependencies in package.json
+
 0.3.0 / 2016-03-30
 ==================
 
