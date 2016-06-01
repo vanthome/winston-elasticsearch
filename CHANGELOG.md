@@ -1,3 +1,9 @@
+0.3.2 / 2016-05-31
+==================
+
+- Version upgrades
+- Migrate to eslint from jshint and jscs
+
 0.3.1 / 2016-04-22
 ==================
 

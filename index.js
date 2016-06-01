@@ -1,22 +1,21 @@
 'use strict';
 
-var util = require('util');
-var fs = require('fs');
-var Promise = require('promise');
-var stream = require('stream');
-var winston = require('winston');
-var moment = require('moment');
-var _ = require('lodash');
-var retry = require('retry');
-var elasticsearch = require('elasticsearch');
+const util = require('util');
+const Promise = require('promise');
+const stream = require('stream');
+const winston = require('winston');
+const moment = require('moment');
+const _ = require('lodash');
+const retry = require('retry');
+const elasticsearch = require('elasticsearch');
 
-var defaultTransformer = require('./transformer');
-var BulkWriter = require('./bulk_writer');
+const defaultTransformer = require('./transformer');
+const BulkWriter = require('./bulk_writer');
 
 /**
  * Constructor
  */
-var Elasticsearch = function(options) {
+const Elasticsearch = function Elasticsearch(options) {
   this.options = options || {};
 
   // Enforce context
@@ -25,7 +24,7 @@ var Elasticsearch = function(options) {
   }
 
   // Set defaults
-  var defaults = {
+  const defaults = {
     level: 'info',
     index: null,
     indexPrefix: 'logs',
@@ -46,15 +45,16 @@ var Elasticsearch = function(options) {
   } else {
     // As we don't want to spam stdout, create a null stream
     // to eat any log output of the ES client
-    var NullStream = function() {
+    const NullStream = function NullStream() {
       stream.Writable.call(this);
     };
     util.inherits(NullStream, stream.Writable);
-    NullStream.prototype._write = function(chunk, encoding, next) {
+    // eslint-disable-next-line no-underscore-dangle
+    NullStream.prototype._write = function _write(chunk, encoding, next) {
       next();
     };
 
-    var defaultClientOpts = {
+    const defaultClientOpts = {
       clientOpts: {
         log: [
           {
@@ -90,26 +90,12 @@ Elasticsearch.prototype.name = 'elasticsearch';
  * log() method
  */
 Elasticsearch.prototype.log = function log(level, message, meta, callback) {
-  var thiz = this;
-
-  // Don't think this is needed, TODO: check.
-  // var args = Array.prototype.slice.call(arguments, 0);
-  // Not sure if Winston always passed a callback and regulates number of args, but we are on the safe side here
-  // callback = 'function' === typeof args[ args.length - 1 ] ? args[ args.length - 1 ] : function fallback() {};
-
-  var logData = {
-    message: message,
-    level: level,
-    meta: meta
+  const logData = {
+    message,
+    level,
+    meta
   };
-  var entry = this.options.transformer(logData);
-
-  var esEntry = {
-    index: this.getIndexName(this.options),
-    consistency: this.options.consistency,
-    type: this.options.messageType,
-    body: entry
-  };
+  const entry = this.options.transformer(logData);
 
   this.bulkWriter.append(
     this.getIndexName(this.options),
@@ -120,21 +106,21 @@ Elasticsearch.prototype.log = function log(level, message, meta, callback) {
   callback(); // write is deferred, so no room for errors here :)
 };
 
-Elasticsearch.prototype.getIndexName = function(options) {
-  var indexName = options.index;
+Elasticsearch.prototype.getIndexName = function getIndexName(options) {
+  let indexName = options.index;
   if (indexName === null) {
-    var now = moment();
-    var dateString = now.format(options.indexSuffixPattern);
+    const now = moment();
+    const dateString = now.format(options.indexSuffixPattern);
     indexName = options.indexPrefix + '-' + dateString;
   }
   return indexName;
 };
 
-Elasticsearch.prototype.checkEsConnection = function() {
-  var thiz = this;
+Elasticsearch.prototype.checkEsConnection = function checkEsConnection() {
+  const thiz = this;
   thiz.esConnection = false;
 
-  var operation = retry.operation({
+  const operation = retry.operation({
     retries: 3,
     factor: 3,
     minTimeout: 1 * 1000,
@@ -142,7 +128,7 @@ Elasticsearch.prototype.checkEsConnection = function() {
     randomize: false
   });
 
-  return new Promise(function(fulfill, reject) {
+  return new Promise((fulfill, reject) => {
     operation.attempt(currentAttempt => {
       thiz.client.ping().then(
         (res) => {
@@ -166,22 +152,23 @@ Elasticsearch.prototype.checkEsConnection = function() {
   });
 };
 
-Elasticsearch.prototype.search = function(q) {
-  var indexName = this.getIndexName(this.options);
-  var query = {
-    index: indexName,
-    q: q
+Elasticsearch.prototype.search = function search(q) {
+  const indexName = this.getIndexName(this.options);
+  const query = {
+    indexName,
+    q
   };
   return this.client.search(query);
 };
 
-Elasticsearch.prototype.ensureMappingTemplate = function(fulfill, reject) {
-  var thiz = this;
-  var mappingTemplate = thiz.options.mappingTemplate;
+Elasticsearch.prototype.ensureMappingTemplate = function ensureMappingTemplate(fulfill, reject) {
+  const thiz = this;
+  let mappingTemplate = thiz.options.mappingTemplate;
   if (mappingTemplate === null || typeof mappingTemplate === 'undefined') {
+    // eslint-disable-next-line import/no-unresolved
     mappingTemplate = require('index-template-mapping.json');
   }
-  var tmplCheckMessage = {
+  const tmplCheckMessage = {
     name: 'template_' + thiz.options.indexPrefix
   };
   thiz.client.indices.getTemplate(tmplCheckMessage).then(
@@ -190,17 +177,17 @@ Elasticsearch.prototype.ensureMappingTemplate = function(fulfill, reject) {
     },
     (res) => {
       if (res.status && res.status === 404) {
-        var tmplMessage = {
+        const tmplMessage = {
           name: 'template_' + thiz.options.indexPrefix,
           create: true,
           body: mappingTemplate
         };
         thiz.client.indices.putTemplate(tmplMessage).then(
-        (res) => {
-          fulfill(res);
+        (res1) => {
+          fulfill(res1);
         },
-        (err) => {
-          reject(err);
+        (err1) => {
+          reject(err1);
         });
       }
     });

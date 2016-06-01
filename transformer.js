@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  Transformer function to transform log data as provided by winston into
  a message structure which is more appropriate for indexing in ES.
@@ -10,8 +8,8 @@
  @param {Object} logData.meta - the log meta data
  @returns {Object} transformed message
  */
-var transformer = function(logData) {
-  var transformed = {};
+const transformer = function transformer(logData) {
+  const transformed = {};
   transformed['@timestamp'] = new Date().toISOString();
   transformed.message = logData.message;
   transformed.severity = logData.level;
