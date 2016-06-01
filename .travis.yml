@@ -4,13 +4,6 @@ node_js:
     - "6"
 env:
   - COVERALLS=1
-  - CXX=g++-4.8
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
 git:
   depth: 10
 before_install:
