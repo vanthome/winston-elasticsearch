@@ -59,6 +59,6 @@
     "coveralls": "node --harmony --harmony_arrow_functions node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec ./test/*"
   },
   "engines": {
-    "node": ">= 0.6.0"
+    "node": ">= 6.0.0"
   }
 }
