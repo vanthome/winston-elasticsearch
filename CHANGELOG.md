@@ -1,6 +1,7 @@
-0.3.2 / 2016-05-31
+0.4.0 / 2016-05-31
 ==================
 
+- Minimum node.js version 6
 - Version upgrades
 - Migrate to eslint from jshint and jscs
 
