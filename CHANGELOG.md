@@ -1,3 +1,8 @@
+0.4.1 / 2016-10-26
+==================
+
+- Add timestamp automatically to log messages
+
 0.4.0 / 2016-05-31
 ==================
 
