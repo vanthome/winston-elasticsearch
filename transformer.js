@@ -10,7 +10,7 @@
  */
 const transformer = function transformer(logData) {
   const transformed = {};
-  transformed['@timestamp'] = new Date().toISOString();
+  transformed['@timestamp'] = logData.timestamp ? logData.timestamp : new Date().toISOString();
   transformed.message = logData.message;
   transformed.severity = logData.level;
   transformed.fields = logData.meta;
