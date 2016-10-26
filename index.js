@@ -17,8 +17,8 @@ const BulkWriter = require('./bulk_writer');
  */
 const Elasticsearch = function Elasticsearch(options) {
   this.options = options || {};
-  if(!options.timestamp){
-    this.options.timestamp = function () { return new Date().toISOString(); }; 
+  if (!options.timestamp) {
+    this.options.timestamp = function timestamp() { return new Date().toISOString(); };
   }
   // Enforce context
   if (!(this instanceof Elasticsearch)) {
