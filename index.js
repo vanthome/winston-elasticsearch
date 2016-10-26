@@ -96,7 +96,7 @@ Elasticsearch.prototype.log = function log(level, message, meta, callback) {
     message,
     level,
     meta,
-    timestamp: this.timestamp()
+    timestamp: this.options.timestamp()
   };
   const entry = this.options.transformer(logData);
 
