@@ -79,7 +79,7 @@ const Elasticsearch = function Elasticsearch(options) {
   this.bulkWriter.start();
 
   // Conduct initial connection check (sets connection state for further use)
-  this.checkEsConnection().then(connectionOk => {});
+  this.checkEsConnection().then((connectionOk) => {});
 
   return this;
 };
@@ -132,7 +132,7 @@ Elasticsearch.prototype.checkEsConnection = function checkEsConnection() {
   });
 
   return new Promise((fulfill, reject) => {
-    operation.attempt(currentAttempt => {
+    operation.attempt((currentAttempt) => {
       thiz.client.ping().then(
         (res) => {
           thiz.esConnection = true;
@@ -168,7 +168,7 @@ Elasticsearch.prototype.ensureMappingTemplate = function ensureMappingTemplate(f
   const thiz = this;
   let mappingTemplate = thiz.options.mappingTemplate;
   if (mappingTemplate === null || typeof mappingTemplate === 'undefined') {
-    // eslint-disable-next-line import/no-unresolved
+    // eslint-disable-next-line import/no-unresolved, import/no-extraneous-dependencies
     mappingTemplate = require('index-template-mapping.json');
   }
   const tmplCheckMessage = {
