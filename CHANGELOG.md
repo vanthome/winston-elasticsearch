@@ -1,3 +1,9 @@
+0.4.2 / 2016-11-12
+==================
+
+- Allow `consistency` to be disabled using `false` as value
+- Upgrade deps
+
 0.4.1 / 2016-10-26
 ==================
 

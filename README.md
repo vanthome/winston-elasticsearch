@@ -61,7 +61,7 @@ var logger = new winston.Logger({
 - `flushInterval` [`2000`] distance between bulk writes in ms.
 - `client` An [elasticsearch client](https://www.npmjs.com/package/elasticsearch) instance. If given, all following options are ignored.
 - `clientOpts` An object hash passed to the ES client. See [its docs](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/configuration.html) for supported options.
-- `consistency` [`one`] The consistency hint used to store messages in ES. Possible values `one`, `quorum`, `all`, `false`. When you provide false, `consistency` option will not send to ES
+- `consistency` [`one`] The consistency hint used to store messages in ES. Possible values `one`, `quorum`, `all`, `false`. When `false` the option is not set.
 
 ## Important
 
