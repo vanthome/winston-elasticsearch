@@ -61,14 +61,13 @@ BulkWriter.prototype.flush = function flush() {
   const bulk = this.bulk.concat();
   this.bulk = [];
   debug('going to write', bulk);
-  var bulkParams = {
+
+  return this.client.bulk({
     body: bulk,
     consistency: (this.consistency !== false)? this.consistency : undefined,
     timeout: this.interval + 'ms',
     type: this.type
-  };
-
-  return this.client.bulk(bulkParams).catch((e) => {
+  }).catch((e) => {
     // rollback this.bulk array
     thiz.bulk = bulk.concat(thiz.bulk);
     throw e;
