@@ -1,5 +1,5 @@
 language: node_js
-sudo: false
+sudo: required
 addons:
   apt:
     packages:
@@ -7,6 +7,8 @@ addons:
       - oracle-java8-set-default
 node_js:
   - "6"
+jdk:
+  - oraclejdk8
 env:
   global:
     - COVERALLS=1
