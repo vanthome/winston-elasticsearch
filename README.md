@@ -17,6 +17,11 @@ transport for the [winston](https://github.com/winstonjs/winston) logging toolki
 - Date pattern based index names.
 - Custom transformer function to transform logged data into a different message structure.
 
+### Compatibility
+
+For **Elasticsearch 5.0** and later, use the `0.5.x` series.
+For earlier versions, use the `0.4.x` series.
+
 ### Unsupported / Todo
 
 - Querying.
@@ -61,7 +66,7 @@ var logger = new winston.Logger({
 - `flushInterval` [`2000`] distance between bulk writes in ms.
 - `client` An [elasticsearch client](https://www.npmjs.com/package/elasticsearch) instance. If given, all following options are ignored.
 - `clientOpts` An object hash passed to the ES client. See [its docs](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/configuration.html) for supported options.
-- `consistency` [`one`] The consistency hint used to store messages in ES. Possible values `one`, `quorum`, `all`, `false`. When `false` the option is not set.
+- `waitForActiveShards` [`1`] Sets the number of shard copies that must be active before proceeding with the bulk operation.
 
 ## Important
 

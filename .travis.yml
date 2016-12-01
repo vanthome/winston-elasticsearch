@@ -1,15 +1,21 @@
 language: node_js
 sudo: false
 node_js:
-    - "6"
+  - "6"
 env:
   - COVERALLS=1
+  global:
+    - WAIT_FOR_ES=1
+  matrix:
+    - ES_VERSION=5.0.1
+install:
+  - mkdir /tmp/elasticsearch
+  - wget -O - https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz | tar xz --directory=/tmp/elasticsearch --strip-components=1
+  - /tmp/elasticsearch/bin/elasticsearch --daemonize --path.data /tmp
 git:
   depth: 10
 before_install:
   - 'npm config set loglevel error'
-services:
-  - elasticsearch
 before_script:
   - sleep 10
 after_success:

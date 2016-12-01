@@ -1,3 +1,10 @@
+0.5.0 / 2016-12-01
+==================
+
+- Release for Elasticsearch 5
+- Remove `consistency` option
+- Introduce `waitForActiveShards` option
+
 0.4.2 / 2016-11-12
 ==================
 

@@ -1,10 +1,10 @@
 const Promise = require('promise');
 const debug = require('debug')('bulk writer');
 
-const BulkWriter = function BulkWriter(client, interval, consistency) {
+const BulkWriter = function BulkWriter(client, interval, waitForActiveShards) {
   this.client = client;
   this.interval = interval || 5000;
-  this.consistency = consistency;
+  this.waitForActiveShards = waitForActiveShards;
 
   this.bulk = []; // bulk to be flushed
   this.running = false;
@@ -61,10 +61,9 @@ BulkWriter.prototype.flush = function flush() {
   const bulk = this.bulk.concat();
   this.bulk = [];
   debug('going to write', bulk);
-
   return this.client.bulk({
     body: bulk,
-    consistency: (this.consistency !== false) ? this.consistency : undefined,
+    waitForActiveShards: this.waitForActiveShards,
     timeout: this.interval + 'ms',
     type: this.type
   }).catch((e) => {

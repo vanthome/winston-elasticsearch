@@ -2,7 +2,7 @@ var util = require('util');
 var fs = require('fs');
 var should = require('should');
 var winston = require('winston');
-var elasticsearch = require('elasticsearch');
+//var elasticsearch = require('elasticsearch');
 
 require('../index');
 var defaultTransformer = require('../transformer');
@@ -13,9 +13,19 @@ var logMessage = JSON.parse(fs.readFileSync('./test/request_logentry_1.json', 'u
  * Note: To run the tests, a running elasticsearch instance is required.
  */
 
+// A null logger to prevent ES client spamming the console for deliberately failed tests
+function NullLogger(config) {
+  this.error = function() {};
+  this.warning = function() {};
+  this.info = function() {};
+  this.debug = function() {};
+  this.trace = function() {};
+  this.close = function() {};
+}
+
 describe('winston-elasticsearch:', function() {
   describe('the default transformer', function() {
-    it('should transform log data from winston into a lostash like structure', function (done) {
+    it('should transform log data from winston into a lostash like structure', function(done) {
       var transformed = defaultTransformer({
         message: 'some message',
         level: 'error',
@@ -37,7 +47,8 @@ describe('winston-elasticsearch:', function() {
       try {
         logger = new (winston.Logger)({
           transports: [
-              new (winston.transports.Elasticsearch)({
+            new (winston.transports.Elasticsearch)({
+              flushInterval: 10
             })
           ]
         });
@@ -81,11 +92,12 @@ describe('winston-elasticsearch:', function() {
       this.timeout(40000);
       var transport = new (winston.transports.Elasticsearch)({
         clientOpts: {
-         host: 'http://does-not-exist.test:9200'
+          host: 'http://does-not-exist.test:9200',
+          log: NullLogger,
         }
       });
 
-      transport.on('error', err => {
+      transport.on('error', (err) => {
         should.exist(err);
         done();
       });

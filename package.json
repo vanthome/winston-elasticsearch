@@ -1,6 +1,6 @@
 {
   "name": "winston-elasticsearch",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "An Elasticsearch transport for winston",
   "main": "index",
   "authors": [
@@ -33,30 +33,30 @@
     "logstash"
   ],
   "dependencies": {
-    "debug": "^2.3.2",
-    "elasticsearch": "^12.0.1",
-    "lodash": "^4.16.6",
-    "moment": "^2.16.0",
+    "debug": "^2.3.3",
+    "elasticsearch": "^12.1.0",
+    "lodash": "^4.17.2",
+    "moment": "^2.17.0",
     "promise": "^7.1.1",
     "retry": "^0.10.0",
     "winston": "^2.3.0"
   },
   "devDependencies": {
-    "babel-eslint": "^7.1.0",
+    "babel-eslint": "^7.1.1",
     "coveralls": "^2.11.15",
-    "eslint": "^3.10.0",
+    "eslint": "^3.11.0",
     "eslint-config-airbnb-base": "^10.0.1",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-json": "^1.2.0",
     "istanbul": "^0.4.5",
-    "mocha": "^3.1.2",
+    "mocha": "^3.2.0",
     "should": "^11.1.1"
   },
   "scripts": {
     "test": "npm run lint && npm run mocha",
-    "lint": "node ./node_modules/eslint/bin/eslint *.json *.js",
-    "mocha": "./node_modules/mocha/bin/mocha ./test/*",
-    "coveralls": "node node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec ./test/*"
+    "lint": "eslint *.json *.js",
+    "mocha": "mocha ./test/*",
+    "coveralls": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec ./test/*"
   },
   "engines": {
     "node": ">= 6.0.0"

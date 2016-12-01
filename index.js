@@ -35,7 +35,7 @@ const Elasticsearch = function Elasticsearch(options) {
     transformer: defaultTransformer,
     ensureMappingTemplate: true,
     flushInterval: 2000,
-    consistency: 'one',
+    waitForActiveShards: 1,
     handleExceptions: false
   };
   _.defaults(options, defaults);
@@ -75,7 +75,7 @@ const Elasticsearch = function Elasticsearch(options) {
   }
 
   this.bulkWriter = new BulkWriter(this.client,
-      options.flushInterval, options.consistency);
+      options.flushInterval, options.waitForActiveShards);
   this.bulkWriter.start();
 
   // Conduct initial connection check (sets connection state for further use)
@@ -156,9 +156,9 @@ Elasticsearch.prototype.checkEsConnection = function checkEsConnection() {
 };
 
 Elasticsearch.prototype.search = function search(q) {
-  const indexName = this.getIndexName(this.options);
+  const index = this.getIndexName(this.options);
   const query = {
-    indexName,
+    index,
     q
   };
   return this.client.search(query);
