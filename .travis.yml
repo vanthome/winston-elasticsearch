@@ -20,6 +20,7 @@ git:
 before_install:
   - 'npm config set loglevel error'
 before_script:
+  - jdk_switcher use oraclejdk8
   - sleep 10
 after_success:
   - 'npm run coveralls'
