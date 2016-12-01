@@ -23,6 +23,7 @@ install:
 git:
   depth: 10
 before_install:
+  - java -version
   - 'npm config set loglevel error'
 before_script:
   - sleep 10
