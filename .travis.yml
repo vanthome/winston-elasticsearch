@@ -23,9 +23,11 @@ install:
 git:
   depth: 10
 before_install:
-  - java -version
   - 'npm config set loglevel error'
 before_script:
+  - echo $JAVA_HOME
+  - which java
+  - java -version
   - sleep 10
 after_success:
   - 'npm run coveralls'
