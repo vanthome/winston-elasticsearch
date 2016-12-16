@@ -24,12 +24,9 @@ git:
   depth: 10
 before_install:
   - sudo update-java-alternatives -s java-8-oracle
-  - source /etc/profile
-  - source /etc/environment
   - echo $JAVA_HOME
   - which java
   - java -version
-  - 'npm config set loglevel error'
 before_script:
   - sleep 10
 after_success:
