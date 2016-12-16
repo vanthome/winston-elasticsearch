@@ -23,7 +23,7 @@ install:
 git:
   depth: 10
 before_install:
-  - update-java-alternatives
+  - update-java-alternatives -l
   - source /etc/profile
   - source /etc/environment
   - update-alternatives --config java
