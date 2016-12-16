@@ -23,8 +23,10 @@ install:
 git:
   depth: 10
 before_install:
+  - jdk_switcher use oraclejdk8
   - source /etc/profile
   - source /etc/environment
+  - update-alternatives --config java
   - echo $JAVA_HOME
   - which java
   - java -version
