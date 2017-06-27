@@ -42,7 +42,7 @@ BulkWriter.prototype.tick = function tick() {
   .catch((e) => {
     throw e;
   })
-  .then(() => {
+  .finally(() => {
     thiz.schedule();
   });
 };
