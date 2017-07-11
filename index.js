@@ -168,8 +168,7 @@ Elasticsearch.prototype.ensureMappingTemplate = function ensureMappingTemplate(f
   const thiz = this;
   let mappingTemplate = thiz.options.mappingTemplate;
   if (mappingTemplate === null || typeof mappingTemplate === 'undefined') {
-    // eslint-disable-next-line import/no-unresolved, import/no-extraneous-dependencies
-    mappingTemplate = require('index-template-mapping.json');
+    mappingTemplate = require('./index-template-mapping');
   }
   const tmplCheckMessage = {
     name: 'template_' + thiz.options.indexPrefix
@@ -196,4 +195,6 @@ Elasticsearch.prototype.ensureMappingTemplate = function ensureMappingTemplate(f
     });
 };
 
-module.exports = winston.transports.Elasticsearch = Elasticsearch;
+winston.transports.Elasticsearch = Elasticsearch;
+
+module.exports = winston.transports.Elasticsearch;
