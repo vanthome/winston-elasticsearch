@@ -195,4 +195,6 @@ Elasticsearch.prototype.ensureMappingTemplate = function ensureMappingTemplate(f
     });
 };
 
-module.exports = winston.transports.Elasticsearch = Elasticsearch;
+winston.transports.Elasticsearch = Elasticsearch;
+
+module.exports = winston.transports.Elasticsearch;
