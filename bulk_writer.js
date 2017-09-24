@@ -39,12 +39,12 @@ BulkWriter.prototype.tick = function tick() {
   const thiz = this;
   if (!this.running) { return; }
   this.flush()
-  .catch((e) => {
-    throw e;
-  })
-  .then(() => {
-    thiz.schedule();
-  });
+    .catch((e) => {
+      throw e;
+    })
+    .then(() => {
+      thiz.schedule();
+    });
 };
 
 BulkWriter.prototype.flush = function flush() {

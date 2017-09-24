@@ -1,3 +1,10 @@
+0.5.1 / 2017-09-24
+==================
+
+- Upgrade all deps
+- Fix linting issues
+- Fix loading of template file previously done with require()
+
 0.5.0 / 2016-12-01
 ==================
 
