@@ -18,7 +18,7 @@ env:
 install:
   - mkdir /tmp/elasticsearch
   - wget -O - https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz | tar xz --directory=/tmp/elasticsearch --strip-components=1
-  - /tmp/elasticsearch/bin/elasticsearch --daemonize --path.data /tmp
+  - /tmp/elasticsearch/bin/elasticsearch --daemonize -E path.data=/tmp
   - until curl --silent -XGET --fail http://localhost:9200; do printf '.'; sleep 1; done
   - npm install
 git:
