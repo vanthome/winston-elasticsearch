@@ -37,7 +37,8 @@ const Elasticsearch = function Elasticsearch(options) {
     ensureMappingTemplate: true,
     flushInterval: 2000,
     waitForActiveShards: 1,
-    handleExceptions: false
+    handleExceptions: false,
+    pipeline: null
   };
   _.defaults(options, defaults);
   winston.Transport.call(this, options);
@@ -75,15 +76,20 @@ const Elasticsearch = function Elasticsearch(options) {
     this.client = new elasticsearch.Client(this.options.clientOpts);
   }
 
+  const bulkWriterOptions = {
+    interval: options.flushInterval,
+    waitForActiveShards: options.waitForActiveShards,
+    pipeline: options.pipeline
+  };
+
   this.bulkWriter = new BulkWriter(
     this.client,
-    options.flushInterval,
-    options.waitForActiveShards
+    bulkWriterOptions
   );
   this.bulkWriter.start();
 
   // Conduct initial connection check (sets connection state for further use)
-  this.checkEsConnection().then((connectionOk) => {});
+  this.checkEsConnection().then((connectionOk) => { });
 
   return this;
 };
