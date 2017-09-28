@@ -67,7 +67,7 @@ var logger = new winston.Logger({
 - `client` An [elasticsearch client](https://www.npmjs.com/package/elasticsearch) instance. If given, all following options are ignored.
 - `clientOpts` An object hash passed to the ES client. See [its docs](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/configuration.html) for supported options.
 - `waitForActiveShards` [`1`] Sets the number of shard copies that must be active before proceeding with the bulk operation.
-
+- `pipeline` [none] Sets the pipeline id to preprocess incoming documents with.  See [the bulk API docs](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html#api-bulk).
 ## Important
 
 When changing the `indexPrefix` and/ or the `transformer`,
