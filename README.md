@@ -67,7 +67,8 @@ var logger = new winston.Logger({
 - `client` An [elasticsearch client](https://www.npmjs.com/package/elasticsearch) instance. If given, all following options are ignored.
 - `clientOpts` An object hash passed to the ES client. See [its docs](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/configuration.html) for supported options.
 - `waitForActiveShards` [`1`] Sets the number of shard copies that must be active before proceeding with the bulk operation.
-- `pipeline` [none] Sets the pipeline id to preprocess incoming documents with.  See [the bulk API docs](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html#api-bulk).
+- `pipeline` [none] Sets the pipeline id to pre-process incoming documents with. See [the bulk API docs](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html#api-bulk).
+
 ## Important
 
 When changing the `indexPrefix` and/ or the `transformer`,
@@ -76,9 +77,9 @@ make sure to provide a matching `mappingTemplate`.
 ## Transformer
 
 The transformer function allows to transform the log data structure as provided
-by winston into a sturcture more appropriate for indexing in ES.
+by winston into a structure more appropriate for indexing in ES.
 
-The default transformer function's transformation is shwon below.
+The default transformer function's transformation is shown below.
 
 Input:
 
@@ -113,7 +114,7 @@ The `@timestamp` is generated in the transformer.
 Note that in current logstash versions, the only "standard fields" are @timestamp and @version,
 anything else ist just free.
 
-A custom trunsformer function can be provided in the options hash.
+A custom transformer function can be provided in the options hash.
 
 ## Events
 

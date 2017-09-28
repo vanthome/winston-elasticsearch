@@ -15,12 +15,12 @@ var logMessage = JSON.parse(fs.readFileSync('./test/request_logentry_1.json', 'u
 
 // A null logger to prevent ES client spamming the console for deliberately failed tests
 function NullLogger(config) {
-  this.error = function () { };
-  this.warning = function () { };
-  this.info = function () { };
-  this.debug = function () { };
-  this.trace = function () { };
-  this.close = function () { };
+  this.error = function() { };
+  this.warning = function() { };
+  this.info = function() { };
+  this.debug = function() { };
+  this.trace = function() { };
+  this.close = function() { };
 }
 
 describe('winston-elasticsearch:', function () {
