@@ -1,7 +1,12 @@
+0.5.4 / 2017-10-19
+==================
+
+- Fix issue with loading built-in mapping
+
 0.5.3 / 2017-10-02
 ==================
 
-- Upgrade to Winsotn 2.4.0
+- Upgrade to Winston 2.4.0
 
 0.5.2 / 2017-09-28
 ==================

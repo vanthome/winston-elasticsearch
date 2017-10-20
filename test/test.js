@@ -25,7 +25,7 @@ function NullLogger(config) {
 
 describe('winston-elasticsearch:', function () {
   describe('the default transformer', function () {
-    it('should transform log data from winston into a lostash like structure', function (done) {
+    it('should transform log data from winston into a logstash like structure', function (done) {
       var transformed = defaultTransformer({
         message: 'some message',
         level: 'error',

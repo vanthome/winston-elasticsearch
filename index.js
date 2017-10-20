@@ -2,6 +2,7 @@
 
 const util = require('util');
 const fs = require('fs');
+const path = require('path');
 const Promise = require('promise');
 const stream = require('stream');
 const winston = require('winston');
@@ -180,7 +181,7 @@ Elasticsearch.prototype.ensureMappingTemplate = function ensureMappingTemplate(f
   // eslint-disable-next-line prefer-destructuring
   let mappingTemplate = thiz.options.mappingTemplate;
   if (mappingTemplate === null || typeof mappingTemplate === 'undefined') {
-    const rawdata = fs.readFileSync('index-template-mapping.json');
+    const rawdata = fs.readFileSync(path.join(__dirname, 'index-template-mapping.json'));
     mappingTemplate = JSON.parse(rawdata);
   }
   const tmplCheckMessage = {
