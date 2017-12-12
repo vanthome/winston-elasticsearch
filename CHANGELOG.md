@@ -1,7 +1,9 @@
-0.5.4 / 2017-10-19
+0.5.4 / 2017-12-15
 ==================
 
 - Fix issue with loading built-in mapping
+- Upgrade to Elasticsearch client 14 (Elasticsearch 6)
+- Ignore 404 errors for silent creation of new indexes
 
 0.5.3 / 2017-10-02
 ==================

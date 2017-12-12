@@ -94,6 +94,7 @@ describe('winston-elasticsearch:', function () {
         clientOpts: {
           host: 'http://does-not-exist.test:9200',
           log: NullLogger,
+          ignore: [404],
         }
       });
 

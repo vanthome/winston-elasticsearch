@@ -110,6 +110,7 @@ Output:
   }
 }
 ```
+
 The `@timestamp` is generated in the transformer.
 Note that in current logstash versions, the only "standard fields" are @timestamp and @version,
 anything else ist just free.
