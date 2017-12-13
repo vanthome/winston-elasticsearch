@@ -1,5 +1,5 @@
 const Promise = require('promise');
-const debug = require('debug')('bulk writer');
+const debug = require('debug')('winston:elastic-search');
 
 const BulkWriter = function BulkWriter(client, options) {
   this.client = client;
