@@ -1,4 +1,4 @@
-0.5.4 / 2017-12-15
+0.5.5 / 2017-12-15
 ==================
 
 - Fix issue with loading built-in mapping
