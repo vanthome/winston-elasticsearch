@@ -66,7 +66,6 @@ const Elasticsearch = function Elasticsearch(options) {
             type: 'stream',
             level: 'error',
             stream: new NullStream(),
-            ignore: [404],
           }
         ]
       }

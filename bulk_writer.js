@@ -1,5 +1,5 @@
 const Promise = require('promise');
-const debug = require('debug')('bulk writer');
+const debug = require('debug')('winston:elasticsearch');
 
 const BulkWriter = function BulkWriter(client, options) {
   this.client = client;
@@ -40,10 +40,13 @@ BulkWriter.prototype.tick = function tick() {
   const thiz = this;
   if (!this.running) { return; }
   this.flush()
+    .then(() => {
+      // Emulate finally with last .then()
+    })
     .catch((e) => {
       throw e;
     })
-    .then(() => {
+    .then(() => { // finally()
       thiz.schedule();
     });
 };
@@ -53,7 +56,6 @@ BulkWriter.prototype.flush = function flush() {
   const thiz = this;
   if (this.bulk.length === 0) {
     debug('nothing to flush');
-
     return new Promise((resolve) => {
       return resolve();
     });

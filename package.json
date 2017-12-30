@@ -1,6 +1,6 @@
 {
   "name": "winston-elasticsearch",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "An Elasticsearch transport for winston",
   "main": "index",
   "authors": [
@@ -11,7 +11,7 @@
     {
       "name": "Thomas Hoppe",
       "url": "https://github.com/vanthome",
-      "email": "thomas.hoppe@n-fuse.de"
+      "email": "thomas.hoppe@n-fuse.co"
     }
   ],
   "contributors": [
@@ -36,27 +36,27 @@
     "debug": "^3.1.0",
     "elasticsearch": "^14.0.0",
     "lodash": "^4.17.4",
-    "moment": "^2.19.4",
+    "moment": "^2.20.1",
     "promise": "^8.0.1",
     "retry": "^0.10.1",
     "winston": "^2.4.0"
   },
   "devDependencies": {
-    "babel-eslint": "^8.0.3",
+    "babel-eslint": "^8.1.2",
     "coveralls": "^3.0.0",
-    "eslint": "^4.13.1",
+    "eslint": "^4.14.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-json": "^1.2.0",
     "istanbul": "^0.4.5",
-    "mocha": "^4.0.1",
-    "should": "^13.1.3"
+    "mocha": "^4.1.0",
+    "should": "^13.2.0"
   },
   "scripts": {
     "test": "npm run lint && npm run mocha",
     "lint": "eslint *.json *.js",
     "mocha": "mocha ./test/* --exit",
-    "coveralls": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec ./test/*"
+    "coveralls": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec ./test/* --exit"
   },
   "engines": {
     "node": ">= 6.0.0"

@@ -1,3 +1,9 @@
+0.5.6 / 2017-12-24
+==================
+
+- Rename debug key from `bulk writer` to `winston:elasticsearch`
+- use `finally()` instead of `then()` to schedule bulk writes even in case of exceptions
+
 0.5.5 / 2017-12-15
 ==================
 
