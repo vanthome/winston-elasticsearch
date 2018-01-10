@@ -44,7 +44,8 @@ BulkWriter.prototype.tick = function tick() {
       // Emulate finally with last .then()
     })
     .catch((e) => {
-      throw e;
+      // eslint-disable-next-line no-console
+      console.error(e);
     })
     .then(() => { // finally()
       thiz.schedule();
@@ -72,7 +73,8 @@ BulkWriter.prototype.flush = function flush() {
   }).catch((e) => {
     // rollback this.bulk array
     thiz.bulk = bulk.concat(thiz.bulk);
-    throw e;
+    // eslint-disable-next-line no-console
+    console.error(e);
   });
 };
 

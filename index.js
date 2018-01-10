@@ -4,7 +4,6 @@ const util = require('util');
 const fs = require('fs');
 const path = require('path');
 const Promise = require('promise');
-const stream = require('stream');
 const winston = require('winston');
 const moment = require('moment');
 const _ = require('lodash');
@@ -48,24 +47,12 @@ const Elasticsearch = function Elasticsearch(options) {
   if (options.client) {
     this.client = options.client;
   } else {
-    // As we don't want to spam stdout, create a null stream
-    // to eat any log output of the ES client
-    const NullStream = function NullStream() {
-      stream.Writable.call(this);
-    };
-    util.inherits(NullStream, stream.Writable);
-    // eslint-disable-next-line no-underscore-dangle
-    NullStream.prototype._write = function _write(chunk, encoding, next) {
-      next();
-    };
-
     const defaultClientOpts = {
       clientOpts: {
         log: [
           {
-            type: 'stream',
+            type: 'console',
             level: 'error',
-            stream: new NullStream(),
           }
         ]
       }

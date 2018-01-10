@@ -1,3 +1,9 @@
+
+0.5.7 / 2018-xx-xx
+==================
+
+- In order to prevent `UnhandledPromiseRejectionWarning` and tackle node.js deprecation DEP0018, logging to console is now the default way of handling internal errors
+
 0.5.6 / 2017-12-24
 ==================
 

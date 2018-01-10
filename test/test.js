@@ -44,6 +44,7 @@ describe('winston-elasticsearch:', function () {
 
   describe('a logger', function () {
     it('can be instantiated', function (done) {
+      // this.timeout(8000);
       try {
         logger = new (winston.Logger)({
           transports: [
@@ -52,7 +53,6 @@ describe('winston-elasticsearch:', function () {
             })
           ]
         });
-        done();
       } catch (err) {
         should.not.exist(err);
       }
