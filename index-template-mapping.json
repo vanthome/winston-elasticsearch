@@ -1,5 +1,5 @@
 {
-  "template": "logs-*",
+  "index_patterns": "logs-*",
   "settings": {
     "number_of_shards": 1,
     "number_of_replicas": 0,
@@ -20,21 +20,21 @@
         {
           "string_fields": {
             "match": "*",
-            "match_mapping_type": "string",
+            "match_mapping_type": "keyword",
             "mapping": {
-              "type": "string", "index": "analyzed", "omit_norms": true,
+              "type": "text", "index": true, "omit_norms": true,
               "fields": {
-                "raw": { "type": "string", "index": "not_analyzed", "ignore_above": 256 }
+                "raw": { "type": "keyword", "index": true, "ignore_above": 256 }
               }
             }
           }
         }
       ],
       "properties": {
-        "@timestamp": { "type": "date", "index": "not_analyzed" },
-        "@version": { "type": "string", "index": "not_analyzed" },
-        "message": { "type": "string", "index": "analyzed" },
-        "severity": { "type": "string", "index": "not_analyzed" },
+        "@timestamp": { "type": "date" },
+        "@version": { "type": "keyword" },
+        "message": { "type": "text", "index": true },
+        "severity": { "type": "keyword", "index": true },
         "fields": {
           "type": "object",
           "dynamic": true

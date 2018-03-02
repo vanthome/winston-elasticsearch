@@ -1,8 +1,14 @@
 
-0.5.7 / 2018-xx-xx
+0.5.7 / 2018-02-14
 ==================
 
-- In order to prevent `UnhandledPromiseRejectionWarning` and tackle node.js deprecation DEP0018, logging to console is now the default way of handling internal errors
+- In order to prevent `UnhandledPromiseRejectionWarning` and tackle node.js deprecation DEP0018, catching and logging to console is now the default way of handling internal errors
+- Enable `sniffOnConnectionFault` on ES client by default
+- Change default mapping: `template` --> `index_patterns`
+- Migrate default mapping according to https://www.elastic.co/blog/strings-are-dead-long-live-strings
+- Moved retry logic into bulkwriter to handle intermittent connectivity interruptions gracefully AND be able to resume operation
+- Connection testing is now running infinitely which means the logger never gives up
+- Messages logged during a connection outage are buffered
 
 0.5.6 / 2017-12-24
 ==================
