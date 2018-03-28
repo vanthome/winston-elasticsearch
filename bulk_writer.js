@@ -69,6 +69,13 @@ BulkWriter.prototype.flush = function flush() {
     waitForActiveShards: this.waitForActiveShards,
     timeout: this.interval + 'ms',
     type: this.type
+  }).then(res => {
+    if (res.errors && res.items)
+    res.items.forEach(item => {
+      if (item.index && item.index.error) {
+        console.error('Elasticsearch index error', item.index.error)
+      }
+    })
   }).catch((e) => { // prevent [DEP0018] DeprecationWarning
     // rollback this.bulk array
     thiz.bulk = bulk.concat(thiz.bulk);
