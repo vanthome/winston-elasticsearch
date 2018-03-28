@@ -69,13 +69,15 @@ BulkWriter.prototype.flush = function flush() {
     waitForActiveShards: this.waitForActiveShards,
     timeout: this.interval + 'ms',
     type: this.type
-  }).then(res => {
-    if (res.errors && res.items)
-    res.items.forEach(item => {
-      if (item.index && item.index.error) {
-        console.error('Elasticsearch index error', item.index.error)
-      }
-    })
+  }).then((res) => {
+    if (res.errors && res.items) {
+      res.items.forEach((item) => {
+        if (item.index && item.index.error) {
+          // eslint-disable-next-line no-console
+          console.error('Elasticsearch index error', item.index.error);
+        }
+      });
+    }
   }).catch((e) => { // prevent [DEP0018] DeprecationWarning
     // rollback this.bulk array
     thiz.bulk = bulk.concat(thiz.bulk);
@@ -129,8 +131,8 @@ BulkWriter.prototype.checkEsConnection = function checkEsConnection() {
           if (operation.retry(err)) {
             return;
           }
-         // thiz.esConnection = false;
-         reject(new Error('Cannot connect to ES'));
+          // thiz.esConnection = false;
+          reject(new Error('Cannot connect to ES'));
         }
       );
     });
