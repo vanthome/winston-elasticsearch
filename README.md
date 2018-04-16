@@ -53,6 +53,10 @@ var logger = new winston.Logger({
 });
 ```
 
+The [winston API for logging](https://github.com/winstonjs/winston#streams-objectmode-and-info-objects)
+can be used with one restriction: Only one JS object can only be logged and indexed as such.
+If multiple objects are provided as arguments, the contents are stringified.
+
 ## Options
 
 - `level` [`info`] Messages logged with a severity greater or equal to the given one are logged to ES; others are discarded.

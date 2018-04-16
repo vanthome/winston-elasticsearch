@@ -1,3 +1,9 @@
+0.5.9 / 2018-04-16
+==================
+
+- Fix bug that lead to mapping template not being used
+- Upgrade deps
+
 0.5.8 / 2018-03-28
 ==================
 
