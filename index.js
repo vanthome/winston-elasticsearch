@@ -65,6 +65,8 @@ const Elasticsearch = function Elasticsearch(options) {
     waitForActiveShards: options.waitForActiveShards,
     pipeline: options.pipeline,
     ensureMappingTemplate: options.ensureMappingTemplate,
+    mappingTemplate: options.mappingTemplate,
+    indexPrefix: options.indexPrefix
   };
 
   this.bulkWriter = new BulkWriter(
