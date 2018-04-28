@@ -1,3 +1,10 @@
+0.6.0 / 2018-04-28
+==================
+
+- Remove a lot of unsupported settings in the default mapping. **CHECK YOR MAPPING**, if you are using a custom one
+- Remove default mapping due to the fact that they are deprecated in ES v6.0.0 and greater
+- See https://www.elastic.co/guide/en/elasticsearch/reference/current/removal-of-types.html
+
 0.5.9 / 2018-04-16
 ==================
 

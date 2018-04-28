@@ -4,23 +4,17 @@
     "number_of_shards": 1,
     "number_of_replicas": 0,
     "index": {
-      "refresh_interval": "5s",
-      "cache": { "field.type": "soft" },
-      "query": { "default_field": "message" },
-      "store": { "compress": { "stored": true, "tv": true } },
-      "routing": { "allocation.total_shards_per_node": 1 }
+      "refresh_interval": "5s"
     }
   },
   "mappings": {
-    "_default_": {
+    "_doc": {
       "_all": { "enabled": false, "omit_norms": true },
       "_source": { "enabled": true },
-      "_ttl": { "enabled": true, "default": "900d" },
       "dynamic_templates": [
         {
           "string_fields": {
             "match": "*",
-            "match_mapping_type": "keyword",
             "mapping": {
               "type": "text", "index": true, "omit_norms": true,
               "fields": {
