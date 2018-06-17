@@ -19,6 +19,7 @@ transport for the [winston](https://github.com/winstonjs/winston) logging toolki
 
 ### Compatibility
 
+For  **Winston 3.0**, **Elasticsearch 6.0** and later, use the `0.7.0`.
 For **Elasticsearch 6.0** and later, use the `0.6.0`.
 For **Elasticsearch 5.0** and later, use the `0.5.9`.
 For earlier versions, use the `0.4.x` series.
@@ -43,11 +44,11 @@ var Elasticsearch = require('winston-elasticsearch');
 var esTransportOpts = {
   level: 'info'
 };
-winston.add(winston.transports.Elasticsearch, esTransportOpts);
+winston.add(new winston.transports.Elasticsearch(), esTransportOpts);
 
 // - or -
 
-var logger = new winston.Logger({
+var logger = winston.createLogger({
   transports: [
     new Elasticsearch(esTransportOpts)
   ]
@@ -139,6 +140,8 @@ An example assuming default settings.
 ```js
 logger.info('Some message', <req meta data>);
 ```
+
+where `req meta data` is a JSON object.
 
 ### Generated Message
 

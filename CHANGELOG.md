@@ -1,3 +1,10 @@
+0.7.0 / 2018-06-17
+==================
+
+- Upgrade to winston 3.0 and elasticsearch 15.0
+- Actually use message type _doc as default
+- Mapping template changed --> if you have a custom mapping please check!
+
 0.6.0 / 2018-04-28
 ==================
 

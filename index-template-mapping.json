@@ -11,27 +11,14 @@
     "_doc": {
       "_all": { "enabled": false, "omit_norms": true },
       "_source": { "enabled": true },
-      "dynamic_templates": [
-        {
-          "string_fields": {
-            "match": "*",
-            "mapping": {
-              "type": "text", "index": true, "omit_norms": true,
-              "fields": {
-                "raw": { "type": "keyword", "index": true, "ignore_above": 256 }
-              }
-            }
-          }
-        }
-      ],
       "properties": {
         "@timestamp": { "type": "date" },
         "@version": { "type": "keyword" },
         "message": { "type": "text", "index": true },
         "severity": { "type": "keyword", "index": true },
         "fields": {
-          "type": "object",
-          "dynamic": true
+          "dynamic": true,
+          "properties": { }
         }
       }
     }

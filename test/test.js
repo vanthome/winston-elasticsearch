@@ -3,7 +3,7 @@ var util = require('util');
 var fs = require('fs');
 var should = require('should');
 var winston = require('winston');
-//var elasticsearch = require('elasticsearch');
+var elasticsearch = require('elasticsearch');
 
 require('../index');
 var defaultTransformer = require('../transformer');
@@ -22,6 +22,19 @@ function NullLogger(config) {
   this.debug = function(msg) { };
   this.trace = function(msg) { };
   this.close = function(msg) { };
+}
+
+function createLogger() {
+  return winston.createLogger({
+    transports: [
+      new (winston.transports.Elasticsearch)({
+        flushInterval: 10,
+        clientOpts: {
+          log: NullLogger,
+        }
+      })
+    ]
+  });
 }
 
 describe('winston-elasticsearch:', function () {
@@ -47,38 +60,45 @@ describe('winston-elasticsearch:', function () {
     it('can be instantiated', function (done) {
       this.timeout(8000);
       try {
-        logger = new (winston.Logger)({
-          transports: [
-            new (winston.transports.Elasticsearch)({
-              flushInterval: 10,
-              clientOpts: {
-                log: NullLogger,
-              }
-            })
-          ]
-        });
+        logger = createLogger();
         done();
       } catch (err) {
-        console.log('---->', err);
         should.not.exist(err);
       }
     });
 
-    it('should log to Elasticsearch', function (done) {
+    it('should log simple message to Elasticsearch', function (done) {
       this.timeout(8000);
-      logger.log(logMessage.level, logMessage.message, logMessage.meta,
-        function (err) {
-          should.not.exist(err);
-          // Wait to make sure data is already written.
-          setTimeout(function () {
-            done();
-          }, 6500);
-        });
+      logger.log(logMessage.level, logMessage.message);
+      logger.on('finish', () => {
+        done();
+      });
+      logger.on('error', (err) => {
+        should.not.exist(err);
+      });
+      logger.end();
     });
 
+    it('should log message with meta data to Elasticsearch', function (done) {
+      this.timeout(8000);
+      logger = createLogger();
+      logger.log(logMessage.level, logMessage.message, logMessage.meta);
+      logger.on('finish', () => {
+        done();
+      });
+      logger.on('error', (err) => {
+        should.not.exist(err);
+      });
+      logger.end();
+    });
+/*
     describe('the logged message', function () {
       it('should be found in the index', function (done) {
-        logger.transports.elasticsearch.search(`message:${logMessage.message}`).then(
+        var client = new elasticsearch.Client({
+          host: 'localhost:9200',
+          log: 'error'
+        });
+        client.search(`message:${logMessage.message}`).then(
           (res) => {
             res.hits.total.should.be.above(0);
             done();
@@ -90,6 +110,7 @@ describe('winston-elasticsearch:', function () {
           });
       });
     });
+*/
   });
 
   var defectiveLogger = null;
@@ -109,7 +130,7 @@ describe('winston-elasticsearch:', function () {
   //       done();
   //     });
 
-  //     defectiveLogger = new (winston.Logger)({
+  //     defectiveLogger = winston.createLogger({
   //       transports: [
   //         transport
   //       ]

@@ -5,7 +5,7 @@
  @param {Object} logData
  @param {Object} logData.message - the log message
  @param {Object} logData.level - the log level
- @param {Object} logData.meta - the log meta data
+ @param {Object} logData.meta - the log meta data (JSON object)
  @returns {Object} transformed message
  */
 const transformer = function transformer(logData) {
