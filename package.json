@@ -1,6 +1,6 @@
 {
   "name": "winston-elasticsearch",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "An Elasticsearch transport for winston",
   "main": "index",
   "authors": [
