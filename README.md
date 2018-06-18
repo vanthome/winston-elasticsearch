@@ -41,13 +41,6 @@ npm install --save winston winston-elasticsearch
 var winston = require('winston');
 var Elasticsearch = require('winston-elasticsearch');
 
-var esTransportOpts = {
-  level: 'info'
-};
-winston.add(new winston.transports.Elasticsearch(), esTransportOpts);
-
-// - or -
-
 var logger = winston.createLogger({
   transports: [
     new Elasticsearch(esTransportOpts)

@@ -161,7 +161,6 @@ BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(fulf
           create: true,
           body: mappingTemplate
         };
-        console.log('CREATE TEMPLATE------------------');
         thiz.client.indices.putTemplate(tmplMessage).then(
           (res1) => {
             fulfill(res1);
