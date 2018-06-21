@@ -57,7 +57,7 @@ module.exports = class Elasticsearch extends Transport {
 
       // Create a new ES client
       // http://localhost:9200 is the default of the client already
-      this.client = new elasticsearch.Client(this.opts.clientOpts);
+      this.client = new elasticsearch.Client(_.clone(this.opts.clientOpts));
     }
 
     const bulkWriteropts = {

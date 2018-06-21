@@ -2,6 +2,7 @@
 ==================
 
 - Correct usage docs in README.md
+- Clone opts of ES client https://github.com/elastic/elasticsearch-js/issues/33
 
 0.7.0 / 2018-06-17
 ==================

@@ -82,6 +82,8 @@ describe('winston-elasticsearch:', function () {
     it('should log message with meta data to Elasticsearch', function (done) {
       this.timeout(8000);
       logger = createLogger();
+
+      logMessage.message = 'logmessage2';
       logger.log(logMessage.level, logMessage.message, logMessage.meta);
       logger.on('finish', () => {
         done();
@@ -89,7 +91,11 @@ describe('winston-elasticsearch:', function () {
       logger.on('error', (err) => {
         should.not.exist(err);
       });
-      logger.end();
+
+
+      setTimeout(function(){
+        logger.end();
+      }, 3000);
     });
 /*
     describe('the logged message', function () {
