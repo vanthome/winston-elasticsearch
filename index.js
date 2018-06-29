@@ -78,24 +78,32 @@ module.exports = class Elasticsearch extends Transport {
 
   log(info, callback) {
     const level = info[LEVEL];
-    const { message } = info;
-    let meta = info[SPLAT];
-    if (meta !== undefined) {
-      // eslint-disable-next-line prefer-destructuring
-      meta = meta[0];
-    }
 
     setImmediate(() => {
       this.emit('logged', level);
     });
 
-    const logData = {
-      message,
-      level,
-      meta,
-      // timestamp: this.opts.timestamp()
-    };
-    const entry = this.opts.transformer(logData);
+    let entry;
+    if (this.opts.rawTransformer) {
+      entry = this.opts.rawTransformer(info);
+    } else {
+      const { message } = info;
+      let meta = info[SPLAT];
+      if (meta !== undefined) {
+        // eslint-disable-next-line prefer-destructuring
+        meta = meta[0];
+      }
+
+      const logData = {
+        message,
+        level,
+        meta,
+        // timestamp: this.opts.timestamp()
+      };
+
+      entry = this.opts.transformer(logData);
+    }
+
     this.bulkWriter.append(
       this.getIndexName(this.opts),
       this.opts.messageType,
