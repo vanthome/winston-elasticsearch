@@ -62,7 +62,7 @@ If multiple objects are provided as arguments, the contents are stringified.
 - `indexPrefix` [`logs`] the prefix to use to generate the index name according to the pattern `<indexPrefix>-<indexSuffixPattern>`.
 - `indexSuffixPattern` [`YYYY.MM.DD`] a [Moment.js](http://momentjs.com/) compatible date/ time pattern.
 - `messageType` [`log`] the type (path segment after the index path) under which the messages are stored under the index.
-- `transformer` [see below] a transformer function to transform logged data into a different message structure.
+- `transformer` or `rawTransformer` [see below] a transformer function to transform logged data into a different message structure.
 - `ensureMappingTemplate` [`true`] If set to `true`, the given `mappingTemplate` is checked/ uploaded to ES when the module is sending the fist log message to make sure the log messages are mapped in a sensible manner.
 - `mappingTemplate` [see file `index-template-mapping.json` file] the mapping template to be ensured as parsed JSON.
 - `flushInterval` [`2000`] distance between bulk writes in ms.
@@ -83,7 +83,10 @@ make sure to provide a matching `mappingTemplate`.
 ## Transformer
 
 The transformer function allows to transform the log data structure as provided
-by winston into a structure more appropriate for indexing in ES.
+by winston into a structure more appropriate for indexing in ES.  `transformer()`
+is passed a `logData` object, which is a `{message, level, meta}` object.
+`rawTransformer()` is passsed the raw `info` object from Winston.  Either
+should return an object to write to Elasticsearch.
 
 The default transformer function's transformation is shown below.
 
@@ -121,7 +124,7 @@ The `@timestamp` is generated in the transformer.
 Note that in current logstash versions, the only "standard fields" are @timestamp and @version,
 anything else ist just free.
 
-A custom transformer function can be provided in the options hash.
+The `transformer` or `rawTransformer` function can be provided in the options hash.
 
 ## Events
 
