@@ -9,7 +9,6 @@
   },
   "mappings": {
     "_doc": {
-      "_all": { "enabled": false, "omit_norms": true },
       "_source": { "enabled": true },
       "properties": {
         "@timestamp": { "type": "date" },

@@ -79,6 +79,20 @@ describe('winston-elasticsearch:', function () {
       logger.end();
     });
 
+    it('should log splat free message to Elasticsearch', function (done) {
+      this.timeout(8000);
+      logger = createLogger();
+
+      logger.info({ message: 'Test', foo: 'bar' });
+      logger.on('finish', () => {
+        done();
+      });
+      logger.on('error', (err) => {
+        should.not.exist(err);
+      });
+      logger.end();
+    });
+
     it('should log message with meta data to Elasticsearch', function (done) {
       this.timeout(8000);
       logger = createLogger();
@@ -91,7 +105,6 @@ describe('winston-elasticsearch:', function () {
       logger.on('error', (err) => {
         should.not.exist(err);
       });
-
 
       setTimeout(function(){
         logger.end();

@@ -1,3 +1,9 @@
+0.7.2 / 2018-06-30
+==================
+
+- Remove _all field from default mapping as it is deprecated in ES
+- Support `logger.info({ message: 'Test', foo: 'bar' });` signature as well (make sure that field `foo` ends up in `fields` in the index)
+
 0.7.1 / 2018-06-18
 ==================
 

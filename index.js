@@ -83,8 +83,11 @@ module.exports = class Elasticsearch extends Transport {
     if (meta !== undefined) {
       // eslint-disable-next-line prefer-destructuring
       meta = meta[0];
+    } else {
+      meta = info;
+      delete meta.message;
+      delete meta.level;
     }
-
     setImmediate(() => {
       this.emit('logged', level);
     });
@@ -95,6 +98,7 @@ module.exports = class Elasticsearch extends Transport {
       meta,
       // timestamp: this.opts.timestamp()
     };
+
     const entry = this.opts.transformer(logData);
     this.bulkWriter.append(
       this.getIndexName(this.opts),
