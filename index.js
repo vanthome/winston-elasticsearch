@@ -84,8 +84,14 @@ module.exports = class Elasticsearch extends Transport {
     };
 
     const entry = this.opts.transformer(logData);
+    let index = this.getIndexName(this.opts);
+    if (entry.index !== undefined) {
+      index = entry.index;
+      delete entry.index;
+      console.log(entry);
+    }
     this.bulkWriter.append(
-      this.getIndexName(this.opts),
+      index,
       this.opts.messageType,
       entry
     );
@@ -98,6 +104,7 @@ module.exports = class Elasticsearch extends Transport {
     this.test = 'test';
     let indexName = opts.index;
     if (indexName === null) {
+      // eslint-disable-next-line prefer-destructuring
       let indexPrefix = opts.indexPrefix;
       if (typeof indexPrefix === 'function') {
         // eslint-disable-next-line prefer-destructuring
