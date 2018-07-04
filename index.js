@@ -132,9 +132,14 @@ module.exports = class Elasticsearch extends Transport {
     this.test = 'test';
     let indexName = opts.index;
     if (indexName === null) {
+      let indexPrefix = opts.indexPrefix;
+      if (typeof indexPrefix === 'function') {
+        // eslint-disable-next-line prefer-destructuring
+        indexPrefix = opts.index();
+      }
       const now = moment();
       const dateString = now.format(opts.indexSuffixPattern);
-      indexName = opts.indexPrefix + '-' + dateString;
+      indexName = indexPrefix + '-' + dateString;
     }
     return indexName;
   }
