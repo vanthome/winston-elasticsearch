@@ -148,7 +148,7 @@ BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(fulf
     mappingTemplate = JSON.parse(rawdata);
   }
   const tmplCheckMessage = {
-    name: 'template_' + thiz.options.indexPrefix
+    name: 'template_' + (typeof thiz.options.indexPrefix === 'function' ? thiz.options.indexPrefix() : thiz.options.indexPrefix)
   };
   thiz.client.indices.getTemplate(tmplCheckMessage).then(
     (res) => {
@@ -157,7 +157,7 @@ BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(fulf
     (res) => {
       if (res.status && res.status === 404) {
         const tmplMessage = {
-          name: 'template_' + thiz.options.indexPrefix,
+          name: 'template_' + (typeof thiz.options.indexPrefix === 'function' ? thiz.options.indexPrefix() : thiz.options.indexPrefix),
           create: true,
           body: mappingTemplate
         };
