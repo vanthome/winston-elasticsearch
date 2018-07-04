@@ -101,7 +101,7 @@ module.exports = class Elasticsearch extends Transport {
       let indexPrefix = opts.indexPrefix;
       if (typeof indexPrefix === 'function') {
         // eslint-disable-next-line prefer-destructuring
-        indexPrefix = opts.index();
+        indexPrefix = opts.indexPrefix();
       }
       const now = moment();
       const dateString = now.format(opts.indexSuffixPattern);
