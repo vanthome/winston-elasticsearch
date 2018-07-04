@@ -85,9 +85,9 @@ module.exports = class Elasticsearch extends Transport {
 
     const entry = this.opts.transformer(logData);
     let index = this.getIndexName(this.opts);
-    if (entry.index !== undefined) {
-      index = entry.index;
-      delete entry.index;
+    if (entry.indexInterfix !== undefined) {
+      index = this.getIndexName(this.opts, entry.indexInterfix);
+      delete entry.indexInterfix;
       console.log(entry);
     }
     this.bulkWriter.append(
@@ -100,7 +100,7 @@ module.exports = class Elasticsearch extends Transport {
   }
 
 
-  getIndexName(opts) {
+  getIndexName(opts, indexInterfix) {
     this.test = 'test';
     let indexName = opts.index;
     if (indexName === null) {
@@ -112,7 +112,7 @@ module.exports = class Elasticsearch extends Transport {
       }
       const now = moment();
       const dateString = now.format(opts.indexSuffixPattern);
-      indexName = indexPrefix + '-' + dateString;
+      indexName = indexPrefix + (indexInterfix !== undefined ? '-' + indexInterfix : '') + '-' + dateString;
     }
     return indexName;
   }
