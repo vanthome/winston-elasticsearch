@@ -88,7 +88,6 @@ module.exports = class Elasticsearch extends Transport {
     if (entry.indexInterfix !== undefined) {
       index = this.getIndexName(this.opts, entry.indexInterfix);
       delete entry.indexInterfix;
-      console.log(entry);
     }
     this.bulkWriter.append(
       index,
