@@ -8,12 +8,16 @@
  @param {Object} logData.meta - the log meta data (JSON object)
  @returns {Object} transformed message
  */
+const isObject = (obj) => { return obj instanceof Object; };
+
 const transformer = function transformer(logData) {
   const transformed = {};
   transformed['@timestamp'] = logData.timestamp ? logData.timestamp : new Date().toISOString();
   transformed.message = logData.message;
   transformed.severity = logData.level;
-  transformed.fields = logData.meta;
+  transformed.fields = (isObject(logData.meta) && logData.meta)
+    || (logData.meta && { meta: logData.meta });
+  console.log(JSON.stringify(transformed));
   return transformed;
 };
 

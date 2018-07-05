@@ -82,12 +82,13 @@ make sure to provide a matching `mappingTemplate`.
 
 ## Transformer
 
-The transformer function allows to transform the log data structure as provided
-by winston into a structure more appropriate for indexing in ES.
+The transformer function allows mutation of log data as provided
+by winston into a shape more appropriate for indexing in Elasticsearch.
 
-The default transformer function's transformation is shown below.
+The default transformer generates a `@timestamp` and rolls any `meta`
+objects into an object called `fields`.
 
-Input:
+Input A:
 
 ```js
 {
@@ -102,7 +103,7 @@ Input:
 }
 ```
 
-Output:
+Output A:
 
 ```js
 {
@@ -117,7 +118,6 @@ Output:
 }
 ```
 
-The `@timestamp` is generated in the transformer.
 Note that in current logstash versions, the only "standard fields" are @timestamp and @version,
 anything else ist just free.
 
@@ -134,10 +134,10 @@ An example assuming default settings.
 ### Log Action
 
 ```js
-logger.info('Some message', <req meta data>);
+logger.info('Some message', {});
 ```
 
-where `req meta data` is a JSON object.
+Only JSON objects are logged from the `meta` field. Any non-object is ignored.
 
 ### Generated Message
 

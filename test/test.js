@@ -27,17 +27,15 @@ function NullLogger(config) {
 function createLogger() {
   return winston.createLogger({
     transports: [
-      new (winston.transports.Elasticsearch)({
-        flushInterval: 10,
+      new winston.transports.Elasticsearch({
+        flushInterval: 1,
         clientOpts: {
           log: NullLogger,
         }
-      })
-    ]
+      })]
   });
 }
 
-describe('winston-elasticsearch:', function () {
   describe('the default transformer', function () {
     it('should transform log data from winston into a logstash like structure', function (done) {
       var transformed = defaultTransformer({
@@ -69,7 +67,9 @@ describe('winston-elasticsearch:', function () {
 
     it('should log simple message to Elasticsearch', function (done) {
       this.timeout(8000);
-      logger.log(logMessage.level, logMessage.message);
+      logger = createLogger();
+
+      logger.log(logMessage.level, `${logMessage.message}1`);
       logger.on('finish', () => {
         done();
       });
@@ -79,11 +79,14 @@ describe('winston-elasticsearch:', function () {
       logger.end();
     });
 
-    it('should log splat free message to Elasticsearch', function (done) {
+    it('should log with or without metadata', function (done) {
       this.timeout(8000);
       logger = createLogger();
 
-      logger.info({ message: 'Test', foo: 'bar' });
+      logger.info('test test');
+      logger.info('test test', 'hello world');
+      logger.info({ message: 'test test', foo: 'bar' });
+      logger.log(logMessage.level, `${logMessage.message}2`, logMessage.meta);
       logger.on('finish', () => {
         done();
       });
@@ -93,24 +96,7 @@ describe('winston-elasticsearch:', function () {
       logger.end();
     });
 
-    it('should log message with meta data to Elasticsearch', function (done) {
-      this.timeout(8000);
-      logger = createLogger();
-
-      logMessage.message = 'logmessage2';
-      logger.log(logMessage.level, logMessage.message, logMessage.meta);
-      logger.on('finish', () => {
-        done();
-      });
-      logger.on('error', (err) => {
-        should.not.exist(err);
-      });
-
-      setTimeout(function(){
-        logger.end();
-      }, 3000);
-    });
-/*
+    /*
     describe('the logged message', function () {
       it('should be found in the index', function (done) {
         var client = new elasticsearch.Client({
@@ -131,8 +117,6 @@ describe('winston-elasticsearch:', function () {
     });
 */
   });
-
-  var defectiveLogger = null;
 
   // describe('a defective log transport', function () {
   //   it('emits an error', function (done) {
@@ -172,4 +156,3 @@ describe('winston-elasticsearch:', function () {
       });
     });
   */
-  });

@@ -5,7 +5,6 @@ const Transport = require('winston-transport');
 const moment = require('moment');
 const _ = require('lodash');
 const elasticsearch = require('elasticsearch');
-const { LEVEL, SPLAT } = require('triple-beam');
 const defaultTransformer = require('./transformer');
 const BulkWriter = require('./bulk_writer');
 
@@ -77,17 +76,7 @@ module.exports = class Elasticsearch extends Transport {
   }
 
   log(info, callback) {
-    const level = info[LEVEL];
-    const { message } = info;
-    let meta = info[SPLAT];
-    if (meta !== undefined) {
-      // eslint-disable-next-line prefer-destructuring
-      meta = meta[0];
-    } else {
-      meta = info;
-      delete meta.message;
-      delete meta.level;
-    }
+    const { level, message, ...meta } = info;
     setImmediate(() => {
       this.emit('logged', level);
     });
@@ -96,7 +85,6 @@ module.exports = class Elasticsearch extends Transport {
       message,
       level,
       meta,
-      // timestamp: this.opts.timestamp()
     };
 
     const entry = this.opts.transformer(logData);
