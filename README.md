@@ -59,7 +59,7 @@ If multiple objects are provided as arguments, the contents are stringified.
 
 - `level` [`info`] Messages logged with a severity greater or equal to the given one are logged to ES; others are discarded.
 - `index` [none] the index to be used. This option is mutually exclusive with `indexPrefix`.
-- `indexPrefix` [`logs`] the prefix to use to generate the index name according to the pattern `<indexPrefix>-<indexSuffixPattern>`.
+- `indexPrefix` [`logs`] the prefix to use to generate the index name according to the pattern `<indexPrefix>-<indexInterfix>-<indexSuffixPattern>`. Can be string or function, returning the string to use.
 - `indexSuffixPattern` [`YYYY.MM.DD`] a [Moment.js](http://momentjs.com/) compatible date/ time pattern.
 - `messageType` [`log`] the type (path segment after the index path) under which the messages are stored under the index.
 - `transformer` [see below] a transformer function to transform logged data into a different message structure.
@@ -87,6 +87,25 @@ by winston into a shape more appropriate for indexing in Elasticsearch.
 
 The default transformer generates a `@timestamp` and rolls any `meta`
 objects into an object called `fields`.
+
+Params:
+
+- `logdata` An object with the data to log. Properties are:
+
+- `timestamp` [`new Date().toISOString()`] The timestamp of the log entry
+- `level` The log level of the entry
+- `message` The message for the log entry
+- `meta` The meta data for the log entry
+
+Returns: Object with the following properties 
+
+- `@timestamp` The timestamp of the log entry
+- `severity` The log level of the entry
+- `message` The message for the log entry
+- `fields` The meta data for the log entry
+- `indexInterfix` optional, the interfix of the index to use for this entry
+
+The default transformer function's transformation is shown below.
 
 Input A:
 
