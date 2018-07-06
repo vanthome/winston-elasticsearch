@@ -76,7 +76,8 @@ module.exports = class Elasticsearch extends Transport {
   }
 
   log(info, callback) {
-    const { level, message, ...meta } = info;
+    const { level, message } = info;
+    const meta = Object.assign({}, _.omit(info, ['level', 'message']));
     setImmediate(() => {
       this.emit('logged', level);
     });
