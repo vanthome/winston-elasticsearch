@@ -74,7 +74,7 @@ BulkWriter.prototype.flush = function flush() {
       res.items.forEach((item) => {
         if (item.index && item.index.error) {
           // eslint-disable-next-line no-console
-          console.error('Elasticsearch index error', item.index.error);
+          console.error('Elasticsearch index error', item);
         }
       });
     }
@@ -83,7 +83,7 @@ BulkWriter.prototype.flush = function flush() {
     thiz.bulk = bulk.concat(thiz.bulk);
     // eslint-disable-next-line no-console
     console.error(e);
-    debug('error occrrued', e);
+    debug('error occurred', e);
     this.stop();
     this.checkEsConnection();
   });
