@@ -1,5 +1,5 @@
 {
-  "message": "logmessage1",
+  "message": "logmessage",
   "level": "info",
   "meta": {
     "method": "GET",
