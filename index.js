@@ -14,16 +14,13 @@ module.exports = class Elasticsearch extends Transport {
     this.name = 'elasticsearch';
 
     this.opts = opts || {};
-    if (!opts.timestamp) {
-      this.opts.timestamp = function timestamp() { return new Date().toISOString(); };
-    }
     // Enforce context
     // if (!(this instanceof Elasticsearch)) {
     //   return new Elasticsearch(opts);
     // }
 
     // Set defaults
-    const defaults = {
+    _.defaults(opts, {
       level: 'info',
       index: null,
       indexPrefix: 'logs',
@@ -35,14 +32,13 @@ module.exports = class Elasticsearch extends Transport {
       waitForActiveShards: 1,
       handleExceptions: false,
       pipeline: null
-    };
-    _.defaults(opts, defaults);
+    });
 
     // Use given client or create one
     if (opts.client) {
       this.client = opts.client;
     } else {
-      const defaultClientOpts = {
+      _.defaults(opts, {
         clientOpts: {
           log: [
             {
@@ -51,8 +47,7 @@ module.exports = class Elasticsearch extends Transport {
             }
           ]
         }
-      };
-      _.defaults(opts, defaultClientOpts);
+      });
 
       // Create a new ES client
       // http://localhost:9200 is the default of the client already
@@ -76,7 +71,8 @@ module.exports = class Elasticsearch extends Transport {
   }
 
   log(info, callback) {
-    const { level, message, ...meta } = info;
+    const { level, message } = info;
+    const meta = Object.assign({}, _.omit(info, ['level', 'message']));
     setImmediate(() => {
       this.emit('logged', level);
     });
@@ -97,24 +93,6 @@ module.exports = class Elasticsearch extends Transport {
     callback();
   }
 
-  query(options, callback) {
-    // const opts = this.normalizeQuery(options);
-    const index = this.getIndexName(this.opts);
-    const query = {
-      index,
-      // q
-    };
-    return this.client.search(query);
-  }
-
-  search(q) {
-    const index = this.getIndexName(this.opts);
-    const query = {
-      index,
-      q
-    };
-    return this.client.search(query);
-  }
 
   getIndexName(opts) {
     this.test = 'test';
