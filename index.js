@@ -84,8 +84,13 @@ module.exports = class Elasticsearch extends Transport {
     };
 
     const entry = this.opts.transformer(logData);
+    let index = this.getIndexName(this.opts);
+    if (entry.indexInterfix !== undefined) {
+      index = this.getIndexName(this.opts, entry.indexInterfix);
+      delete entry.indexInterfix;
+    }
     this.bulkWriter.append(
-      this.getIndexName(this.opts),
+      index,
       this.opts.messageType,
       entry
     );
@@ -94,13 +99,19 @@ module.exports = class Elasticsearch extends Transport {
   }
 
 
-  getIndexName(opts) {
+  getIndexName(opts, indexInterfix) {
     this.test = 'test';
     let indexName = opts.index;
     if (indexName === null) {
+      // eslint-disable-next-line prefer-destructuring
+      let indexPrefix = opts.indexPrefix;
+      if (typeof indexPrefix === 'function') {
+        // eslint-disable-next-line prefer-destructuring
+        indexPrefix = opts.indexPrefix();
+      }
       const now = moment();
       const dateString = now.format(opts.indexSuffixPattern);
-      indexName = opts.indexPrefix + '-' + dateString;
+      indexName = indexPrefix + (indexInterfix !== undefined ? '-' + indexInterfix : '') + '-' + dateString;
     }
     return indexName;
   }

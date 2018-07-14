@@ -74,7 +74,7 @@ BulkWriter.prototype.flush = function flush() {
       res.items.forEach((item) => {
         if (item.index && item.index.error) {
           // eslint-disable-next-line no-console
-          console.error('Elasticsearch index error', item.index.error);
+          console.error('Elasticsearch index error', bulk);
         }
       });
     }
@@ -83,7 +83,7 @@ BulkWriter.prototype.flush = function flush() {
     thiz.bulk = bulk.concat(thiz.bulk);
     // eslint-disable-next-line no-console
     console.error(e);
-    debug('error occrrued', e);
+    debug('error occurred', e);
     this.stop();
     this.checkEsConnection();
   });
@@ -148,7 +148,7 @@ BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(fulf
     mappingTemplate = JSON.parse(rawdata);
   }
   const tmplCheckMessage = {
-    name: 'template_' + thiz.options.indexPrefix
+    name: 'template_' + (typeof thiz.options.indexPrefix === 'function' ? thiz.options.indexPrefix() : thiz.options.indexPrefix)
   };
   thiz.client.indices.getTemplate(tmplCheckMessage).then(
     (res) => {
@@ -157,7 +157,7 @@ BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(fulf
     (res) => {
       if (res.status && res.status === 404) {
         const tmplMessage = {
-          name: 'template_' + thiz.options.indexPrefix,
+          name: 'template_' + (typeof thiz.options.indexPrefix === 'function' ? thiz.options.indexPrefix() : thiz.options.indexPrefix),
           create: true,
           body: mappingTemplate
         };
