@@ -92,10 +92,9 @@ module.exports = class Elasticsearch extends Transport {
     this.bulkWriter.append(
       index,
       this.opts.messageType,
-      entry
+      entry,
+      callback
     );
-
-    callback();
   }
 
 

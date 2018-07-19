@@ -82,6 +82,7 @@ BulkWriter.prototype.flush = function flush() {
         }
       });
     }
+    bulk.forEach(({ callback }) => callback());
   }).catch((e) => { // prevent [DEP0018] DeprecationWarning
     // rollback this.bulk array
     thiz.bulk = bulk.concat(thiz.bulk);
@@ -93,9 +94,9 @@ BulkWriter.prototype.flush = function flush() {
   });
 };
 
-BulkWriter.prototype.append = function append(index, type, doc) {
+BulkWriter.prototype.append = function append(index, type, doc, callback) {
   this.bulk.push({
-    index, type, doc
+    index, type, doc, callback
   });
 };
 
