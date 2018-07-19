@@ -63,9 +63,13 @@ BulkWriter.prototype.flush = function flush() {
   }
   const bulk = this.bulk.concat();
   this.bulk = [];
-  debug('going to write', bulk);
+  const body = [];
+  bulk.forEach(({ index, type, doc }) => {
+    body.push({ index: { _index: index, _type: type, pipeline: this.pipeline } }, doc);
+  });
+  debug('going to write', body);
   return this.client.bulk({
-    body: bulk,
+    body,
     waitForActiveShards: this.waitForActiveShards,
     timeout: this.interval + 'ms',
     type: this.type
@@ -78,6 +82,7 @@ BulkWriter.prototype.flush = function flush() {
         }
       });
     }
+    bulk.forEach(({ callback }) => callback());
   }).catch((e) => { // prevent [DEP0018] DeprecationWarning
     // rollback this.bulk array
     thiz.bulk = bulk.concat(thiz.bulk);
@@ -89,13 +94,10 @@ BulkWriter.prototype.flush = function flush() {
   });
 };
 
-BulkWriter.prototype.append = function append(index, type, doc) {
+BulkWriter.prototype.append = function append(index, type, doc, callback) {
   this.bulk.push({
-    index: {
-      _index: index, _type: type, pipeline: this.pipeline
-    }
+    index, type, doc, callback
   });
-  this.bulk.push(doc);
 };
 
 BulkWriter.prototype.checkEsConnection = function checkEsConnection() {
