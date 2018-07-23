@@ -1,3 +1,10 @@
+0.7.4 / 2018-07-23
+==================
+
+- Make sure no messages are lost in case of an ES level fault
+- Add a Typescript declaration file
+- Fix bug in ES fault handler
+
 0.7.3 / 2018-06-30
 ==================
 
