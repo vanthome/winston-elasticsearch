@@ -16,10 +16,11 @@ transport for the [winston](https://github.com/winstonjs/winston) logging toolki
 - Thus consumable with [kibana](https://www.elastic.co/products/kibana).
 - Date pattern based index names.
 - Custom transformer function to transform logged data into a different message structure.
+- Buffering of messages in case of inavailability of ES. The limit is the memory as all unwritten messages are kept in memory.
 
 ### Compatibility
 
-For  **Winston 3.0**, **Elasticsearch 6.0** and later, use the `0.7.0`.
+For  **Winston 3.x**, **Elasticsearch 6.0** and later, use the `0.7.0`.
 For **Elasticsearch 6.0** and later, use the `0.6.0`.
 For **Elasticsearch 5.0** and later, use the `0.5.9`.
 For earlier versions, use the `0.4.x` series.
@@ -27,7 +28,6 @@ For earlier versions, use the `0.4.x` series.
 ### Unsupported / Todo
 
 - Querying.
-- Real buffering of messages in case of unavailable ES.
 
 ## Installation
 
@@ -91,13 +91,12 @@ objects into an object called `fields`.
 Params:
 
 - `logdata` An object with the data to log. Properties are:
+  - `timestamp` [`new Date().toISOString()`] The timestamp of the log entry
+  - `level` The log level of the entry
+  - `message` The message for the log entry
+  - `meta` The meta data for the log entry
 
-- `timestamp` [`new Date().toISOString()`] The timestamp of the log entry
-- `level` The log level of the entry
-- `message` The message for the log entry
-- `meta` The meta data for the log entry
-
-Returns: Object with the following properties 
+Returns: Object with the following properties
 
 - `@timestamp` The timestamp of the log entry
 - `severity` The log level of the entry
