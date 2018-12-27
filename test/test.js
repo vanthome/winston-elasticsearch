@@ -1,4 +1,4 @@
-/*eslint-disable */
+/* eslint-disable */
 var util = require('util');
 var fs = require('fs');
 var should = require('should');
@@ -36,87 +36,88 @@ function createLogger() {
   });
 }
 
-  describe('the default transformer', function () {
-    it('should transform log data from winston into a logstash like structure', function (done) {
-      var transformed = defaultTransformer({
-        message: 'some message',
-        level: 'error',
-        meta: {
-          someField: true
-        }
-      });
-      should.exist(transformed['@timestamp']);
-      transformed.severity.should.equal('error');
-      transformed.fields.someField.should.be.true();
-      done();
-    });
-  });
-
-  var logger = null;
-
-  describe('a logger', function () {
-    it('can be instantiated', function (done) {
-      this.timeout(8000);
-      try {
-        logger = createLogger();
-        done();
-      } catch (err) {
-        should.not.exist(err);
+describe('the default transformer', function () {
+  it('should transform log data from winston into a logstash like structure', function (done) {
+    var transformed = defaultTransformer({
+      message: 'some message',
+      level: 'error',
+      meta: {
+        someField: true
       }
     });
-
-    it('should log simple message to Elasticsearch', function (done) {
-      this.timeout(8000);
-      logger = createLogger();
-
-      logger.log(logMessage.level, `${logMessage.message}1`);
-      logger.on('finish', () => {
-        done();
-      });
-      logger.on('error', (err) => {
-        should.not.exist(err);
-      });
-      logger.end();
-    });
-
-    it('should log with or without metadata', function (done) {
-      this.timeout(8000);
-      logger = createLogger();
-
-      logger.info('test test');
-      logger.info('test test', 'hello world');
-      logger.info({ message: 'test test', foo: 'bar' });
-      logger.log(logMessage.level, `${logMessage.message}2`, logMessage.meta);
-      logger.on('finish', () => {
-        done();
-      });
-      logger.on('error', (err) => {
-        should.not.exist(err);
-      });
-      logger.end();
-    });
-
-    /*
-    describe('the logged message', function () {
-      it('should be found in the index', function (done) {
-        var client = new elasticsearch.Client({
-          host: 'localhost:9200',
-          log: 'error'
-        });
-        client.search(`message:${logMessage.message}`).then(
-          (res) => {
-            res.hits.total.should.be.above(0);
-            done();
-          },
-          (err) => {
-            should.not.exist(err);
-          }).catch((e) => {
-            // prevent '[DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated'
-          });
-      });
-    });
-*/
+    should.exist(transformed['@timestamp']);
+    transformed.severity.should.equal('error');
+    transformed.fields.someField.should.be.true();
+    done();
   });
+});
+
+var logger = null;
+
+describe('a logger', function () {
+  it('can be instantiated', function (done) {
+    this.timeout(8000);
+    try {
+      logger = createLogger();
+      logger.end();
+      done();
+    } catch (err) {
+      should.not.exist(err);
+    }
+  });
+
+  it('should log simple message to Elasticsearch', function (done) {
+    this.timeout(8000);
+    logger = createLogger();
+
+    logger.log(logMessage.level, `${logMessage.message}1`);
+    logger.on('finish', () => {
+      done();
+    });
+    logger.on('error', (err) => {
+      should.not.exist(err);
+    });
+    logger.end();
+  });
+
+  it('should log with or without metadata', function (done) {
+    this.timeout(8000);
+    logger = createLogger();
+
+    logger.info('test test');
+    logger.info('test test', 'hello world');
+    logger.info({ message: 'test test', foo: 'bar' });
+    logger.log(logMessage.level, `${logMessage.message}2`, logMessage.meta);
+    logger.on('finish', () => {
+      done();
+    });
+    logger.on('error', (err) => {
+      should.not.exist(err);
+    });
+    logger.end();
+  });
+
+  /*
+  describe('the logged message', function () {
+    it('should be found in the index', function (done) {
+      var client = new elasticsearch.Client({
+        host: 'localhost:9200',
+        log: 'error'
+      });
+      client.search(`message:${logMessage.message}`).then(
+        (res) => {
+          res.hits.total.should.be.above(0);
+          done();
+        },
+        (err) => {
+          should.not.exist(err);
+        }).catch((e) => {
+          // prevent '[DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated'
+        });
+    });
+  });
+  */
+});
 
   // describe('a defective log transport', function () {
   //   it('emits an error', function (done) {

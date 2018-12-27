@@ -1,3 +1,9 @@
+0.7.6 / 2018-12-28
+==================
+
+- Upgrade deps
+- Allow the process to exit when the logger is ended.
+
 0.7.5 / 2018-09-30
 ==================
 

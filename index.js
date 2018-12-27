@@ -13,11 +13,10 @@ module.exports = class Elasticsearch extends Transport {
     super(opts);
     this.name = 'elasticsearch';
 
+    this.on('finish', (info) => {
+      this.bulkWriter.schedule = () => { };
+    });
     this.opts = opts || {};
-    // Enforce context
-    // if (!(this instanceof Elasticsearch)) {
-    //   return new Elasticsearch(opts);
-    // }
 
     // Set defaults
     _.defaults(opts, {
@@ -96,7 +95,6 @@ module.exports = class Elasticsearch extends Transport {
       callback
     );
   }
-
 
   getIndexName(opts, indexInterfix) {
     this.test = 'test';
