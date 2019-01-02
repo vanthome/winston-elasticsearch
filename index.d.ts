@@ -29,6 +29,8 @@ declare module 'winston-elasticsearch' {
     pipeline?: string;
     client?: elasticsearch.Client;
     clientOpts?: elasticsearch.ConfigOptions;
+    buffering?: boolean;
+    bufferLimit?: number;
   }
 
   export default class Elasticsearch extends TransportStream {
