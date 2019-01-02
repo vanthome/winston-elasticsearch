@@ -85,7 +85,12 @@ BulkWriter.prototype.flush = function flush() {
     bulk.forEach(({ callback }) => callback());
   }).catch((e) => { // prevent [DEP0018] DeprecationWarning
     // rollback this.bulk array
-    thiz.bulk = bulk.concat(thiz.bulk);
+    const lenSum = thiz.bulk.length + bulk.length;
+    if (thiz.options.bufferLimit && (lenSum >= thiz.options.bufferLimit)) {
+        thiz.bulk = bulk.concat(thiz.bulk.slice(0, thiz.options.bufferLimit - bulk.length));
+    } else {
+        thiz.bulk = bulk.concat(thiz.bulk);
+    }
     // eslint-disable-next-line no-console
     console.error(e);
     debug('error occurred', e);
