@@ -30,7 +30,9 @@ module.exports = class Elasticsearch extends Transport {
       flushInterval: 2000,
       waitForActiveShards: 1,
       handleExceptions: false,
-      pipeline: null
+      pipeline: null,
+      bufferLimit: null,
+      buffering: true
     });
 
     // Use given client or create one
@@ -59,7 +61,8 @@ module.exports = class Elasticsearch extends Transport {
       pipeline: opts.pipeline,
       ensureMappingTemplate: opts.ensureMappingTemplate,
       mappingTemplate: opts.mappingTemplate,
-      indexPrefix: opts.indexPrefix
+      indexPrefix: opts.indexPrefix,
+      bufferLimit: opts.buffering ? opts.bufferLimit : 1,
     };
 
     this.bulkWriter = new BulkWriter(

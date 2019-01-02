@@ -95,6 +95,11 @@ BulkWriter.prototype.flush = function flush() {
 };
 
 BulkWriter.prototype.append = function append(index, type, doc, callback) {
+  if (this.options.bufferLimit && (this.bulk.length >= this.options.bufferLimit)) {
+    debug('message discarded cause buffer limit exceeded');
+    // @todo: i guess we can use callback to notify caller
+    return;
+  }
   this.bulk.push({
     index, type, doc, callback
   });
