@@ -1,6 +1,6 @@
 declare module 'winston-elasticsearch' {
-  import TransportStream from 'winston-transport';
-  import elasticsearch from 'elasticsearch';
+  import * as TransportStream from 'winston-transport';
+  import * as elasticsearch from 'elasticsearch';
 
   export interface LogData {
     message: any;
