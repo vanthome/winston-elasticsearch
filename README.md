@@ -70,8 +70,8 @@ If multiple objects are provided as arguments, the contents are stringified.
 - `clientOpts` An object hash passed to the ES client. See [its docs](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/configuration.html) for supported options.
 - `waitForActiveShards` [`1`] Sets the number of shard copies that must be active before proceeding with the bulk operation.
 - `pipeline` [none] Sets the pipeline id to pre-process incoming documents with. See [the bulk API docs](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html#api-bulk).
-- `buffering` [true] Boolean flag to enable or disable messages buffering. The `bufferLimit` option ignored if set to `false`.
-- `bufferLimit` [null] Messages buffer limitation.
+- `buffering` [true] Boolean flag to enable or disable messages buffering. The `bufferLimit` option is ignored if set to `false`.
+- `bufferLimit` [null] Limit for the number of log messages in the buffer.
 
 ### Logging of ES Client
 
