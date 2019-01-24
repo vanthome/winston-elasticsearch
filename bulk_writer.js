@@ -19,8 +19,6 @@ const BulkWriter = function BulkWriter(client, options) {
 
 BulkWriter.prototype.start = function start() {
   this.checkEsConnection();
-  this.running = true;
-  this.tick();
   debug('started');
 };
 
