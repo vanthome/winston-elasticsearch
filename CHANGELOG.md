@@ -1,3 +1,14 @@
+0.7.8 / 2019-01-27
+==================
+
+- Upgrade deps, also Winston 3.2.0
+- Update the documentation
+
+0.7.7 / 2018-12-28
+==================
+
+- Add feature to limit message buffering
+
 0.7.6 / 2018-12-28
 ==================
 
