@@ -1,3 +1,10 @@
+0.7.9 / 2019-02-12
+==================
+
+- Upgrade deps, also Winston 3.2.1
+- Incorporate fix to prevent flush called twice after each interval instead of once
+- Better ignore extraneous resources pushed to npm
+
 0.7.8 / 2019-01-27
 ==================
 
