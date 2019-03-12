@@ -1,6 +1,6 @@
 declare module 'winston-elasticsearch' {
-  import * as TransportStream from 'winston-transport';
-  import * as elasticsearch from 'elasticsearch';
+  import Elasticsearch from 'elasticsearch';
+  import TransportStream from 'winston-transport';
 
   export interface LogData {
     message: any;
@@ -27,17 +27,17 @@ declare module 'winston-elasticsearch' {
     waitForActiveShards?: number;
     handleExceptions?: boolean;
     pipeline?: string;
-    client?: elasticsearch.Client;
-    clientOpts?: elasticsearch.ConfigOptions;
+    client?: Elasticsearch.Client;
+    clientOpts?: Elasticsearch.ConfigOptions;
     buffering?: boolean;
     bufferLimit?: number;
   }
 
-  export default class Elasticsearch extends TransportStream {
+  export default class ElasticsearchTransport extends TransportStream {
     constructor(opts?: ElasticsearchTransportOptions);
 
-    query<T>(options: any, callback?: () => void): Promise<elasticsearch.SearchResponse<T>>;
-    query<T>(q: string): Promise<elasticsearch.SearchResponse<T>>;
+    query<T>(options: any, callback?: () => void): Promise<Elasticsearch.SearchResponse<T>>;
+    query<T>(q: string): Promise<Elasticsearch.SearchResponse<T>>;
     getIndexName(opts: ElasticsearchTransportOptions): string;
   }
 }
