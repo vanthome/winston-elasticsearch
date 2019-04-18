@@ -52,7 +52,6 @@ BulkWriter.prototype.tick = function tick() {
 
 BulkWriter.prototype.flush = function flush() {
   // write bulk to elasticsearch
-  const thiz = this;
   if (this.bulk.length === 0) {
     debug('nothing to flush');
     return new Promise((resolve) => {
@@ -65,7 +64,29 @@ BulkWriter.prototype.flush = function flush() {
   bulk.forEach(({ index, type, doc }) => {
     body.push({ index: { _index: index, _type: type, pipeline: this.pipeline } }, doc);
   });
-  debug('going to write', body);
+  debug('bulk writer is going to write', body);
+  return this.write(body, bulk);
+};
+
+BulkWriter.prototype.append = function append(index, type, doc, callback) {
+  if (this.options.buffering === true) {
+    if (typeof this.options.bufferLimit === 'number' && this.bulk.length >= this.options.bufferLimit) {
+      debug('message discarded because buffer limit exceeded');
+      // @todo: i guess we can use callback to notify caller
+      return;
+    }
+    this.bulk.push({
+      index, type, doc, callback
+    });
+  } else {
+    this.write([{ index: { _index: index, _type: type, pipeline: this.pipeline } }, doc],
+      [{ callback }]);
+  }
+};
+
+BulkWriter.prototype.write = function write(body, bulk) {
+  const thiz = this;
+  //console.log('TEST00', body);
   return this.client.bulk({
     body,
     waitForActiveShards: this.waitForActiveShards,
@@ -80,31 +101,24 @@ BulkWriter.prototype.flush = function flush() {
         }
       });
     }
-    bulk.forEach(({ callback }) => callback());
+    //console.log('TEST11');
+    if (bulk) {
+      //console.log('TEST22');
+      bulk.forEach(({ callback }) => callback());
+    }
   }).catch((e) => { // prevent [DEP0018] DeprecationWarning
     // rollback this.bulk array
-    const lenSum = thiz.bulk.length + bulk.length;
+    const lenSum = thiz.bulk.length + body.length;
     if (thiz.options.bufferLimit && (lenSum >= thiz.options.bufferLimit)) {
-      thiz.bulk = bulk.concat(thiz.bulk.slice(0, thiz.options.bufferLimit - bulk.length));
+      thiz.bulk = body.concat(thiz.bulk.slice(0, thiz.options.bufferLimit - body.length));
     } else {
-      thiz.bulk = bulk.concat(thiz.bulk);
+      thiz.bulk = body.concat(thiz.bulk);
     }
     // eslint-disable-next-line no-console
     console.error(e);
     debug('error occurred', e);
     this.stop();
     this.checkEsConnection();
-  });
-};
-
-BulkWriter.prototype.append = function append(index, type, doc, callback) {
-  if (this.options.bufferLimit && (this.bulk.length >= this.options.bufferLimit)) {
-    debug('message discarded cause buffer limit exceeded');
-    // @todo: i guess we can use callback to notify caller
-    return;
-  }
-  this.bulk.push({
-    index, type, doc, callback
   });
 };
 
@@ -132,9 +146,11 @@ BulkWriter.prototype.checkEsConnection = function checkEsConnection() {
           } else {
             fulfill(true);
           }
-          debug('starting bulk writer');
-          thiz.running = true;
-          thiz.tick();
+          if (thiz.options.buffering === true) {
+            debug('starting bulk writer');
+            thiz.running = true;
+            thiz.tick();
+          }
         },
         (err) => {
           debug('checking for connection');

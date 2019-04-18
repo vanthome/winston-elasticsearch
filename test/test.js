@@ -24,11 +24,12 @@ function NullLogger(config) {
   this.close = function(msg) { };
 }
 
-function createLogger() {
+function createLogger(buffering) {
   return winston.createLogger({
     transports: [
       new winston.transports.Elasticsearch({
         flushInterval: 1,
+        buffering,
         clientOpts: {
           log: NullLogger,
         }
@@ -54,11 +55,11 @@ describe('the default transformer', function () {
 
 var logger = null;
 
-describe('a logger', function () {
+describe('a buffering logger', function () {
   it('can be instantiated', function (done) {
     this.timeout(8000);
     try {
-      logger = createLogger();
+      logger = createLogger(true);
       logger.end();
       done();
     } catch (err) {
@@ -68,7 +69,7 @@ describe('a logger', function () {
 
   it('should log simple message to Elasticsearch', function (done) {
     this.timeout(8000);
-    logger = createLogger();
+    logger = createLogger(true);
 
     logger.log(logMessage.level, `${logMessage.message}1`);
     logger.on('finish', () => {
@@ -82,7 +83,7 @@ describe('a logger', function () {
 
   it('should log with or without metadata', function (done) {
     this.timeout(8000);
-    logger = createLogger();
+    logger = createLogger(true);
 
     logger.info('test test');
     logger.info('test test', 'hello world');
@@ -117,6 +118,34 @@ describe('a logger', function () {
     });
   });
   */
+});
+
+
+describe('a non buffering logger', function () {
+  it('can be instantiated', function (done) {
+    this.timeout(8000);
+    try {
+      logger = createLogger(false);
+      logger.end();
+      done();
+    } catch (err) {
+      should.not.exist(err);
+    }
+  });
+
+  it('should log simple message to Elasticsearch', function (done) {
+    this.timeout(8000);
+    logger = createLogger(false);
+
+    logger.log(logMessage.level, `${logMessage.message}1`);
+    logger.on('finish', () => {
+      done();
+    });
+    logger.on('error', (err) => {
+      should.not.exist(err);
+    });
+    logger.end();
+  });
 });
 
   // describe('a defective log transport', function () {

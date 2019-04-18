@@ -1,3 +1,11 @@
+0.7.10 / 2019-04-17
+==================
+
+- Properly implement non buffering case --> immediately write any message to ES
+- Upgrade deps and several other cleanups
+- Upgrade of typings
+- Correct documentation that we use `_doc` as default type`
+
 0.7.9 / 2019-02-12
 ==================
 

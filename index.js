@@ -62,7 +62,8 @@ module.exports = class Elasticsearch extends Transport {
       ensureMappingTemplate: opts.ensureMappingTemplate,
       mappingTemplate: opts.mappingTemplate,
       indexPrefix: opts.indexPrefix,
-      bufferLimit: opts.buffering ? opts.bufferLimit : 1,
+      buffering: opts.buffering,
+      bufferLimit: opts.buffering ? opts.bufferLimit : 0,
     };
 
     this.bulkWriter = new BulkWriter(

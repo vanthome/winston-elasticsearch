@@ -61,7 +61,7 @@ If multiple objects are provided as arguments, the contents are stringified.
 - `index` [none] the index to be used. This option is mutually exclusive with `indexPrefix`.
 - `indexPrefix` [`logs`] the prefix to use to generate the index name according to the pattern `<indexPrefix>-<indexInterfix>-<indexSuffixPattern>`. Can be string or function, returning the string to use.
 - `indexSuffixPattern` [`YYYY.MM.DD`] a [Moment.js](http://momentjs.com/) compatible date/ time pattern.
-- `messageType` [`log`] the type (path segment after the index path) under which the messages are stored under the index.
+- `messageType` [`_doc`] the type (path segment after the index path) under which the messages are stored under the index.
 - `transformer` [see below] a transformer function to transform logged data into a different message structure.
 - `ensureMappingTemplate` [`true`] If set to `true`, the given `mappingTemplate` is checked/ uploaded to ES when the module is sending the fist log message to make sure the log messages are mapped in a sensible manner.
 - `mappingTemplate` [see file `index-template-mapping.json` file] the mapping template to be ensured as parsed JSON.
