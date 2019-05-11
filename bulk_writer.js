@@ -65,10 +65,10 @@ BulkWriter.prototype.flush = function flush() {
     body.push({ index: { _index: index, _type: type, pipeline: this.pipeline } }, doc);
   });
   debug('bulk writer is going to write', body);
-  return this.write(body, bulk);
+  return this.write(body);
 };
 
-BulkWriter.prototype.append = function append(index, type, doc, callback) {
+BulkWriter.prototype.append = function append(index, type, doc) {
   if (this.options.buffering === true) {
     if (typeof this.options.bufferLimit === 'number' && this.bulk.length >= this.options.bufferLimit) {
       debug('message discarded because buffer limit exceeded');
@@ -76,15 +76,14 @@ BulkWriter.prototype.append = function append(index, type, doc, callback) {
       return;
     }
     this.bulk.push({
-      index, type, doc, callback
+      index, type, doc
     });
   } else {
-    this.write([{ index: { _index: index, _type: type, pipeline: this.pipeline } }, doc],
-      [{ callback }]);
+    this.write([{ index: { _index: index, _type: type, pipeline: this.pipeline } }, doc]);
   }
 };
 
-BulkWriter.prototype.write = function write(body, bulk) {
+BulkWriter.prototype.write = function write(body) {
   const thiz = this;
   //console.log('TEST00', body);
   return this.client.bulk({
@@ -100,11 +99,6 @@ BulkWriter.prototype.write = function write(body, bulk) {
           console.error('Elasticsearch index error', item.index);
         }
       });
-    }
-    //console.log('TEST11');
-    if (bulk) {
-      //console.log('TEST22');
-      bulk.forEach(({ callback }) => callback());
     }
   }).catch((e) => { // prevent [DEP0018] DeprecationWarning
     // rollback this.bulk array
