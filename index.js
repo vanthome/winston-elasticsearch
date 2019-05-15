@@ -74,7 +74,7 @@ module.exports = class Elasticsearch extends Transport {
   }
 
   log(info, callback) {
-    const { level, message } = info;
+    const { level, message, timestamp } = info;
     const meta = Object.assign({}, _.omit(info, ['level', 'message']));
     setImmediate(() => {
       this.emit('logged', level);
@@ -83,6 +83,7 @@ module.exports = class Elasticsearch extends Transport {
     const logData = {
       message,
       level,
+      timestamp,
       meta,
     };
 
