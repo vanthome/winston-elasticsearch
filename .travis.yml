@@ -1,22 +1,17 @@
 language: node_js
 sudo: required
 dist: xenial
-addons:
-  apt:
-    packages:
-      - oracle-java8-installer
-      - oracle-java8-set-default
 node_js:
   - "6"
   - "8"
 jdk:
-  - oraclejdk8
+  - oraclejdk11
 env:
   global:
     - COVERALLS=1
     - WAIT_FOR_ES=1
   matrix:
-    - ES_VERSION=6.3.0
+    - ES_VERSION=7.0.0
 install:
   - mkdir /tmp/elasticsearch
   - wget -O - https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz | tar xz --directory=/tmp/elasticsearch --strip-components=1
@@ -26,9 +21,7 @@ install:
 git:
   depth: 10
 before_install:
-  - sudo update-java-alternatives -s java-8-oracle
   - echo $JAVA_HOME
-  - which java
   - java -version
 before_script:
   - sleep 10
