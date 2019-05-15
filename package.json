@@ -1,6 +1,6 @@
 {
   "name": "winston-elasticsearch",
-  "version": "0.7.11",
+  "version": "0.7.12",
   "description": "An Elasticsearch transport for winston",
   "main": "index",
   "authors": [
@@ -34,7 +34,7 @@
   ],
   "dependencies": {
     "debug": "4.1.1",
-    "elasticsearch": "^15.4.1",
+    "elasticsearch": "^16.0.0",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
     "promise": "^8.0.3",

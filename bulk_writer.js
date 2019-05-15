@@ -85,7 +85,6 @@ BulkWriter.prototype.append = function append(index, type, doc) {
 
 BulkWriter.prototype.write = function write(body) {
   const thiz = this;
-  //console.log('TEST00', body);
   return this.client.bulk({
     body,
     waitForActiveShards: this.waitForActiveShards,
