@@ -11,10 +11,10 @@ env:
     - COVERALLS=1
     - WAIT_FOR_ES=1
   matrix:
-    - ES_VERSION=7.0.0
+    - ES_VERSION=7.0.1
 install:
   - mkdir /tmp/elasticsearch
-  - wget -O - https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz | tar xz --directory=/tmp/elasticsearch --strip-components=1
+  - wget -O - https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}-linux-x86_64.tar.gz | tar xz --directory=/tmp/elasticsearch --strip-components=1
   - /tmp/elasticsearch/bin/elasticsearch --daemonize -E path.data=/tmp
   - until curl --silent -XGET --fail http://localhost:9200; do printf '.'; sleep 1; done
   - npm install
