@@ -10,3 +10,4 @@ coverage/
 *.log
 *~
 .idea/
+.nyc_output
