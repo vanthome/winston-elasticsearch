@@ -25,6 +25,7 @@ install:
 git:
   depth: 10
 before_install:
+  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6B05F25D762E3157
   - sudo update-java-alternatives -s java-8-oracle
   - echo $JAVA_HOME
   - which java
