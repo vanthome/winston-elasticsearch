@@ -2,8 +2,9 @@
 
 const winston = require('winston');
 const Transport = require('winston-transport');
-const moment = require('moment');
-const _ = require('lodash');
+const dayjs = require('dayjs');
+const defaults = require('lodash.defaults');
+const omit = require('lodash.omit');
 const elasticsearch = require('elasticsearch');
 const defaultTransformer = require('./transformer');
 const BulkWriter = require('./bulk_writer');
@@ -19,7 +20,7 @@ module.exports = class Elasticsearch extends Transport {
     this.opts = opts || {};
 
     // Set defaults
-    _.defaults(opts, {
+    defaults(opts, {
       level: 'info',
       index: null,
       indexPrefix: 'logs',
@@ -39,7 +40,7 @@ module.exports = class Elasticsearch extends Transport {
     if (opts.client) {
       this.client = opts.client;
     } else {
-      _.defaults(opts, {
+      defaults(opts, {
         clientOpts: {
           log: [
             {
@@ -52,7 +53,8 @@ module.exports = class Elasticsearch extends Transport {
 
       // Create a new ES client
       // http://localhost:9200 is the default of the client already
-      this.client = new elasticsearch.Client(_.clone(this.opts.clientOpts));
+      const copts = { ...this.opts.clientOpts };
+      this.client = new elasticsearch.Client(copts);
     }
 
     const bulkWriteropts = {
@@ -75,7 +77,7 @@ module.exports = class Elasticsearch extends Transport {
 
   log(info, callback) {
     const { level, message, timestamp } = info;
-    const meta = Object.assign({}, _.omit(info, ['level', 'message']));
+    const meta = Object.assign({}, omit(info, ['level', 'message']));
     setImmediate(() => {
       this.emit('logged', level);
     });
@@ -112,7 +114,7 @@ module.exports = class Elasticsearch extends Transport {
         // eslint-disable-next-line prefer-destructuring
         indexPrefix = opts.indexPrefix();
       }
-      const now = moment();
+      const now = dayjs();
       const dateString = now.format(opts.indexSuffixPattern);
       indexName = indexPrefix + (indexInterfix !== undefined ? '-' + indexInterfix : '') + '-' + dateString;
     }

@@ -1,3 +1,10 @@
+0.7.13 / 2019-08-28
+==================
+
+- Upgrade to ES client
+- Remove unneeded dependency
+- Reduce package size by swapping moment for days.js and other measured
+
 0.7.12 / 2019-05-15
 ==================
 
