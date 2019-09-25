@@ -5,7 +5,7 @@ const Transport = require('winston-transport');
 const dayjs = require('dayjs');
 const defaults = require('lodash.defaults');
 const omit = require('lodash.omit');
-const elasticsearch = require('elasticsearch');
+const { Client } = require('@elastic/elasticsearch');
 const defaultTransformer = require('./transformer');
 const BulkWriter = require('./bulk_writer');
 
@@ -54,7 +54,7 @@ module.exports = class Elasticsearch extends Transport {
       // Create a new ES client
       // http://localhost:9200 is the default of the client already
       const copts = { ...this.opts.clientOpts };
-      this.client = new elasticsearch.Client(copts);
+      this.client = new Client(copts);
     }
 
     const bulkWriteropts = {
@@ -69,6 +69,7 @@ module.exports = class Elasticsearch extends Transport {
     };
 
     this.bulkWriter = new BulkWriter(
+      this,
       this.client,
       bulkWriteropts
     );

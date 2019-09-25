@@ -4,7 +4,8 @@ const Promise = require('promise');
 const debug = require('debug')('winston:elasticsearch');
 const retry = require('retry');
 
-const BulkWriter = function BulkWriter(client, options) {
+const BulkWriter = function BulkWriter(transport, client, options) {
+  this.transport = transport;
   this.client = client;
   this.options = options;
   this.interval = options.interval || 5000;
@@ -95,6 +96,7 @@ BulkWriter.prototype.write = function write(body) {
       res.items.forEach((item) => {
         if (item.index && item.index.error) {
           // eslint-disable-next-line no-console
+          thiz.transport.emit('error', item.index.error);
           console.error('Elasticsearch index error', item.index);
         }
       });
@@ -108,7 +110,9 @@ BulkWriter.prototype.write = function write(body) {
       thiz.bulk = body.concat(thiz.bulk);
     }
     // eslint-disable-next-line no-console
+    thiz.transport.emit('error', e);
     console.error(e);
+
     debug('error occurred', e);
     this.stop();
     this.checkEsConnection();
