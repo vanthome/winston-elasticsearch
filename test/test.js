@@ -3,7 +3,7 @@ var util = require('util');
 var fs = require('fs');
 var should = require('should');
 var winston = require('winston');
-var elasticsearch = require('elasticsearch');
+var elasticsearch = require('@elastic/elasticsearch');
 
 require('../index');
 var defaultTransformer = require('../transformer');
@@ -32,6 +32,7 @@ function createLogger(buffering) {
         buffering,
         clientOpts: {
           log: NullLogger,
+          node: 'http://localhost:9200',
         }
       })]
   });

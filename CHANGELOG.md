@@ -1,3 +1,9 @@
+0.8.0 / 2019-09-01
+==================
+
+- Switch to new official ES client
+- Emit `error` events when an error happens
+
 0.7.13 / 2019-08-28
 ==================
 
