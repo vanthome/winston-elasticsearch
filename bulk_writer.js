@@ -103,11 +103,15 @@ BulkWriter.prototype.write = function write(body) {
     }
   }).catch((e) => { // prevent [DEP0018] DeprecationWarning
     // rollback this.bulk array
-    const lenSum = thiz.bulk.length + body.length;
+    const _body = [];
+    for (let i = 0; i < body.length; i += 2) {
+      _body.push({index: body[i].index._index, type: body[i].index._type, doc: body[i+1]});
+    }
+    const lenSum = thiz.bulk.length + _body.length;
     if (thiz.options.bufferLimit && (lenSum >= thiz.options.bufferLimit)) {
-      thiz.bulk = body.concat(thiz.bulk.slice(0, thiz.options.bufferLimit - body.length));
+      thiz.bulk = _body.concat(thiz.bulk.slice(0, thiz.options.bufferLimit - _body.length));
     } else {
-      thiz.bulk = body.concat(thiz.bulk);
+      thiz.bulk = _body.concat(thiz.bulk);
     }
     // eslint-disable-next-line no-console
     thiz.transport.emit('error', e);
