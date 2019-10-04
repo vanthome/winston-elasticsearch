@@ -105,7 +105,7 @@ BulkWriter.prototype.write = function write(body) {
     // rollback this.bulk array
     const _body = [];
     for (let i = 0; i < body.length; i += 2) {
-      _body.push({index: body[i].index._index, type: body[i].index.type, doc: body[i+1]});
+      _body.push({index: body[i].index._index, type: body[i].index._type, doc: body[i+1]});
     }
     const lenSum = thiz.bulk.length + _body.length;
     if (thiz.options.bufferLimit && (lenSum >= thiz.options.bufferLimit)) {

@@ -98,6 +98,26 @@ describe('a buffering logger', function () {
     });
     logger.end();
   });
+  it('should update buffer properly in case of an error from elasticsearch.', function (done) {
+    this.timeout(8000);
+    logger = createLogger(true);
+    const transport = logger.transports[0];
+    transport.bulkWriter.bulk.should.have.lengthOf(0)
+
+    // mock client.bulk to throw an error
+    transport.client.bulk = function() {
+      return Promise.reject(new Error('Test Error'))
+    };
+    logger.info('test');
+
+    logger.on('error', (err) => {
+      should.exist(err);
+      transport.bulkWriter.bulk.should.have.lengthOf(1);
+      transport.bulkWriter.bulk = []; // manually clear the buffer of stop transport from attempting to flush logs.
+      done();
+    });
+    logger.end();
+  });
 
   /*
   describe('the logged message', function () {
