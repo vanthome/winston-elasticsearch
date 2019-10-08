@@ -179,9 +179,11 @@ BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(fulf
   };
   thiz.client.indices.getTemplate(tmplCheckMessage).then(
     (res) => {
+      console.log(res);
       fulfill(res);
     },
     (res) => {
+      console.log('rrrrrrrrrrrrrrrrR', res);
       if (res.status && res.status === 404) {
         const tmplMessage = {
           name: 'template_' + (typeof thiz.options.indexPrefix === 'function' ? thiz.options.indexPrefix() : thiz.options.indexPrefix),

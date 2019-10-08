@@ -1,6 +1,6 @@
 {
   "name": "winston-elasticsearch",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "An Elasticsearch transport for winston",
   "main": "index",
   "authors": [
@@ -33,11 +33,11 @@
     "logstash"
   ],
   "dependencies": {
+    "@elastic/elasticsearch": "^7.4.0",
+    "dayjs": "^1.8.16",
     "debug": "4.1.1",
-    "@elastic/elasticsearch": "^7.3.0",
     "lodash.defaults": "^4.2.0",
     "lodash.omit": "^4.5.0",
-    "dayjs": "^1.8.16",
     "promise": "^8.0.3",
     "retry": "^0.12.0",
     "winston": "^3.2.1",

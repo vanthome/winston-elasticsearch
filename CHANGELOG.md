@@ -1,3 +1,9 @@
+0.8.2 / 2019-10-01
+==================
+
+- Upgrade deps
+- Make buffering in case of outages more stable
+
 0.8.1 / 2019-10-01
 ==================
 
