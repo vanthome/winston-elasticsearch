@@ -24,7 +24,7 @@ declare module 'winston-elasticsearch' {
     mappingTemplate?: { [key: string]: any };
     ensureMappingTemplate?: boolean;
     flushInterval?: number;
-    waitForActiveShards?: number;
+    waitForActiveShards?: number | 'all';
     handleExceptions?: boolean;
     pipeline?: string;
     client?: Client;
