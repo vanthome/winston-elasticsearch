@@ -8,17 +8,15 @@
     }
   },
   "mappings": {
-    "_doc": {
-      "_source": { "enabled": true },
-      "properties": {
-        "@timestamp": { "type": "date" },
-        "@version": { "type": "keyword" },
-        "message": { "type": "text", "index": true },
-        "severity": { "type": "keyword", "index": true },
-        "fields": {
-          "dynamic": true,
-          "properties": { }
-        }
+    "_source": { "enabled": true },
+    "properties": {
+      "@timestamp": { "type": "date" },
+      "@version": { "type": "keyword" },
+      "message": { "type": "text", "index": true },
+      "severity": { "type": "keyword", "index": true },
+      "fields": {
+        "dynamic": true,
+        "properties": { }
       }
     }
   }
