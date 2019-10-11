@@ -90,7 +90,6 @@ BulkWriter.prototype.write = function write(body) {
     body,
     waitForActiveShards: this.waitForActiveShards,
     timeout: this.interval + 'ms',
-    type: this.type
   }).then((res) => {
     if (res.errors && res.items) {
       res.items.forEach((item) => {
