@@ -62,10 +62,14 @@ describe('a buffering logger', function () {
     try {
       logger = createLogger(true);
       logger.end();
-      done();
     } catch (err) {
       should.not.exist(err);
     }
+
+    // Wait for index template to settle
+    setTimeout (function() {
+      done();
+    }, 4000)
   });
 
   it('should log simple message to Elasticsearch', function (done) {
@@ -98,6 +102,7 @@ describe('a buffering logger', function () {
     });
     logger.end();
   });
+
   it('should update buffer properly in case of an error from elasticsearch.', function (done) {
     this.timeout(8000);
     logger = createLogger(true);

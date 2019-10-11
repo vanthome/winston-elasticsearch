@@ -177,14 +177,9 @@ BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(fulf
   const tmplCheckMessage = {
     name: 'template_' + (typeof thiz.options.indexPrefix === 'function' ? thiz.options.indexPrefix() : thiz.options.indexPrefix)
   };
-  thiz.client.indices.getTemplate(tmplCheckMessage).then(
+  thiz.client.indices.existsTemplate(tmplCheckMessage).then(
     (res) => {
-      console.log(res);
-      fulfill(res);
-    },
-    (res) => {
-      console.log('rrrrrrrrrrrrrrrrR', res);
-      if (res.status && res.status === 404) {
+      if (res.statusCode && res.statusCode === 404) {
         const tmplMessage = {
           name: 'template_' + (typeof thiz.options.indexPrefix === 'function' ? thiz.options.indexPrefix() : thiz.options.indexPrefix),
           create: true,
@@ -195,10 +190,17 @@ BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(fulf
             fulfill(res1);
           },
           (err1) => {
+            thiz.transport.emit('error', err1);
             reject(err1);
           }
         );
+      } else {
+        fulfill(res);
       }
+    },
+    (res) => {
+      thiz.transport.emit('error', res);
+      reject(res);
     }
   );
 };

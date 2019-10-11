@@ -1,8 +1,13 @@
-0.8.2 / 2019-10-01
+0.8.2 / 2019-11-01
 ==================
 
 - Upgrade deps
+- Use `existsTemplate` instead of `getTemplate`
 - Make buffering in case of outages more stable
+- Don't provide `type` anymore with ES client's bulk operation
+- Default to `all` for `waitForActiveShards`
+- Emit more `error` events in error cases
+- Adapt default index template to conform with newer ES version
 
 0.8.1 / 2019-10-01
 ==================
