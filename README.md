@@ -118,7 +118,6 @@ Input A:
     "method": "GET",
     "url": "/sitemap.xml",
     ...
-    }
   }
 }
 ```
