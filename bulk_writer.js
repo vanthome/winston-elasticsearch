@@ -1,3 +1,5 @@
+/* eslint no-underscore-dangle: ["error", { "allow": ["_index", "_type"] }] */
+
 const fs = require('fs');
 const path = require('path');
 const Promise = require('promise');
