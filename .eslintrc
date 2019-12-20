@@ -16,6 +16,7 @@
       "ignoreReadBeforeAssign": true
     }],
     "space-before-function-paren": 0,
+    "prefer-object-spread": 0,
     "strict": 0
   },
   "plugins": [

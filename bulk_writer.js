@@ -1,3 +1,5 @@
+/* eslint no-underscore-dangle: ["error", { "allow": ["_index", "_type"] }] */
+
 const fs = require('fs');
 const path = require('path');
 const Promise = require('promise');
@@ -90,30 +92,31 @@ BulkWriter.prototype.write = function write(body) {
     body,
     waitForActiveShards: this.waitForActiveShards,
     timeout: this.interval + 'ms',
-  }).then((res) => {
+  }).then((response) => {
+    const res = response.body;
     if (res.errors && res.items) {
       res.items.forEach((item) => {
         if (item.index && item.index.error) {
-          // eslint-disable-next-line no-console
           thiz.transport.emit('error', item.index.error);
+          // eslint-disable-next-line no-console
           console.error('Elasticsearch index error', item.index);
         }
       });
     }
   }).catch((e) => { // prevent [DEP0018] DeprecationWarning
     // rollback this.bulk array
-    const _body = [];
+    const newBody = [];
     for (let i = 0; i < body.length; i += 2) {
-      _body.push({index: body[i].index._index, type: body[i].index._type, doc: body[i+1]});
+      newBody.push({ index: body[i].index._index, type: body[i].index._type, doc: body[i + 1] });
     }
-    const lenSum = thiz.bulk.length + _body.length;
+    const lenSum = thiz.bulk.length + newBody.length;
     if (thiz.options.bufferLimit && (lenSum >= thiz.options.bufferLimit)) {
-      thiz.bulk = _body.concat(thiz.bulk.slice(0, thiz.options.bufferLimit - _body.length));
+      thiz.bulk = newBody.concat(thiz.bulk.slice(0, thiz.options.bufferLimit - newBody.length));
     } else {
-      thiz.bulk = _body.concat(thiz.bulk);
+      thiz.bulk = newBody.concat(thiz.bulk);
     }
-    // eslint-disable-next-line no-console
     thiz.transport.emit('error', e);
+    // eslint-disable-next-line no-console
     console.error(e);
 
     debug('error occurred', e);
@@ -190,7 +193,7 @@ BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(fulf
         };
         thiz.client.indices.putTemplate(tmplMessage).then(
           (res1) => {
-            fulfill(res1);
+            fulfill(res1.body);
           },
           (err1) => {
             thiz.transport.emit('error', err1);
@@ -198,7 +201,7 @@ BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(fulf
           }
         );
       } else {
-        fulfill(res);
+        fulfill(res.body);
       }
     },
     (res) => {
