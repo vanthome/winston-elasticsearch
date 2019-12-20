@@ -105,15 +105,15 @@ BulkWriter.prototype.write = function write(body) {
     }
   }).catch((e) => { // prevent [DEP0018] DeprecationWarning
     // rollback this.bulk array
-    const _body = [];
+    const newBody = [];
     for (let i = 0; i < body.length; i += 2) {
-      _body.push({ index: body[i].index._index, type: body[i].index._type, doc: body[i + 1] });
+      newBody.push({ index: body[i].index._index, type: body[i].index._type, doc: body[i + 1] });
     }
-    const lenSum = thiz.bulk.length + _body.length;
+    const lenSum = thiz.bulk.length + newBody.length;
     if (thiz.options.bufferLimit && (lenSum >= thiz.options.bufferLimit)) {
-      thiz.bulk = _body.concat(thiz.bulk.slice(0, thiz.options.bufferLimit - _body.length));
+      thiz.bulk = newBody.concat(thiz.bulk.slice(0, thiz.options.bufferLimit - newBody.length));
     } else {
-      thiz.bulk = _body.concat(thiz.bulk);
+      thiz.bulk = newBody.concat(thiz.bulk);
     }
     thiz.transport.emit('error', e);
     // eslint-disable-next-line no-console
