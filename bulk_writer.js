@@ -167,20 +167,24 @@ BulkWriter.prototype.checkEsConnection = function checkEsConnection() {
 
 BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(fulfill, reject) {
   const thiz = this;
+
+  const indexPrefix = (typeof thiz.options.indexPrefix === 'function' ? thiz.options.indexPrefix() : thiz.options.indexPrefix);
   // eslint-disable-next-line prefer-destructuring
   let mappingTemplate = thiz.options.mappingTemplate;
   if (mappingTemplate === null || typeof mappingTemplate === 'undefined') {
     const rawdata = fs.readFileSync(path.join(__dirname, 'index-template-mapping.json'));
     mappingTemplate = JSON.parse(rawdata);
+    mappingTemplate.index_patterns = indexPrefix + '-*';
   }
+
   const tmplCheckMessage = {
-    name: 'template_' + (typeof thiz.options.indexPrefix === 'function' ? thiz.options.indexPrefix() : thiz.options.indexPrefix)
+    name: 'template_' + indexPrefix
   };
   thiz.client.indices.existsTemplate(tmplCheckMessage).then(
     (res) => {
       if (res.statusCode && res.statusCode === 404) {
         const tmplMessage = {
-          name: 'template_' + (typeof thiz.options.indexPrefix === 'function' ? thiz.options.indexPrefix() : thiz.options.indexPrefix),
+          name: 'template_' + indexPrefix,
           create: true,
           body: mappingTemplate
         };
