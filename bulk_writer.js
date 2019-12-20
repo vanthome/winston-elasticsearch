@@ -90,7 +90,8 @@ BulkWriter.prototype.write = function write(body) {
     body,
     waitForActiveShards: this.waitForActiveShards,
     timeout: this.interval + 'ms',
-  }).then((res) => {
+  }).then((response) => {
+    const res = response.body;
     if (res.errors && res.items) {
       res.items.forEach((item) => {
         if (item.index && item.index.error) {
@@ -186,7 +187,7 @@ BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(fulf
         };
         thiz.client.indices.putTemplate(tmplMessage).then(
           (res1) => {
-            fulfill(res1);
+            fulfill(res1.body);
           },
           (err1) => {
             thiz.transport.emit('error', err1);
@@ -194,7 +195,7 @@ BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(fulf
           }
         );
       } else {
-        fulfill(res);
+        fulfill(res.body);
       }
     },
     (res) => {
