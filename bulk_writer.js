@@ -95,8 +95,8 @@ BulkWriter.prototype.write = function write(body) {
     if (res.errors && res.items) {
       res.items.forEach((item) => {
         if (item.index && item.index.error) {
-          // eslint-disable-next-line no-console
           thiz.transport.emit('error', item.index.error);
+          // eslint-disable-next-line no-console
           console.error('Elasticsearch index error', item.index);
         }
       });
@@ -113,8 +113,8 @@ BulkWriter.prototype.write = function write(body) {
     } else {
       thiz.bulk = _body.concat(thiz.bulk);
     }
-    // eslint-disable-next-line no-console
     thiz.transport.emit('error', e);
+    // eslint-disable-next-line no-console
     console.error(e);
 
     debug('error occurred', e);
