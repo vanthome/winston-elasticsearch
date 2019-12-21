@@ -1,3 +1,10 @@
+0.8.3 / 2019-12-20
+==================
+
+- Upgrade deps
+- Make compatible with ES client 7.5
+- Add `-*` to given index pattern prefix for creating index pattern
+
 0.8.2 / 2019-11-01
 ==================
 
