@@ -94,7 +94,7 @@ BulkWriter.prototype.write = function write(body) {
     timeout: this.interval + 'ms',
   }).then((response) => {
     const res = response.body;
-    if (res.errors && res.items) {
+    if (res && res.errors && res.items) {
       res.items.forEach((item) => {
         if (item.index && item.index.error) {
           thiz.transport.emit('error', item.index.error);
