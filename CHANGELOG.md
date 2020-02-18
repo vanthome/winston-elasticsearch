@@ -1,3 +1,9 @@
+0.8.4 / 2020-12-20
+==================
+
+- Upgrade typings
+- Make compatible with ES client 7.6
+
 0.8.3 / 2019-12-20
 ==================
 
