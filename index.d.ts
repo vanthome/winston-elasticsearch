@@ -1,6 +1,6 @@
 declare module 'winston-elasticsearch' {
   import { Client, ClientOptions, ApiResponse } from '@elastic/elasticsearch';
-  import TransportStream from 'winston-transport';
+  import TransportStream = require('winston-transport');
 
   export interface LogData {
     message: any;
