@@ -78,7 +78,7 @@ BulkWriter.prototype.append = function append(index, type, doc) {
       // @todo: i guess we can use callback to notify caller
       return;
     }
-    this.bulk.push({
+    this.bulk.unshift({
       index, type, doc
     });
   } else {
