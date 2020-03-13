@@ -14,6 +14,11 @@ const transformer = function transformer(logData) {
   transformed.message = logData.message;
   transformed.severity = logData.level;
   transformed.fields = logData.meta;
+
+  if (logData.meta['transaction.id']) transformed.transaction = { id: logData.meta['transaction.id'] };
+  if (logData.meta['trace.id']) transformed.trace = { id: logData.meta['trace.id'] };
+  if (logData.meta['span.id']) transformed.span = { id: logData.meta['span.id'] };
+
   return transformed;
 };
 

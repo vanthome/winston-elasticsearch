@@ -72,6 +72,7 @@ If multiple objects are provided as arguments, the contents are stringified.
 - `pipeline` [none] Sets the pipeline id to pre-process incoming documents with. See [the bulk API docs](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html#api-bulk).
 - `buffering` [true] Boolean flag to enable or disable messages buffering. The `bufferLimit` option is ignored if set to `false`.
 - `bufferLimit` [null] Limit for the number of log messages in the buffer.
+- `apm` [null] Inject [apm client](https://www.npmjs.com/package/elastic-apm-node) to link elastic logs with elastic apm traces.
 
 ### Logging of ES Client
 
@@ -190,3 +191,100 @@ This message would be POSTed to the following endpoint:
     http://localhost:9200/logs-2019.09.30/log/
 
 So the default mapping uses an index pattern `logs-*`.
+
+
+## Logs correlation with Elastic APM
+
+### Instrument your code...
+
+- Install the official nodejs client for [elastic-apm](https://www.npmjs.com/package/elastic-apm-node)
+
+```
+yarn add elastic-apm-node
+- or -
+npm install elastic-apm-node
+```
+
+Then, before any other require in your code, do:
+
+```js
+const apm = require("elastic-apm-node").start({
+  serverUrl: "<apm server http url>"
+})
+
+// Set up the logger
+var winston = require('winston');
+var Elasticsearch = require('winston-elasticsearch');
+
+var esTransportOpts = {
+  apm,
+  level: 'info',
+  clientOpts: { node: "<elastic server>" }
+};
+var logger = winston.createLogger({
+  transports: [
+    new Elasticsearch(esTransportOpts)
+  ]
+});
+```
+
+### Inject apm traces into logs
+
+```js
+logger.info('Some log message');
+```
+
+Will produce:
+
+```js
+{
+  "@timestamp": "2020-03-13T20:35:28.129Z",
+  "message": "Some log message",
+  "severity": "info",
+  "fields": {},
+  "transaction": {
+    "id": "1f6c801ffc3ae6c6"
+  },
+  "trace": {
+    "id": "1f6c801ffc3ae6c6"
+  }
+}
+```
+
+### Notice
+
+Some "custom" logs may not have the apm trace.
+
+If that is the case, you can retreive traces using `apm.currentTraceIds` like so:
+
+```js
+logger.info("Some log message", { ...apm.currentTracesIds })
+```
+
+The transformer function (see above) will place the apm trace in the root object
+so that kibana can link Logs to APMs.
+
+**Custom traces WILL TAKE PRECEDENCE**
+
+If you are using a custom transformer, you should add the following code into it:
+
+```js
+  if (logData.meta['transaction.id']) transformed.transaction = { id: logData.meta['transaction.id'] };
+  if (logData.meta['trace.id']) transformed.trace = { id: logData.meta['trace.id'] };
+  if (logData.meta['span.id']) transformed.span = { id: logData.meta['span.id'] };
+```
+
+This scenario may happen on a server (e.g. restify) where you want to log the query
+after it was sent to the client (e.g. using `server.on('after', (req, res, route, error) => log.debug("after", { route, error }))`).
+In that case you will not get the traces into the response because traces would
+have stoped (as the server sent the response to the client).
+
+In that scenario, you could do something like so:
+
+```js
+server.use((req, res, next) => {
+  req.apm = apm.currentTracesIds
+  next()
+})
+server.on("after", (req, res, route, error) => log.debug("after", { route, error, ...req.apm }))
+```
