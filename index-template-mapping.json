@@ -1,5 +1,5 @@
 {
-  "index_patterns": "logs-*",
+  "index_patterns": ["logs-*"],
   "settings": {
     "number_of_shards": 1,
     "number_of_replicas": 0,
@@ -8,15 +8,17 @@
     }
   },
   "mappings": {
+    "index": {
     "_source": { "enabled": true },
     "properties": {
       "@timestamp": { "type": "date" },
       "@version": { "type": "keyword" },
-      "message": { "type": "text", "index": true },
-      "severity": { "type": "keyword", "index": true },
+      "message": { "type": "text" },
+      "severity": { "type": "keyword" },
       "fields": {
         "dynamic": true,
         "properties": { }
+        }
       }
     }
   }
