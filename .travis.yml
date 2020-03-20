@@ -24,7 +24,7 @@ before_install:
   - echo $JAVA_HOME
   - java -version
 before_script:
-  - sleep 1000
+  - sleep 100
 after_success:
   - 'npm run coveralls'
   - 'cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js'
