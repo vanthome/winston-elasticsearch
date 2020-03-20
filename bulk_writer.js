@@ -97,13 +97,13 @@ BulkWriter.prototype.write = function write(body) {
     if (res && res.errors && res.items) {
       res.items.forEach((item) => {
         if (item.index && item.index.error) {
-          thiz.transport.emit('error', item.index.error);
           // eslint-disable-next-line no-console
           console.error('Elasticsearch index error', item.index);
+          throw new Error('TEST');
         }
       });
     }
-  }).catch((e) => { // prevent [DEP0018] DeprecationWarning
+  }).catch((e) => {
     // rollback this.bulk array
     const newBody = [];
     for (let i = 0; i < body.length; i += 2) {
@@ -115,13 +115,15 @@ BulkWriter.prototype.write = function write(body) {
     } else {
       thiz.bulk = newBody.concat(thiz.bulk);
     }
-    thiz.transport.emit('error', e);
-    // eslint-disable-next-line no-console
-    console.error(e);
-
     debug('error occurred', e);
     this.stop();
     this.checkEsConnection();
+    // eslint-disable-next-line no-console
+    console.log(e);
+    // Rethrow in next run loop to prevent UnhandledPromiseRejectionWarning
+    process.nextTick(() => {
+      thiz.transport.emit('error', e);
+    });
   });
 };
 

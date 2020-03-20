@@ -1,3 +1,10 @@
+0.8.6 / 2020-03-18
+==================
+
+- Introduce Elastic APM feature
+- Better debug logs
+- Prevent UnhandledPromiseRejectionWarning in case of ES errors
+
 0.8.5 / 2020-03-09
 ==================
 

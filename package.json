@@ -33,8 +33,8 @@
     "logstash"
   ],
   "dependencies": {
-    "@elastic/elasticsearch": "^7.6.0",
-    "dayjs": "^1.8.22",
+    "@elastic/elasticsearch": "^7.6.1",
+    "dayjs": "^1.8.23",
     "debug": "4.1.1",
     "lodash.defaults": "^4.2.0",
     "lodash.omit": "^4.5.0",
@@ -45,19 +45,19 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
-    "coveralls": "^3.0.9",
+    "coveralls": "^3.0.11",
     "eslint": "^6.8.0",
-    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.1",
-    "eslint-plugin-json": "^2.1.0",
-    "mocha": "^7.1.0",
+    "eslint-plugin-json": "^2.1.1",
+    "mocha": "^7.1.1",
     "nyc": "^15.0.0",
     "should": "^13.2.3"
   },
   "scripts": {
     "test": "nyc mocha",
     "lint": "eslint *.json *.js",
-    "mocha": "mocha ./test/*",
+    "mocha": "mocha --full-trace./test/* -- --trace-warnings",
     "coveralls": "nyc report --reporter=text-lcov | coveralls"
   },
   "engines": {
