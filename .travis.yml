@@ -3,6 +3,7 @@ sudo: required
 dist: xenial
 node_js:
   - "8"
+  - "12"
 jdk:
   - oraclejdk11
 env:
@@ -10,7 +11,7 @@ env:
     - COVERALLS=1
     - WAIT_FOR_ES=1
   matrix:
-    - ES_VERSION=7.3.2
+    - ES_VERSION=7.6.1
 install:
   - mkdir /tmp/elasticsearch
   - wget -O - https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}-linux-x86_64.tar.gz | tar xz --directory=/tmp/elasticsearch --strip-components=1
@@ -23,7 +24,7 @@ before_install:
   - echo $JAVA_HOME
   - java -version
 before_script:
-  - sleep 10
+  - sleep 1000
 after_success:
   - 'npm run coveralls'
   - 'cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js'
