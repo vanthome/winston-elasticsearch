@@ -9,7 +9,7 @@ const { Client } = require('@elastic/elasticsearch');
 const defaultTransformer = require('./transformer');
 const BulkWriter = require('./bulk_writer');
 
-module.exports = class Elasticsearch extends Transport {
+class ElasticsearchTransport extends Transport {
   constructor(opts) {
     super(opts);
     this.name = 'elasticsearch';
@@ -131,4 +131,6 @@ module.exports = class Elasticsearch extends Transport {
   }
 };
 
-winston.transports.Elasticsearch = module.exports;
+winston.transports.Elasticsearch = ElasticsearchTransport;
+
+module.exports = {ElasticsearchTransport}
