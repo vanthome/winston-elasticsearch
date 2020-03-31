@@ -1,9 +1,7 @@
-0.8.6 / 2020-03-18
+0.8.6 / 2020-04-01
 ==================
 
-- Introduce Elastic APM feature
-- Better debug logs
-- Prevent UnhandledPromiseRejectionWarning in case of ES errors
+- Remove default export from typings
 
 0.8.5 / 2020-03-09
 ==================
