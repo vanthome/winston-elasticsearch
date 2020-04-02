@@ -133,4 +133,4 @@ class ElasticsearchTransport extends Transport {
 
 winston.transports.Elasticsearch = ElasticsearchTransport;
 
-module.exports = {ElasticsearchTransport}
+module.exports = ElasticsearchTransport;
