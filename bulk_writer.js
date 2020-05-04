@@ -118,8 +118,6 @@ BulkWriter.prototype.write = function write(body) {
     debug('error occurred', e);
     this.stop();
     this.checkEsConnection();
-    // eslint-disable-next-line no-console
-    console.log(e);
     // Rethrow in next run loop to prevent UnhandledPromiseRejectionWarning
     process.nextTick(() => {
       thiz.transport.emit('error', e);
