@@ -1,4 +1,4 @@
-/* eslint no-underscore-dangle: ["error", { "allow": ["_index", "_type"] }] */
+/* eslint no-underscore-dangle: ['error', { 'allow': ['_index', '_type'] }] */
 
 const fs = require('fs');
 const path = require('path');
@@ -13,6 +13,7 @@ const BulkWriter = function BulkWriter(transport, client, options) {
   this.interval = options.interval || 5000;
   this.waitForActiveShards = options.waitForActiveShards;
   this.pipeline = options.pipeline;
+  this.retryLimit = options.retryLimit || 5;
 
   this.bulk = []; // bulk to be flushed
   this.running = false;
@@ -27,7 +28,9 @@ BulkWriter.prototype.start = function start() {
 
 BulkWriter.prototype.stop = function stop() {
   this.running = false;
-  if (!this.timer) { return; }
+  if (!this.timer) {
+    return;
+  }
   clearTimeout(this.timer);
   this.timer = null;
   debug('stopped');
@@ -43,12 +46,15 @@ BulkWriter.prototype.schedule = function schedule() {
 BulkWriter.prototype.tick = function tick() {
   debug('tick');
   const thiz = this;
-  if (!this.running) { return; }
+  if (!this.running) {
+    return;
+  }
   this.flush()
     .then(() => {
       // Emulate finally with last .then()
     })
-    .then(() => { // finally()
+    .then(() => {
+      // finally()
       thiz.schedule();
     });
 };
@@ -64,8 +70,11 @@ BulkWriter.prototype.flush = function flush() {
   const bulk = this.bulk.concat();
   this.bulk = [];
   const body = [];
-  bulk.forEach(({ index, type, doc }) => {
-    body.push({ index: { _index: index, _type: type, pipeline: this.pipeline } }, doc);
+  bulk.forEach(({ index, type, doc, attempts }) => {
+    body.push(
+      { index: { _index: index, _type: type, pipeline: this.pipeline }, attempts },
+      doc
+    );
   });
   debug('bulk writer is going to write', body);
   return this.write(body);
@@ -73,56 +82,78 @@ BulkWriter.prototype.flush = function flush() {
 
 BulkWriter.prototype.append = function append(index, type, doc) {
   if (this.options.buffering === true) {
-    if (typeof this.options.bufferLimit === 'number' && this.bulk.length >= this.options.bufferLimit) {
+    if (
+      typeof this.options.bufferLimit === 'number' &&
+      this.bulk.length >= this.options.bufferLimit
+    ) {
       debug('message discarded because buffer limit exceeded');
       // @todo: i guess we can use callback to notify caller
       return;
     }
     this.bulk.unshift({
-      index, type, doc
+      index,
+      type,
+      doc,
+      attempts: 0
     });
   } else {
-    this.write([{ index: { _index: index, _type: type, pipeline: this.pipeline } }, doc]);
+    this.write([
+      { index: { _index: index, _type: type, pipeline: this.pipeline } },
+      doc
+    ]);
   }
 };
 
 BulkWriter.prototype.write = function write(body) {
   const thiz = this;
-  return this.client.bulk({
-    body,
-    waitForActiveShards: this.waitForActiveShards,
-    timeout: this.interval + 'ms',
-  }).then((response) => {
-    const res = response.body;
-    if (res && res.errors && res.items) {
-      res.items.forEach((item) => {
-        if (item.index && item.index.error) {
-          // eslint-disable-next-line no-console
-          console.error('Elasticsearch index error', item.index);
-          throw new Error('TEST');
+  return this.client
+    .bulk({
+      body,
+      waitForActiveShards: this.waitForActiveShards,
+      timeout: this.interval + 'ms',
+    })
+    .then((response) => {
+      const res = response.body;
+      if (res && res.errors && res.items) {
+        res.items.forEach((item) => {
+          if (item.index && item.index.error) {
+            // eslint-disable-next-line no-console
+            debug('elasticsearch index error', item.index);
+            throw new Error('ElasticSearch index error');
+          }
+        });
+      }
+    })
+    .catch((e) => {
+      // rollback this.bulk array
+      const newBody = [];
+      for (let i = 0; i < body.length; i += 2) {
+        const attempts = body[i].attempts;
+        if (attempts < thiz.retryLimit) {
+          newBody.push({
+            index: body[i].index._index,
+            type: body[i].index._type,
+            doc: body[i + 1],
+            attempts: attempts + 1,
+          });
+        } else {
+          debug('retry attempts exceeded')
         }
-      });
-    }
-  }).catch((e) => {
-    // rollback this.bulk array
-    const newBody = [];
-    for (let i = 0; i < body.length; i += 2) {
-      newBody.push({ index: body[i].index._index, type: body[i].index._type, doc: body[i + 1] });
-    }
-    const lenSum = thiz.bulk.length + newBody.length;
-    if (thiz.options.bufferLimit && (lenSum >= thiz.options.bufferLimit)) {
-      thiz.bulk = newBody.concat(thiz.bulk.slice(0, thiz.options.bufferLimit - newBody.length));
-    } else {
-      thiz.bulk = newBody.concat(thiz.bulk);
-    }
-    debug('error occurred', e);
-    this.stop();
-    this.checkEsConnection();
-    // Rethrow in next run loop to prevent UnhandledPromiseRejectionWarning
-    process.nextTick(() => {
+      }
+
+      const lenSum = thiz.bulk.length + newBody.length;
+      if (thiz.options.bufferLimit && lenSum >= thiz.options.bufferLimit) {
+        thiz.bulk = newBody.concat(
+          thiz.bulk.slice(0, thiz.options.bufferLimit - newBody.length)
+        );
+      } else {
+        thiz.bulk = newBody.concat(thiz.bulk);
+      }
+      debug('error occurred', e);
+      this.stop();
+      this.checkEsConnection();
       thiz.transport.emit('error', e);
     });
-  });
 };
 
 BulkWriter.prototype.checkEsConnection = function checkEsConnection() {
@@ -168,14 +199,22 @@ BulkWriter.prototype.checkEsConnection = function checkEsConnection() {
   });
 };
 
-BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(fulfill, reject) {
+BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(
+  fulfill,
+  reject
+) {
   const thiz = this;
 
-  const indexPrefix = (typeof thiz.options.indexPrefix === 'function' ? thiz.options.indexPrefix() : thiz.options.indexPrefix);
+  const indexPrefix =
+    typeof thiz.options.indexPrefix === 'function'
+      ? thiz.options.indexPrefix()
+      : thiz.options.indexPrefix;
   // eslint-disable-next-line prefer-destructuring
   let mappingTemplate = thiz.options.mappingTemplate;
   if (mappingTemplate === null || typeof mappingTemplate === 'undefined') {
-    const rawdata = fs.readFileSync(path.join(__dirname, 'index-template-mapping.json'));
+    const rawdata = fs.readFileSync(
+      path.join(__dirname, 'index-template-mapping.json')
+    );
     mappingTemplate = JSON.parse(rawdata);
     mappingTemplate.index_patterns = indexPrefix + '-*';
   }

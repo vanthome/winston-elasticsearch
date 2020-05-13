@@ -13,10 +13,14 @@ class ElasticsearchTransport extends Transport {
   constructor(opts) {
     super(opts);
     this.name = 'elasticsearch';
+    this.handleExceptions = opts.handleExceptions || false;
+    this.handleRejections = opts.handleRejections || false;
+    this.exitOnError = false;
 
     this.on('finish', (info) => {
-      this.bulkWriter.schedule = () => { };
+      this.bulkWriter.schedule = () => {};
     });
+    this.on('error', (err) => {})
     this.opts = opts || {};
 
     // Set defaults
@@ -31,6 +35,7 @@ class ElasticsearchTransport extends Transport {
       flushInterval: 2000,
       waitForActiveShards: 1,
       handleExceptions: false,
+      exitOnError: false,
       pipeline: null,
       bufferLimit: null,
       buffering: true
@@ -68,11 +73,7 @@ class ElasticsearchTransport extends Transport {
       bufferLimit: opts.buffering ? opts.bufferLimit : 0,
     };
 
-    this.bulkWriter = new BulkWriter(
-      this,
-      this.client,
-      bulkWriteropts
-    );
+    this.bulkWriter = new BulkWriter(this, this.client, bulkWriteropts);
     this.bulkWriter.start();
   }
 
@@ -99,16 +100,15 @@ class ElasticsearchTransport extends Transport {
 
     if (this.opts.apm) {
       const apm = this.opts.apm.currentTraceIds;
-      if (apm['transaction.id']) entry.transaction = { id: apm['transaction.id'], ...entry.transaction };
-      if (apm['trace.id']) entry.trace = { id: apm['trace.id'], ...entry.transaction };
-      if (apm['span.id']) entry.span = { id: apm['span.id'], ...entry.transaction };
+      if (apm['transaction.id'])
+        entry.transaction = { id: apm['transaction.id'], ...entry.transaction };
+      if (apm['trace.id'])
+        entry.trace = { id: apm['trace.id'], ...entry.transaction };
+      if (apm['span.id'])
+        entry.span = { id: apm['span.id'], ...entry.transaction };
     }
 
-    this.bulkWriter.append(
-      index,
-      this.opts.messageType,
-      entry
-    );
+    this.bulkWriter.append(index, this.opts.messageType, entry);
 
     callback();
   }
@@ -125,7 +125,11 @@ class ElasticsearchTransport extends Transport {
       }
       const now = dayjs();
       const dateString = now.format(opts.indexSuffixPattern);
-      indexName = indexPrefix + (indexInterfix !== undefined ? '-' + indexInterfix : '') + '-' + dateString;
+      indexName =
+        indexPrefix +
+        (indexInterfix !== undefined ? '-' + indexInterfix : '') +
+        '-' +
+        dateString;
     }
     return indexName;
   }
