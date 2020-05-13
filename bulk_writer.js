@@ -120,7 +120,7 @@ BulkWriter.prototype.write = function write(body) {
     this.checkEsConnection();
     // Rethrow in next run loop to prevent UnhandledPromiseRejectionWarning
     process.nextTick(() => {
-      thiz.transport.emit('error', e);
+      thiz.transport.emit('warn', e);
     });
   });
 };
@@ -140,7 +140,11 @@ BulkWriter.prototype.checkEsConnection = function checkEsConnection() {
   return new Promise((fulfill, reject) => {
     operation.attempt((currentAttempt) => {
       debug('checking for connection');
-      thiz.client.ping().then(
+      thiz.client.cluster.health({
+        timeout: '5s',
+        wait_for_nodes: '1',
+        wait_for_status: 'yellow'})
+        .then(
         (res) => {
           thiz.esConnection = true;
           // Ensure mapping template is existing if desired
@@ -196,7 +200,7 @@ BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(fulf
             fulfill(res1.body);
           },
           (err1) => {
-            thiz.transport.emit('error', err1);
+            thiz.transport.emit('warn', err1);
             reject(err1);
           }
         );
@@ -205,7 +209,7 @@ BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(fulf
       }
     },
     (res) => {
-      thiz.transport.emit('error', res);
+      thiz.transport.emit('warn', res);
       reject(res);
     }
   );
