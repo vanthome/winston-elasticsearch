@@ -13,6 +13,15 @@ class ElasticsearchTransport extends Transport {
   constructor(opts) {
     super(opts);
     this.name = 'elasticsearch';
+    this.source = null;
+
+    this.on('pipe', (source) => {
+      this.source = source;
+    });
+
+    this.on('error', (err) => {
+      this.source.pipe(this); // re-pipes readable
+    });
 
     this.on('finish', (info) => {
       this.bulkWriter.schedule = () => { };

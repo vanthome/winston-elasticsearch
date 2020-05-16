@@ -120,7 +120,7 @@ BulkWriter.prototype.write = function write(body) {
     this.checkEsConnection();
     // Rethrow in next run loop to prevent UnhandledPromiseRejectionWarning
     process.nextTick(() => {
-      thiz.transport.emit('warn', e);
+      thiz.transport.emit('error', e);
     });
   });
 };
@@ -200,7 +200,7 @@ BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(fulf
             fulfill(res1.body);
           },
           (err1) => {
-            thiz.transport.emit('warn', err1);
+            thiz.transport.emit('error', err1);
             reject(err1);
           }
         );
@@ -209,7 +209,7 @@ BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(fulf
       }
     },
     (res) => {
-      thiz.transport.emit('warn', res);
+      thiz.transport.emit('error', res);
       reject(res);
     }
   );
