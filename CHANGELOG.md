@@ -1,3 +1,9 @@
+0.9.0 / 2020-05-16
+==================
+
+- Upgrade ES Client
+- New approach to error handling where, in case of an emitted error the source stream is automatically re-attached to the transport stream
+
 0.8.8 / 2020-04-07
 ==================
 

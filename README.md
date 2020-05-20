@@ -192,14 +192,13 @@ This message would be POSTed to the following endpoint:
 
 So the default mapping uses an index pattern `logs-*`.
 
-
 ## Logs correlation with Elastic APM
 
-### Instrument your code...
+### Instrument your code
 
 - Install the official nodejs client for [elastic-apm](https://www.npmjs.com/package/elastic-apm-node)
 
-```
+```sh
 yarn add elastic-apm-node
 - or -
 npm install elastic-apm-node
