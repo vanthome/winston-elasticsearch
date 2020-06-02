@@ -1,14 +1,13 @@
-/* eslint-disable */
-var util = require('util');
-var fs = require('fs');
-var should = require('should');
-var winston = require('winston');
-var elasticsearch = require('@elastic/elasticsearch');
+const fs = require('fs');
+const should = require('should');
+const winston = require('winston');
 
 require('../index');
-var defaultTransformer = require('../transformer');
+const defaultTransformer = require('../transformer');
 
-var logMessage = JSON.parse(fs.readFileSync('./test/request_logentry_1.json', 'utf8'));
+const logMessage = JSON.parse(
+  fs.readFileSync('./test/request_logentry_1.json', 'utf8')
+);
 
 /*
  * Note: To run the tests, a running elasticsearch instance is required.
@@ -16,12 +15,12 @@ var logMessage = JSON.parse(fs.readFileSync('./test/request_logentry_1.json', 'u
 
 // A null logger to prevent ES client spamming the console for deliberately failed tests
 function NullLogger(config) {
-  this.error = function(msg) { };
-  this.warning = function(msg) { };
-  this.info = function(msg) { };
-  this.debug = function(msg) { };
-  this.trace = function(msg) { };
-  this.close = function(msg) { };
+  this.error = (msg) => {};
+  this.warning = (msg) => {};
+  this.info = (msg) => {};
+  this.debug = (msg) => {};
+  this.trace = (msg) => {};
+  this.close = (msg) => {};
 }
 
 function createLogger(buffering) {
@@ -32,15 +31,16 @@ function createLogger(buffering) {
         buffering,
         clientOpts: {
           log: NullLogger,
-          node: 'http://localhost:9200',
+          node: 'http://localhost:9200'
         }
-      })]
+      })
+    ]
   });
 }
 
-describe('the default transformer', function () {
-  it('should transform log data from winston into a logstash like structure', function (done) {
-    var transformed = defaultTransformer({
+describe('the default transformer', () => {
+  it('should transform log data from winston into a logstash like structure', (done) => {
+    const transformed = defaultTransformer({
       message: 'some message',
       level: 'error',
       meta: {
@@ -54,9 +54,9 @@ describe('the default transformer', function () {
   });
 });
 
-var logger = null;
+let logger = null;
 
-describe('a buffering logger', function () {
+describe('a buffering logger', () => {
   it('can be instantiated', function (done) {
     this.timeout(8000);
     try {
@@ -67,9 +67,9 @@ describe('a buffering logger', function () {
     }
 
     // Wait for index template to settle
-    setTimeout (function() {
+    setTimeout(() => {
       done();
-    }, 4000)
+    }, 4000);
   });
 
   it('should log simple message to Elasticsearch', function (done) {
@@ -107,27 +107,29 @@ describe('a buffering logger', function () {
     this.timeout(8000);
     logger = createLogger(true);
     const transport = logger.transports[0];
-    transport.bulkWriter.bulk.should.have.lengthOf(0)
+    transport.bulkWriter.bulk.should.have.lengthOf(0);
 
     // mock client.bulk to throw an error
-    transport.client.bulk = function() {
-      return Promise.reject(new Error('Test Error'))
+    transport.client.bulk = () => {
+      return Promise.reject(new Error('Test Error'));
     };
     logger.info('test');
 
     logger.on('error', (err) => {
       should.exist(err);
       transport.bulkWriter.bulk.should.have.lengthOf(1);
-      transport.bulkWriter.bulk = []; // manually clear the buffer of stop transport from attempting to flush logs.
+      // manually clear the buffer of stop transport from attempting to flush logs
+      transport.bulkWriter.bulk = [];
       done();
     });
     logger.end();
   });
 
   /*
-  describe('the logged message', function () {
-    it('should be found in the index', function (done) {
-      var client = new elasticsearch.Client({
+  describe('the logged message', () => {
+    it('should be found in the index', (done) => {
+      const elasticsearch = require('@elastic/elasticsearch');
+      const client = new elasticsearch.Client({
         host: 'localhost:9200',
         log: 'error'
       });
@@ -138,16 +140,16 @@ describe('a buffering logger', function () {
         },
         (err) => {
           should.not.exist(err);
-        }).catch((e) => {
-          // prevent '[DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated'
-        });
+        }
+      ).catch((e) => {
+        // prevent '[DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated'
+      });
     });
   });
   */
 });
 
-
-describe('a non buffering logger', function () {
+describe('a non buffering logger', () => {
   it('can be instantiated', function (done) {
     this.timeout(8000);
     try {
@@ -168,47 +170,54 @@ describe('a non buffering logger', function () {
       done();
     });
     logger.on('error', (err) => {
+      // eslint-disable-next-line no-console
+      console.error('no', err);
       should.not.exist(err);
     });
     logger.end();
   });
 });
 
-  // describe('a defective log transport', function () {
-  //   it('emits an error', function (done) {
-  //     this.timeout(40000);
-  //     var transport = new (winston.transports.Elasticsearch)({
-  //       clientOpts: {
-  //         host: 'http://does-not-exist.test:9200',
-  //         log: NullLogger,
-  //       }
-  //     });
-
-  //     transport.on('error', (err) => {
-  //       should.exist(err);
-  //       done();
-  //     });
-
-  //     defectiveLogger = winston.createLogger({
-  //       transports: [
-  //         transport
-  //       ]
-  //     });
-  //   });
-  // });
-
-  /* Manual test which allows to test re-connection of the ES client for unavailable ES instance.
-  // Must be combined with --no-timeouts option for mocha
-  describe('ES Re-Connection Test', function () {
-    it('test', function (done) {
-      this.timeout(400000);
-      setInterval(function() {
-        console.log('LOGGING...');
-        logger.log(logMessage.level, logMessage.message, logMessage.meta,
-          function (err) {
-            should.not.exist(err);
-          });
-        }, 3000);
-      });
+/*
+describe('a defective log transport', () => {
+  it('emits an error', function (done) {
+    this.timeout(40000);
+    const transport = new (winston.transports.Elasticsearch)({
+      clientOpts: {
+        host: 'http://does-not-exist.test:9200',
+        log: NullLogger
+      }
     });
-  */
+
+    transport.on('error', (err) => {
+      should.exist(err);
+      done();
+    });
+
+    // eslint-disable-next-line no-unused-vars
+    const defectiveLogger = winston.createLogger({
+      transports: [
+        transport
+      ]
+    });
+  });
+});
+*/
+
+// Manual test which allows to test re-connection of the ES client for unavailable ES instance.
+// Must be combined with --no-timeouts option for mocha
+/*
+describe('ES Re-Connection Test', () => {
+  it('test', function (done) {
+    this.timeout(400000);
+    setInterval(() => {
+      // eslint-disable-next-line no-console
+      console.log('LOGGING...');
+      logger.log(logMessage.level, logMessage.message, logMessage.meta,
+        (err) => {
+          should.not.exist(err);
+        });
+    }, 3000);
+  });
+});
+*/

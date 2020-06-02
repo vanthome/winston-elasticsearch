@@ -26,5 +26,5 @@ before_install:
 before_script:
   - sleep 100
 after_success:
-  - 'npm run coveralls'
-  - 'cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js'
+  - "npm run coveralls"
+  - "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
