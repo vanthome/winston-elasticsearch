@@ -2,6 +2,10 @@
   "extends": [
     "eslint-config-airbnb-base"
   ],
+  "env": {
+    "node": true,
+    "mocha": true
+  },
   "rules": {
     "arrow-body-style": 0,
     "consistent-this": ["error", "thiz"],
