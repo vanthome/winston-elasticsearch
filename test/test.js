@@ -70,6 +70,11 @@ describe('a buffering logger', () => {
     }, 4000);
   });
 
+  it('can end logging without calling `logger.end`', function () {
+    this.timeout(8000);
+    createLogger(true);
+  });
+
   it('should log simple message to Elasticsearch', function (done) {
     this.timeout(8000);
     const logger = createLogger(true);

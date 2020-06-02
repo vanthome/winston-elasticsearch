@@ -64,6 +64,9 @@ BulkWriter.prototype.flush = function flush() {
   if (this.bulk.length === 0) {
     debug('nothing to flush');
     return new Promise((resolve) => {
+      // pause the buffering process when there's no more bulk to flush
+      // thus allowing the process to be terminated
+      this.running = false;
       return resolve();
     });
   }
@@ -97,6 +100,11 @@ BulkWriter.prototype.append = function append(index, type, doc) {
       doc,
       attempts: 0
     });
+    // resume the buffering process
+    if (!this.running) {
+      this.running = true;
+      this.tick();
+    }
   } else {
     this.write([
       { index: { _index: index, _type: type, pipeline: this.pipeline } },
