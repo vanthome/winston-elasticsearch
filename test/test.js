@@ -54,13 +54,11 @@ describe('the default transformer', () => {
   });
 });
 
-let logger = null;
-
 describe('a buffering logger', () => {
   it('can be instantiated', function (done) {
     this.timeout(8000);
     try {
-      logger = createLogger(true);
+      const logger = createLogger(true);
       logger.end();
     } catch (err) {
       should.not.exist(err);
@@ -74,7 +72,7 @@ describe('a buffering logger', () => {
 
   it('should log simple message to Elasticsearch', function (done) {
     this.timeout(8000);
-    logger = createLogger(true);
+    const logger = createLogger(true);
 
     logger.log(logMessage.level, `${logMessage.message}1`);
     logger.on('finish', () => {
@@ -88,7 +86,7 @@ describe('a buffering logger', () => {
 
   it('should log with or without metadata', function (done) {
     this.timeout(8000);
-    logger = createLogger(true);
+    const logger = createLogger(true);
 
     logger.info('test test');
     logger.info('test test', 'hello world');
@@ -105,7 +103,7 @@ describe('a buffering logger', () => {
 
   it('should update buffer properly in case of an error from elasticsearch.', function (done) {
     this.timeout(8000);
-    logger = createLogger(true);
+    const logger = createLogger(true);
     const transport = logger.transports[0];
     transport.bulkWriter.bulk.should.have.lengthOf(0);
 
@@ -153,7 +151,7 @@ describe('a non buffering logger', () => {
   it('can be instantiated', function (done) {
     this.timeout(8000);
     try {
-      logger = createLogger(false);
+      const logger = createLogger(false);
       logger.end();
       done();
     } catch (err) {
@@ -163,7 +161,7 @@ describe('a non buffering logger', () => {
 
   it('should log simple message to Elasticsearch', function (done) {
     this.timeout(8000);
-    logger = createLogger(false);
+    const logger = createLogger(false);
 
     logger.log(logMessage.level, `${logMessage.message}1`);
     logger.on('finish', () => {
@@ -213,6 +211,7 @@ describe('ES Re-Connection Test', () => {
     setInterval(() => {
       // eslint-disable-next-line no-console
       console.log('LOGGING...');
+      const logger = createLogger(false);
       logger.log(logMessage.level, logMessage.message, logMessage.meta,
         (err) => {
           should.not.exist(err);
