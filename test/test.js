@@ -23,6 +23,15 @@ function NullLogger(config) {
   this.close = (msg) => {};
 }
 
+process.on('unhandledRejection', (error) => {
+  console.error(error);
+  process.exit(1);
+});
+process.on('uncaughtException', (error) => {
+  console.error(error);
+  process.exit(1);
+});
+
 function createLogger(buffering) {
   return winston.createLogger({
     transports: [

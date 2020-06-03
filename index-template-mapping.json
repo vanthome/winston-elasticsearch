@@ -10,27 +10,26 @@
     }
   },
   "mappings": {
-    "_source": {
-      "enabled": true
-    },
-    "properties": {
-      "@timestamp": {
-        "type": "date"
-      },
-      "@version": {
-        "type": "keyword"
-      },
-      "message": {
-        "type": "text",
-        "index": true
-      },
-      "severity": {
-        "type": "keyword",
-        "index": true
-      },
-      "fields": {
-        "dynamic": true,
-        "properties": {}
+    "winston-elasticsearch-test-log-type": {
+      "properties": {
+        "@timestamp": {
+          "type": "date"
+        },
+        "@version": {
+          "type": "keyword"
+        },
+        "message": {
+          "type": "text",
+          "index": true
+        },
+        "severity": {
+          "type": "keyword",
+          "index": true
+        },
+        "fields": {
+          "dynamic": true,
+          "properties": {}
+        }
       }
     }
   }
