@@ -115,6 +115,7 @@ BulkWriter.prototype.append = function append(index, type, doc) {
 
 BulkWriter.prototype.write = function write(body) {
   const thiz = this;
+  debug('writing to ES');
   return this.client
     .bulk({
       body,
@@ -158,7 +159,7 @@ BulkWriter.prototype.write = function write(body) {
       } else {
         thiz.bulk = newBody.concat(thiz.bulk);
       }
-      debug('error occurred', e);
+      debug('error occurred during writing', e);
       this.stop();
       this.checkEsConnection();
       thiz.transport.emit('error', e);
@@ -179,36 +180,37 @@ BulkWriter.prototype.checkEsConnection = function checkEsConnection() {
   });
   return new Promise((fulfill, reject) => {
     operation.attempt((currentAttempt) => {
-      debug('checking for connection');
+      debug('checking for ES connection');
       thiz.client.cluster.health({
         timeout: '5s',
         wait_for_nodes: '1',
         wait_for_status: 'yellow'
       })
         .then(
-          (res) => {
-            thiz.esConnection = true;
-            // Ensure mapping template is existing if desired
-            if (thiz.options.ensureMappingTemplate) {
-              thiz.ensureMappingTemplate(fulfill, reject);
-            } else {
-              fulfill(true);
-            }
-            if (thiz.options.buffering === true) {
-              debug('starting bulk writer');
-              thiz.running = true;
-              thiz.tick();
-            }
-          },
-          (err) => {
-            debug('checking for connection');
-            if (operation.retry(err)) {
-              return;
-            }
-            // thiz.esConnection = false;
-            reject(new Error('Cannot connect to ES'));
+        (res) => {
+          thiz.esConnection = true;
+          // Ensure mapping template is existing if desired
+          if (thiz.options.ensureMappingTemplate) {
+            thiz.ensureMappingTemplate(fulfill, reject);
+          } else {
+            fulfill(true);
           }
-        );
+          if (thiz.options.buffering === true) {
+            debug('starting bulk writer');
+            thiz.running = true;
+            thiz.tick();
+          }
+        },
+        (err) => {
+          debug('re-checking for connection to ES');
+          if (operation.retry(err)) {
+            return;
+          }
+          thiz.esConnection = false;
+          debug('cannot connect to ES');
+          reject(new Error('Cannot connect to ES'));
+        }
+      );
     });
   });
 };

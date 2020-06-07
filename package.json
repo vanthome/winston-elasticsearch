@@ -34,7 +34,7 @@
   ],
   "dependencies": {
     "@elastic/elasticsearch": "^7.7.1",
-    "dayjs": "^1.8.27",
+    "dayjs": "^1.8.28",
     "debug": "4.1.1",
     "lodash.defaults": "^4.2.0",
     "lodash.omit": "^4.5.0",
@@ -46,11 +46,11 @@
   "devDependencies": {
     "babel-eslint": "^10.1.0",
     "coveralls": "^3.1.0",
-    "eslint": "^7.0.0",
+    "eslint": "^7.1.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-json": "^2.1.1",
-    "mocha": "^7.1.2",
+    "mocha": "^7.2.0",
     "nyc": "^15.0.1",
     "should": "^13.2.3"
   },

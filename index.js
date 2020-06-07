@@ -29,7 +29,6 @@ class ElasticsearchTransport extends Transport {
     this.on('finish', (info) => {
       this.bulkWriter.schedule = () => {};
     });
-    this.on('error', (err) => {});
     this.opts = opts || {};
 
     // Set defaults
