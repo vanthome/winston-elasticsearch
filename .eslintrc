@@ -2,19 +2,33 @@
   "extends": [
     "eslint-config-airbnb-base"
   ],
+  "env": {
+    "node": true,
+    "mocha": true
+  },
   "rules": {
     "arrow-body-style": 0,
-    "consistent-this": ["error", "thiz"],
+    "consistent-this": [
+      "error",
+      "thiz"
+    ],
     "comma-dangle": 0,
     "global-require": 0,
-    "no-unused-vars": ["error", {
-      "vars": "all", "args": "none" }
+    "no-unused-vars": [
+      "error",
+      {
+        "vars": "all",
+        "args": "none"
+      }
     ],
     "prefer-template": 0,
-    "prefer-const": [2, {
-      "destructuring": "any",
-      "ignoreReadBeforeAssign": true
-    }],
+    "prefer-const": [
+      2,
+      {
+        "destructuring": "any",
+        "ignoreReadBeforeAssign": true
+      }
+    ],
     "space-before-function-paren": 0,
     "prefer-object-spread": 0,
     "strict": 0

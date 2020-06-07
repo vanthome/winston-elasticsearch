@@ -17,7 +17,7 @@ install:
   - wget -O - https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}-linux-x86_64.tar.gz | tar xz --directory=/tmp/elasticsearch --strip-components=1
   - /tmp/elasticsearch/bin/elasticsearch --daemonize -E path.data=/tmp
   - until curl --silent -XGET --fail http://localhost:9200; do printf '.'; sleep 1; done
-  - npm install
+  - npm ci
 git:
   depth: 10
 before_install:
@@ -26,5 +26,5 @@ before_install:
 before_script:
   - sleep 100
 after_success:
-  - 'npm run coveralls'
-  - 'cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js'
+  - "npm run coveralls"
+  - "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
