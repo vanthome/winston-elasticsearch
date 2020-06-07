@@ -10,7 +10,7 @@
     }
   },
   "mappings": {
-    "winston-elasticsearch-test-log-type": {
+    "_doc": {
       "properties": {
         "@timestamp": {
           "type": "date"

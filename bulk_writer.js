@@ -183,22 +183,28 @@ BulkWriter.prototype.checkEsConnection = function checkEsConnection() {
       debug('checking for ES connection');
       thiz.client.cluster.health({
         timeout: '5s',
-        wait_for_nodes: '1',
+        wait_for_nodes: '>=1',
         wait_for_status: 'yellow'
       })
         .then(
         (res) => {
           thiz.esConnection = true;
+          const start = () => {
+            if (thiz.options.buffering === true) {
+              debug('starting bulk writer');
+              thiz.running = true;
+              thiz.tick();
+            }
+          };
           // Ensure mapping template is existing if desired
           if (thiz.options.ensureMappingTemplate) {
-            thiz.ensureMappingTemplate(fulfill, reject);
+            thiz.ensureMappingTemplate((res1) => {
+              fulfill(res1);
+              start();
+            }, reject);
           } else {
             fulfill(true);
-          }
-          if (thiz.options.buffering === true) {
-            debug('starting bulk writer');
-            thiz.running = true;
-            thiz.tick();
+            start();
           }
         },
         (err) => {
@@ -227,8 +233,11 @@ BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(
   // eslint-disable-next-line prefer-destructuring
   let mappingTemplate = thiz.options.mappingTemplate;
   if (mappingTemplate === null || typeof mappingTemplate === 'undefined') {
+    // es version 6 and below will use 'index-template-mapping-es-lte-6.json'
+    // 7 and above will use 'index-template-mapping-es-gte-7.json'
+    const esVersion = Number(thiz.options.elasticsearchVersion) >= 7 ? 'gte-7' : 'lte-6';
     const rawdata = fs.readFileSync(
-      path.join(__dirname, 'index-template-mapping.json')
+      path.join(__dirname, 'index-template-mapping-es-' + esVersion + '.json')
     );
     mappingTemplate = JSON.parse(rawdata);
     mappingTemplate.index_patterns = indexPrefix + '-*';

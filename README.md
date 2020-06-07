@@ -64,7 +64,8 @@ If multiple objects are provided as arguments, the contents are stringified.
 - `messageType` [`_doc`] the type (path segment after the index path) under which the messages are stored under the index.
 - `transformer` [see below] a transformer function to transform logged data into a different message structure.
 - `ensureMappingTemplate` [`true`] If set to `true`, the given `mappingTemplate` is checked/ uploaded to ES when the module is sending the fist log message to make sure the log messages are mapped in a sensible manner.
-- `mappingTemplate` [see file `index-template-mapping.json` file] the mapping template to be ensured as parsed JSON.
+- `mappingTemplate` [see file `index-template-mapping-es-gte-7.json` or `index-template-mapping-es-lte-6.json`] the mapping template to be ensured as parsed JSON.
+- `elasticsearchVersion` [`7`] Elasticsearch version you are using. This helps decide the default mapping template that will be used when `ensureMappingTemplate` is `true` and `mappingTemplate` is `undefined`
 - `flushInterval` [`2000`] distance between bulk writes in ms.
 - `client` An [elasticsearch client](https://www.npmjs.com/package/@elastic/elasticsearch) instance. If given, all following options are ignored.
 - `clientOpts` An object hash passed to the ES client. See [its docs](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/client-configuration.html) for supported options.
