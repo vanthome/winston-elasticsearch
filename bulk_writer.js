@@ -187,36 +187,36 @@ BulkWriter.prototype.checkEsConnection = function checkEsConnection() {
         wait_for_status: 'yellow'
       })
         .then(
-        (res) => {
-          thiz.esConnection = true;
-          const start = () => {
-            if (thiz.options.buffering === true) {
-              debug('starting bulk writer');
-              thiz.running = true;
-              thiz.tick();
-            }
-          };
-          // Ensure mapping template is existing if desired
-          if (thiz.options.ensureMappingTemplate) {
-            thiz.ensureMappingTemplate((res1) => {
-              fulfill(res1);
+          (res) => {
+            thiz.esConnection = true;
+            const start = () => {
+              if (thiz.options.buffering === true) {
+                debug('starting bulk writer');
+                thiz.running = true;
+                thiz.tick();
+              }
+            };
+            // Ensure mapping template is existing if desired
+            if (thiz.options.ensureMappingTemplate) {
+              thiz.ensureMappingTemplate((res1) => {
+                fulfill(res1);
+                start();
+              }, reject);
+            } else {
+              fulfill(true);
               start();
-            }, reject);
-          } else {
-            fulfill(true);
-            start();
+            }
+          },
+          (err) => {
+            debug('re-checking for connection to ES');
+            if (operation.retry(err)) {
+              return;
+            }
+            thiz.esConnection = false;
+            debug('cannot connect to ES');
+            reject(new Error('Cannot connect to ES'));
           }
-        },
-        (err) => {
-          debug('re-checking for connection to ES');
-          if (operation.retry(err)) {
-            return;
-          }
-          thiz.esConnection = false;
-          debug('cannot connect to ES');
-          reject(new Error('Cannot connect to ES'));
-        }
-      );
+        );
     });
   });
 };
