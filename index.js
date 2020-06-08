@@ -40,6 +40,7 @@ class ElasticsearchTransport extends Transport {
       messageType: '_doc',
       transformer: defaultTransformer,
       ensureMappingTemplate: true,
+      elasticsearchVersion: 7,
       flushInterval: 2000,
       waitForActiveShards: 1,
       handleExceptions: false,
@@ -79,6 +80,7 @@ class ElasticsearchTransport extends Transport {
       indexPrefix: opts.indexPrefix,
       buffering: opts.buffering,
       bufferLimit: opts.buffering ? opts.bufferLimit : 0,
+      elasticsearchVersion: opts.elasticsearchVersion,
     };
 
     this.bulkWriter = new BulkWriter(this, this.client, bulkWriteropts);

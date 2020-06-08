@@ -1,6 +1,7 @@
 const fs = require('fs');
 const should = require('should');
 const winston = require('winston');
+const http = require('http');
 
 require('../index');
 const defaultTransformer = require('../transformer');
@@ -23,12 +24,23 @@ function NullLogger(config) {
   this.close = (msg) => {};
 }
 
+process.on('unhandledRejection', (error) => {
+  console.error(error);
+  process.exit(1);
+});
+process.on('uncaughtException', (error) => {
+  console.error(error);
+  process.exit(1);
+});
+
+let elasticsearchVersion = 7;
 function createLogger(buffering) {
   return winston.createLogger({
     transports: [
       new winston.transports.Elasticsearch({
         flushInterval: 1,
         buffering,
+        elasticsearchVersion,
         clientOpts: {
           log: NullLogger,
           node: 'http://localhost:9200'
@@ -37,6 +49,25 @@ function createLogger(buffering) {
     ]
   });
 }
+
+before(() => {
+  return new Promise((resolve) => {
+    // get ES version being used
+    http.get('http://localhost:9200', (res) => {
+      res.setEncoding('utf8');
+      let body = '';
+      res.on('data', (data) => {
+        body += data;
+      });
+      res.on('error', () => { resolve(); });
+      res.on('end', () => {
+        body = JSON.parse(body);
+        elasticsearchVersion = parseInt(body.version.number.split('.')[0], 10) || 7;
+        resolve();
+      });
+    });
+  });
+});
 
 describe('the default transformer', () => {
   it('should transform log data from winston into a logstash like structure', (done) => {
