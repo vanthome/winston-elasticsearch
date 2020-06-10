@@ -11,7 +11,10 @@ const BulkWriter = function BulkWriter(transport, client, options) {
   this.client = client;
   this.options = options;
   this.interval = options.interval || 5000;
-  this.waitForActiveShards = options.waitForActiveShards;
+  this.healthCheckTimeout = options.healthCheckTimeout || '30s';
+  this.healthCheckWaitForStatus = options.healthCheckWaitForStatus || 'yellow';
+  this.healthCheckWaitForNodes = options.healthCheckWaitForNodes || '>=1';
+  this.waitForActiveShards = options.waitForActiveShards || '1';
   this.pipeline = options.pipeline;
   this.retryLimit = options.retryLimit || 5;
 
@@ -182,9 +185,9 @@ BulkWriter.prototype.checkEsConnection = function checkEsConnection() {
     operation.attempt((currentAttempt) => {
       debug('checking for ES connection');
       thiz.client.cluster.health({
-        timeout: '5s',
-        wait_for_nodes: '>=1',
-        wait_for_status: 'yellow'
+        timeout: thiz.healthCheckTimeout,
+        wait_for_nodes: thiz.healthCheckWaitForNodes,
+        wait_for_status: thiz.healthCheckWaitForStatus
       })
         .then(
           (res) => {

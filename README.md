@@ -58,15 +58,18 @@ If multiple objects are provided as arguments, the contents are stringified.
 ## Options
 
 - `level` [`info`] Messages logged with a severity greater or equal to the given one are logged to ES; others are discarded.
-- `index` [none] the index to be used. This option is mutually exclusive with `indexPrefix`.
-- `indexPrefix` [`logs`] the prefix to use to generate the index name according to the pattern `<indexPrefix>-<indexInterfix>-<indexSuffixPattern>`. Can be string or function, returning the string to use.
+- `index` [none] The index to be used. This option is mutually exclusive with `indexPrefix`.
+- `indexPrefix` [`logs`] The prefix to use to generate the index name according to the pattern `<indexPrefix>-<indexInterfix>-<indexSuffixPattern>`. Can be string or function, returning the string to use.
 - `indexSuffixPattern` [`YYYY.MM.DD`] a [Moment.js](http://momentjs.com/) compatible date/ time pattern.
-- `messageType` [`_doc`] the type (path segment after the index path) under which the messages are stored under the index.
-- `transformer` [see below] a transformer function to transform logged data into a different message structure.
+- `messageType` [`_doc`] The type (path segment after the index path) under which the messages are stored under the index.
+- `transformer` [see below] A transformer function to transform logged data into a different message structure.
 - `ensureMappingTemplate` [`true`] If set to `true`, the given `mappingTemplate` is checked/ uploaded to ES when the module is sending the fist log message to make sure the log messages are mapped in a sensible manner.
 - `mappingTemplate` [see file `index-template-mapping-es-gte-7.json` or `index-template-mapping-es-lte-6.json`] the mapping template to be ensured as parsed JSON.
 - `elasticsearchVersion` [`7`] Elasticsearch version you are using. This helps decide the default mapping template that will be used when `ensureMappingTemplate` is `true` and `mappingTemplate` is `undefined`
-- `flushInterval` [`2000`] distance between bulk writes in ms.
+- `flushInterval` [`2000`] Time span between bulk writes in ms.
+- `healthCheckTimeout` [`30s`] Timeout for one health check (health checks will be retried forever).
+- `healthCheckWaitForStatus` [`yellow`] Status to wait for when check upon health. See [its API docs](https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-health.html) for supported options.
+- `healthCheckWaitForNodes` [`>=1`] Nodes to wait for when check upon health. See [its API docs](https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-health.html) for supported options.
 - `client` An [elasticsearch client](https://www.npmjs.com/package/@elastic/elasticsearch) instance. If given, all following options are ignored.
 - `clientOpts` An object hash passed to the ES client. See [its docs](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/client-configuration.html) for supported options.
 - `waitForActiveShards` [`1`] Sets the number of shard copies that must be active before proceeding with the bulk operation.
