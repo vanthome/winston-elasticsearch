@@ -4,6 +4,8 @@
 - Upgrade ES Client
 - New approach to error handling where, in case of an emitted error the source stream is automatically re-attached to the transport stream
 - This commit adds a retry counter - after the number of retries has been exceeded then the document is discarded.
+- Exposes healthcheck options
+- ES version specific mapping templates
 
 0.8.8 / 2020-04-07
 ==================
