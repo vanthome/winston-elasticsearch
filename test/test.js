@@ -24,18 +24,11 @@ function NullLogger(config) {
   this.close = (msg) => {};
 }
 
-process.on('unhandledRejection', (error) => {
-  console.error(error);
-  process.exit(1);
-});
-process.on('uncaughtException', (error) => {
-  console.error(error);
-  process.exit(1);
-});
+
 
 let elasticsearchVersion = 7;
 function createLogger(buffering) {
-  return winston.createLogger({
+  const logger = winston.createLogger({
     transports: [
       new winston.transports.Elasticsearch({
         flushInterval: 1,
@@ -48,6 +41,11 @@ function createLogger(buffering) {
       })
     ]
   });
+  logger.on('error', (error) => {
+    console.error('Error caught', error);
+    process.exit(1);
+  });
+  return logger;
 }
 
 before(() => {
