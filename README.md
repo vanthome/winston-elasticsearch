@@ -49,6 +49,9 @@ var logger = winston.createLogger({
     new ElasticsearchTransport(esTransportOpts)
   ]
 });
+logger.on('error', (error) => { // Compulsory error handling
+  console.error('Error caught', error);
+});
 ```
 
 The [winston API for logging](https://github.com/winstonjs/winston#streams-objectmode-and-info-objects)
