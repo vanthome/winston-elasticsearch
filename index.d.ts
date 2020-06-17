@@ -31,6 +31,9 @@ export interface ElasticsearchTransportOptions extends TransportStream.Transport
   clientOpts?: ClientOptions;
   buffering?: boolean;
   bufferLimit?: number;
+  healthCheckTimeout?: string,
+  healthCheckWaitForStatus?: string,
+  healthCheckWaitForNodes?: string,
 }
 
 export class ElasticsearchTransport extends TransportStream {

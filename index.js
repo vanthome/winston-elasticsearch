@@ -47,7 +47,10 @@ class ElasticsearchTransport extends Transport {
       exitOnError: false,
       pipeline: null,
       bufferLimit: null,
-      buffering: true
+      buffering: true,
+      healthCheckTimeout: '30s',
+      healthCheckWaitForStatus: 'yellow',
+      healthCheckWaitForNodes: '>=1'
     });
 
     // Use given client or create one
@@ -71,7 +74,7 @@ class ElasticsearchTransport extends Transport {
       this.client = new Client(copts);
     }
 
-    const bulkWriteropts = {
+    const bulkWriterOpts = {
       interval: opts.flushInterval,
       waitForActiveShards: opts.waitForActiveShards,
       pipeline: opts.pipeline,
@@ -81,9 +84,12 @@ class ElasticsearchTransport extends Transport {
       buffering: opts.buffering,
       bufferLimit: opts.buffering ? opts.bufferLimit : 0,
       elasticsearchVersion: opts.elasticsearchVersion,
+      healthCheckTimeout: opts.healthCheckTimeout,
+      healthCheckWaitForStatus: opts.healthCheckWaitForStatus,
+      healthCheckWaitForNodes: opts.healthCheckWaitForNodes,
     };
 
-    this.bulkWriter = new BulkWriter(this, this.client, bulkWriteropts);
+    this.bulkWriter = new BulkWriter(this, this.client, bulkWriterOpts);
     this.bulkWriter.start();
   }
 
