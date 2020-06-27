@@ -24,8 +24,6 @@ function NullLogger(config) {
   this.close = (msg) => {};
 }
 
-
-
 let elasticsearchVersion = 7;
 function createLogger(buffering) {
   const logger = winston.createLogger({
@@ -41,10 +39,10 @@ function createLogger(buffering) {
       })
     ]
   });
-  logger.on('error', (error) => {
-    console.error('Error caught', error);
-    process.exit(1);
-  });
+  // logger.on('error', (error) => {
+  //   console.error('Error caught', error);
+  //   process.exit(1);
+  // });
   return logger;
 }
 
