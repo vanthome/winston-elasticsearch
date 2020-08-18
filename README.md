@@ -38,18 +38,23 @@ npm install --save winston winston-elasticsearch
 ## Usage
 
 ```js
-var winston = require('winston');
-var ElasticsearchTransport = require('winston-elasticsearch');
+const winston = require('winston');
+const ElasticsearchTransport = require('winston-elasticsearch');
 
-var esTransportOpts = {
+const esTransportOpts = {
   level: 'info'
 };
-var logger = winston.createLogger({
+const esTransport = new ElasticsearchTransport(esTransportOpts);
+const logger = winston.createLogger({
   transports: [
-    new ElasticsearchTransport(esTransportOpts)
+    esTransport
   ]
 });
-logger.on('error', (error) => { // Compulsory error handling
+// Compulsory error handling
+logger.on('error', (error) => {
+  console.error('Error caught', error);
+});
+esTransport.on('warning', (error) => {
   console.error('Error caught', error);
 });
 ```

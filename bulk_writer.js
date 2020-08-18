@@ -165,7 +165,7 @@ BulkWriter.prototype.write = function write(body) {
       debug('error occurred during writing', e);
       this.stop();
       this.checkEsConnection();
-      thiz.transport.emit('error', e);
+      thiz.transport.emit('warning', e);
     });
 };
 
@@ -262,7 +262,7 @@ BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(
             fulfill(res1.body);
           },
           (err1) => {
-            thiz.transport.emit('error', err1);
+            thiz.transport.emit('warning', err1);
             reject(err1);
           }
         );
@@ -271,7 +271,7 @@ BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(
       }
     },
     (res) => {
-      thiz.transport.emit('error', res);
+      thiz.transport.emit('warning', res);
       reject(res);
     }
   );

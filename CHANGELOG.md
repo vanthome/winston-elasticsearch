@@ -1,3 +1,8 @@
+0.10.0 / 2020-08-18
+===================
+
+- Emit transport internal errors no longer as `error` but as `warning` because even when listened to with `.on('error', ...)` it lead to an `UnhandledPromiseRejectionWarning`.
+
 0.9.0 / 2020-05-16
 ==================
 
