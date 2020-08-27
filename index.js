@@ -117,8 +117,8 @@ class ElasticsearchTransport extends Transport {
     if (this.opts.apm) {
       const apm = this.opts.apm.currentTraceIds;
       if (apm['transaction.id']) entry.transaction = { id: apm['transaction.id'], ...entry.transaction };
-      if (apm['trace.id']) entry.trace = { id: apm['trace.id'], ...entry.transaction };
-      if (apm['span.id']) entry.span = { id: apm['span.id'], ...entry.transaction };
+      if (apm['trace.id']) entry.trace = { id: apm['trace.id'], ...entry.trace };
+      if (apm['span.id']) entry.span = { id: apm['span.id'], ...entry.span };
     }
 
     this.bulkWriter.append(index, this.opts.messageType, entry);
