@@ -39,7 +39,7 @@ npm install --save winston winston-elasticsearch
 
 ```js
 const winston = require('winston');
-const ElasticsearchTransport = require('winston-elasticsearch');
+const { ElasticsearchTransport } = require('winston-elasticsearch');
 
 const esTransportOpts = {
   level: 'info'
