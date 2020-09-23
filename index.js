@@ -93,6 +93,10 @@ class ElasticsearchTransport extends Transport {
     this.bulkWriter.start();
   }
 
+  async flush() {
+    await this.bulkWriter.flush();
+  }
+
   log(info, callback) {
     const { level, message, timestamp } = info;
     const meta = Object.assign({}, omit(info, ['level', 'message']));
