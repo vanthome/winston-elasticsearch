@@ -22,7 +22,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/carrasco39/winston-elasticsearch"
+    "url": "http://github.com/vanthome/winston-elasticsearch.git"
   },
   "license": "MIT",
   "keywords": [
