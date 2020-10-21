@@ -34,6 +34,7 @@ export interface ElasticsearchTransportOptions extends TransportStream.Transport
   healthCheckTimeout?: string;
   healthCheckWaitForStatus?: string;
   healthCheckWaitForNodes?: string;
+  apm?: unknown;
 }
 
 export class ElasticsearchTransport extends TransportStream {
