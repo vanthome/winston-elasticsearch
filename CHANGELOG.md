@@ -1,3 +1,9 @@
+0.11.0 / 2020-10-22
+===================
+
+- Improve typings
+- Added flush() method to ES transport
+
 0.10.0 / 2020-08-18
 ===================
 
