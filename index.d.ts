@@ -1,3 +1,4 @@
+import Agent from 'elastic-apm-node';
 import { Client, ClientOptions, ApiResponse } from '@elastic/elasticsearch';
 import TransportStream = require('winston-transport');
 
@@ -13,6 +14,7 @@ export interface Transformer {
 }
 
 export interface ElasticsearchTransportOptions extends TransportStream.TransportStreamOptions {
+  apm: typeof Agent;
   timestamp?: () => string;
   level?: string;
   index?: string;
