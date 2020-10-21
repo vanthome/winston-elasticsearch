@@ -33,9 +33,9 @@
     "logstash"
   ],
   "dependencies": {
-    "@elastic/elasticsearch": "^7.8.0",
-    "dayjs": "^1.8.33",
-    "debug": "4.1.1",
+    "@elastic/elasticsearch": "^7.9.1",
+    "dayjs": "^1.9.3",
+    "debug": "^4.2.0",
     "lodash.defaults": "^4.2.0",
     "lodash.omit": "^4.5.0",
     "promise": "^8.1.0",
@@ -46,11 +46,11 @@
   "devDependencies": {
     "babel-eslint": "^10.1.0",
     "coveralls": "^3.1.0",
-    "eslint": "^7.7.0",
+    "eslint": "^7.11.0",
     "eslint-config-airbnb-base": "^14.2.0",
-    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-json": "^2.1.2",
-    "mocha": "^8.1.1",
+    "mocha": "^8.2.0",
     "nyc": "^15.1.0",
     "should": "^13.2.3"
   },
