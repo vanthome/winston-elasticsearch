@@ -1,6 +1,6 @@
 {
   "name": "winston-elasticsearch",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "An Elasticsearch transport for winston",
   "main": "index",
   "authors": [
@@ -46,7 +46,8 @@
   "devDependencies": {
     "babel-eslint": "^10.1.0",
     "coveralls": "^3.1.0",
-    "eslint": "^7.11.0",
+    "elastic-apm-node": "^3.7.0",
+    "eslint": "^7.7.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-json": "^2.1.2",
