@@ -38,6 +38,7 @@ export interface ElasticsearchTransportOptions extends TransportStream.Transport
 
 export class ElasticsearchTransport extends TransportStream {
   constructor(opts?: ElasticsearchTransportOptions);
+  flush(): Promise<any>;
 
   query<T>(options: any, callback?: () => void): Promise<ApiResponse<T>>;
   query<T>(q: string): Promise<ApiResponse<T>>;
