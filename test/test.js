@@ -139,12 +139,6 @@ describe('a buffering logger', () => {
     const transport = logger.transports[0];
     transport.bulkWriter.bulk.should.have.lengthOf(0);
 
-    // mock client.bulk to throw an error
-    transport.client.bulk = () => {
-      return Promise.reject(new Error('Test Error'));
-    };
-    logger.info('test');
-
     logger.on('error', (err) => {
       should.exist(err);
       transport.bulkWriter.bulk.should.have.lengthOf(1);
@@ -152,6 +146,12 @@ describe('a buffering logger', () => {
       transport.bulkWriter.bulk = [];
       done();
     });
+    // mock client.bulk to throw an error
+    logger.info('test');
+    transport.client.bulk = () => {
+      return Promise.reject(new Error('Test Error'));
+    };
+    logger.info('test');
     logger.end();
   });
 
@@ -209,13 +209,12 @@ describe('a non buffering logger', () => {
   });
 });
 
-/*
 describe('a defective log transport', () => {
   it('emits an error', function (done) {
     this.timeout(40000);
     const transport = new (winston.transports.Elasticsearch)({
       clientOpts: {
-        host: 'http://does-not-exist.test:9200',
+        node: 'http://does-not-exist.test:9200',
         log: NullLogger
       }
     });
@@ -225,15 +224,15 @@ describe('a defective log transport', () => {
       done();
     });
 
-    // eslint-disable-next-line no-unused-vars
     const defectiveLogger = winston.createLogger({
       transports: [
         transport
       ]
     });
+
+    defectiveLogger.info('test');
   });
 });
-*/
 
 // Manual test which allows to test re-connection of the ES client for unavailable ES instance.
 // Must be combined with --no-timeouts option for mocha
