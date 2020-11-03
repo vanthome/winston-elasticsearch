@@ -1,4 +1,4 @@
-import Agent from 'elastic-apm-node';
+import * as Agent from 'elastic-apm-node';
 import { Client, ClientOptions, ApiResponse } from '@elastic/elasticsearch';
 import TransportStream = require('winston-transport');
 

@@ -118,6 +118,7 @@ BulkWriter.prototype.append = function append(index, type, doc) {
 
 BulkWriter.prototype.write = function write(body) {
   const thiz = this;
+
   debug('writing to ES');
   return this.client
     .bulk({
@@ -141,7 +142,20 @@ BulkWriter.prototype.write = function write(body) {
     .catch((e) => {
       // rollback this.bulk array
       const newBody = [];
-      for (let i = 0; i < body.length; i += 2) {
+      body.forEach((chunk, index, chunks) => {
+        const { attempts } = chunk;
+        if (attempts < thiz.retryLimit) {
+          newBody.push({
+            index: chunk.index._index,
+            type: chunk.index._type,
+            doc: chunks[index + 1],
+            attempts: attempts + 1,
+          });
+        } else {
+          debug('retry attempts exceeded');
+        }
+      });
+      /* for (let i = 0; i < body.length; i += 2) {
         // eslint-disable-next-line prefer-destructuring
         const attempts = body[i].attempts;
         if (attempts < thiz.retryLimit) {
@@ -154,7 +168,7 @@ BulkWriter.prototype.write = function write(body) {
         } else {
           debug('retry attempts exceeded');
         }
-      }
+      } */
 
       const lenSum = thiz.bulk.length + newBody.length;
       if (thiz.options.bufferLimit && lenSum >= thiz.options.bufferLimit) {
@@ -166,8 +180,15 @@ BulkWriter.prototype.write = function write(body) {
       }
       debug('error occurred during writing', e);
       this.stop();
-      this.checkEsConnection();
+      this.checkEsConnection()
+        .catch((err) => thiz.transport.emit('error', err));
       thiz.transport.emit('warning', e);
+
+      thiz.bulk.forEach((bulk) => {
+        if (bulk.attempts === thiz.retryLimit) {
+          this.transport.emit('error', e);
+        }
+      });
     });
 };
 
@@ -176,11 +197,11 @@ BulkWriter.prototype.checkEsConnection = function checkEsConnection() {
   thiz.esConnection = false;
 
   const operation = retry.operation({
-    forever: true,
-    retries: 1,
+    forever: false,
+    retries: 3,
     factor: 1,
-    minTimeout: 1 * 1000,
-    maxTimeout: 60 * 1000,
+    minTimeout: 1000,
+    maxTimeout: 10 * 1000,
     randomize: false
   });
   return new Promise((fulfill, reject) => {
