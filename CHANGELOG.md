@@ -1,3 +1,11 @@
+0.12.0 / 2020-11-22
+===================
+
+- Make retry mechanism give up after 5 retries
+- Make emit a warning only when the max retry has been reached
+- Make APM param optional
+- Move APM dependency into normal dependencies
+
 0.11.0 / 2020-10-22
 ===================
 
