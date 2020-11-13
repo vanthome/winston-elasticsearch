@@ -20,7 +20,7 @@ transport for the [winston](https://github.com/winstonjs/winston) logging toolki
 
 ### Compatibility
 
-For  **Winston 3.x**, **Elasticsearch 6.0** and later, use the `0.7.0`.
+For **Winston 3.x**, **Elasticsearch 7.0** and later, use the >= `0.7.0`.
 For **Elasticsearch 6.0** and later, use the `0.6.0`.
 For **Elasticsearch 5.0** and later, use the `0.5.9`.
 For earlier versions, use the `0.4.x` series.
