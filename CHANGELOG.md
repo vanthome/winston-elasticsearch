@@ -1,4 +1,10 @@
-0.12.0 / 2020-11-22
+0.12.1 / 2020-11-13
+===================
+
+- Use latest ES client
+- Docs fixes
+
+0.12.0 / 2020-11-02
 ===================
 
 - Make retry mechanism give up after 5 retries
