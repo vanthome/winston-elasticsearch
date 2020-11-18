@@ -26,9 +26,6 @@ class ElasticsearchTransport extends Transport {
       this.source.pipe(this); // re-pipes readable
     });
 
-    this.on('finish', (info) => {
-      this.bulkWriter.schedule = () => {};
-    });
     this.opts = opts || {};
 
     // Set defaults
@@ -95,6 +92,16 @@ class ElasticsearchTransport extends Transport {
 
   async flush() {
     await this.bulkWriter.flush();
+  }
+
+  // end() will be called from here: https://github.com/winstonjs/winston/blob/master/lib/winston/logger.js#L328
+  end(chunk, encoding, callback) {
+    this.bulkWriter.schedule = () => { };
+    this.bulkWriter.flush().then(() => {
+      setImmediate(() => {
+        super.end(chunk, encoding, callback); // this emits finish event from stream
+      });
+    });
   }
 
   log(info, callback) {
