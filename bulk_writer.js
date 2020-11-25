@@ -129,11 +129,13 @@ BulkWriter.prototype.write = function write(body) {
     .then((response) => {
       const res = response.body;
       if (res && res.errors && res.items) {
-        res.items.forEach((item) => {
+        res.items.forEach((item, itemIndex) => {
           if (item.index && item.index.error) {
             debug('elasticsearch index error', item.index);
             const err = new Error('ElasticSearch index error');
-            err.caused_by = item.index.error;
+            err.indexError = item.index.error;
+            err.causedBy = body[itemIndex]
+
             throw err;
           }
         });
