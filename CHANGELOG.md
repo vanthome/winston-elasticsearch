@@ -1,3 +1,8 @@
+0.12.2 / 2020-11-26
+===================
+
+- Inject indexing error in case writing to ES fails
+
 0.12.1 / 2020-11-13
 ===================
 
