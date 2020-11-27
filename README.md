@@ -151,7 +151,7 @@ Output A:
 ```
 
 Note that in current logstash versions, the only "standard fields" are
-`@timestamp` and `@version`, anything else ist just free.
+`@timestamp` and `@version`, anything else is just free.
 
 A custom transformer function can be provided in the options hash.
 
