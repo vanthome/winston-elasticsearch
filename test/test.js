@@ -66,7 +66,7 @@ before(() => {
 });
 
 describe('the default transformer', () => {
-  it('should transform log data from winston into a logstash like structure', (done) => {
+  it('should transform log data from winston into a logstash like structure', function(done) {
     const transformed = defaultTransformer({
       message: 'some message',
       level: 'error',
@@ -82,7 +82,7 @@ describe('the default transformer', () => {
 });
 
 describe('a buffering logger', () => {
-  it('can be instantiated', function (done) {
+  it('can be instantiated', function(done) {
     this.timeout(8000);
     try {
       const logger = createLogger(true);
@@ -97,12 +97,12 @@ describe('a buffering logger', () => {
     }, 4000);
   });
 
-  it('can end logging without calling `logger.end`', function () {
-    this.timeout(8000);
+  it('can end logging without calling `logger.end`', function() {
+    this.timeout(800000);
     createLogger(true);
   });
 
-  it('should log simple message to Elasticsearch', function (done) {
+  it('should log simple message to Elasticsearch', function(done) {
     this.timeout(8000);
     const logger = createLogger(true);
 
@@ -116,7 +116,7 @@ describe('a buffering logger', () => {
     logger.end();
   });
 
-  it('should log with or without metadata', function (done) {
+  it('should log with or without metadata', function(done) {
     this.timeout(8000);
     const logger = createLogger(true);
 
@@ -133,8 +133,8 @@ describe('a buffering logger', () => {
     logger.end();
   });
 
-  it('should update buffer properly in case of an error from elasticsearch.', function (done) {
-    this.timeout(8000);
+  it('should update buffer properly in case of an error from elasticsearch.', function(done) {
+    this.timeout(80000);
     const logger = createLogger(true);
     const transport = logger.transports[0];
     transport.bulkWriter.bulk.should.have.lengthOf(0);
@@ -157,7 +157,7 @@ describe('a buffering logger', () => {
 
   /*
   describe('the logged message', () => {
-    it('should be found in the index', (done) => {
+    it('should be found in the index', function(done) {
       const elasticsearch = require('@elastic/elasticsearch');
       const client = new elasticsearch.Client({
         host: 'localhost:9200',
@@ -180,7 +180,7 @@ describe('a buffering logger', () => {
 });
 
 describe('a non buffering logger', () => {
-  it('can be instantiated', function (done) {
+  it('can be instantiated', function(done) {
     this.timeout(8000);
     try {
       const logger = createLogger(false);
@@ -192,7 +192,7 @@ describe('a non buffering logger', () => {
     }
   });
 
-  it('should log simple message to Elasticsearch', function (done) {
+  it('should log simple message to Elasticsearch', function(done) {
     this.timeout(8000);
     const logger = createLogger(false);
 
@@ -210,8 +210,8 @@ describe('a non buffering logger', () => {
 });
 
 describe('a defective log transport', () => {
-  it('emits an error', function (done) {
-    this.timeout(40000);
+  it('emits an error', function(done) {
+    this.timeout(500000);
     const transport = new (winston.transports.Elasticsearch)({
       clientOpts: {
         node: 'http://does-not-exist.test:9200',
@@ -238,7 +238,7 @@ describe('a defective log transport', () => {
 // Must be combined with --no-timeouts option for mocha
 /*
 describe('ES Re-Connection Test', () => {
-  it('test', function (done) {
+  it('test', function(done) {
     this.timeout(400000);
     setInterval(() => {
       // eslint-disable-next-line no-console

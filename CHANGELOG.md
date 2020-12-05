@@ -1,3 +1,8 @@
+0.12.3 / 2020-12-04
+===================
+
+- Increase retries from 5 to 400 (almost 7 minutes) as some massive uServices systems take a while until they spun up
+
 0.12.2 / 2020-11-26
 ===================
 

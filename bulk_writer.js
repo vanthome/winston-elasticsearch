@@ -16,7 +16,7 @@ const BulkWriter = function BulkWriter(transport, client, options) {
   this.healthCheckWaitForNodes = options.healthCheckWaitForNodes || '>=1';
   this.waitForActiveShards = options.waitForActiveShards || '1';
   this.pipeline = options.pipeline;
-  this.retryLimit = options.retryLimit || 5;
+  this.retryLimit = options.retryLimit || 400;
 
   this.bulk = []; // bulk to be flushed
   this.running = false;
@@ -25,7 +25,7 @@ const BulkWriter = function BulkWriter(transport, client, options) {
 };
 
 BulkWriter.prototype.start = function start() {
-  this.checkEsConnection();
+  this.checkEsConnection(this.retryLimit);
   debug('started');
 };
 
@@ -134,8 +134,7 @@ BulkWriter.prototype.write = function write(body) {
             debug('elasticsearch index error', item.index);
             const err = new Error('ElasticSearch index error');
             err.indexError = item.index.error;
-            err.causedBy = body[itemIndex]
-
+            err.causedBy = body[itemIndex];
             throw err;
           }
         });
@@ -182,7 +181,7 @@ BulkWriter.prototype.write = function write(body) {
       }
       debug('error occurred during writing', e);
       this.stop();
-      this.checkEsConnection()
+      this.checkEsConnection(thiz.retryLimit)
         .catch((err) => thiz.transport.emit('error', err));
       thiz.transport.emit('warning', e);
 
@@ -194,13 +193,13 @@ BulkWriter.prototype.write = function write(body) {
     });
 };
 
-BulkWriter.prototype.checkEsConnection = function checkEsConnection() {
+BulkWriter.prototype.checkEsConnection = function checkEsConnection(retryLimit) {
   const thiz = this;
   thiz.esConnection = false;
 
   const operation = retry.operation({
     forever: false,
-    retries: 5,
+    retries: retryLimit,
     factor: 1,
     minTimeout: 1000,
     maxTimeout: 10 * 1000,
