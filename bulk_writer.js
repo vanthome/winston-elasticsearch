@@ -79,7 +79,11 @@ BulkWriter.prototype.flush = function flush() {
   // eslint-disable-next-line object-curly-newline
   bulk.forEach(({ index, type, doc, attempts }) => {
     body.push(
-      { index: { _index: index, _type: type, pipeline: this.pipeline }, attempts },
+      { [this.options.dataStream ? 'create' : 'index']: { 
+        _index: index,
+         _type: type, 
+         pipeline: this.pipeline 
+        }, attempts },
       doc
     );
   });

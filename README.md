@@ -67,7 +67,7 @@ If multiple objects are provided as arguments, the contents are stringified.
 
 - `level` [`info`] Messages logged with a severity greater or equal to the given one are logged to ES; others are discarded.
 - `index` [none] The index to be used. This option is mutually exclusive with `indexPrefix`.
-- `indexPrefix` [`logs`] The prefix to use to generate the index name according to the pattern `<indexPrefix>-<indexInterfix>-<indexSuffixPattern>`. Can be string or function, returning the string to use.
+- `indexPrefix` [`logs` | when dataStream:true, `app`] The prefix to use to generate the index name according to the pattern `<indexPrefix>-<indexInterfix>-<indexSuffixPattern>`. Can be string or function, returning the string to use.
 - `indexSuffixPattern` [`YYYY.MM.DD`] a [Moment.js](http://momentjs.com/) compatible date/ time pattern.
 - `messageType` [`_doc`] The type (path segment after the index path) under which the messages are stored under the index.
 - `transformer` [see below] A transformer function to transform logged data into a different message structure.
@@ -86,6 +86,7 @@ If multiple objects are provided as arguments, the contents are stringified.
 - `buffering` [true] Boolean flag to enable or disable messages buffering. The `bufferLimit` option is ignored if set to `false`.
 - `bufferLimit` [null] Limit for the number of log messages in the buffer.
 - `apm` [null] Inject [apm client](https://www.npmjs.com/package/elastic-apm-node) to link elastic logs with elastic apm traces.
+- `dataStream` [false] Use Elasticsearch [datastreams](https://www.elastic.co/guide/en/elasticsearch/reference/master/data-streams.html).
 
 ### Logging of ES Client
 
@@ -262,6 +263,19 @@ Will produce:
   }
 }
 ```
+
+### Datastreams
+
+Elasticsearch 7.9 and higher supports [Datstreams](https://www.elastic.co/guide/en/elasticsearch/reference/master/data-streams.html).  
+When `dataStream: true` is set, bulk indexing happens with `create` instead of `index`, and also the default naming convention is 
+`logs-*-*`, which will match the built-in [Index template](https://www.elastic.co/guide/en/elasticsearch/reference/master/index-templates.html) and [ILM](https://www.elastic.co/guide/en/elasticsearch/reference/master/index-lifecycle-management.html) policy,
+automatically creating a datastream.   
+
+By default, the datastream will be named `logs-app-default`, but you can modify that by setting `indexPrefix` in options, and `indexInterfix` in a transformer, resulting in `logs-<indexPrefix>-<indexInterfix>`.  
+
+Alternatively, you can simply set the `index` option to anything that matches `logs-*-*` to make use of the built-in template and ILM policy. 
+
+If `dataStream: true` is enabled, AND ( you are using Elasticsearch < 7.9 OR ( you have set a custom `index` that does not match `logs-*-*`  AND you have not created a custom matching template in Elasticsearch)), a normal index will be created.
 
 ### Notice
 

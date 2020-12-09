@@ -14,6 +14,7 @@ export interface Transformer {
 }
 
 export interface ElasticsearchTransportOptions extends TransportStream.TransportStreamOptions {
+  dataStream?: boolean;
   apm?: typeof Agent;
   timestamp?: () => string;
   level?: string;
