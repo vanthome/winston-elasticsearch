@@ -264,19 +264,6 @@ Will produce:
 }
 ```
 
-### Datastreams
-
-Elasticsearch 7.9 and higher supports [Datstreams](https://www.elastic.co/guide/en/elasticsearch/reference/master/data-streams.html).
-
-When `dataStream: true` is set, bulk indexing happens with `create` instead of `index`, and also the default naming convention is `logs-*-*`, which will match the built-in [Index template](https://www.elastic.co/guide/en/elasticsearch/reference/master/index-templates.html) and [ILM](https://www.elastic.co/guide/en/elasticsearch/reference/master/index-lifecycle-management.html) policy,
-automatically creating a datastream.
-
-By default, the datastream will be named `logs-app-default`, but you can modify that by setting `indexPrefix` in options, and `indexInterfix` in a transformer, resulting in `logs-<indexPrefix>-<indexInterfix>`.
-
-Alternatively, you can simply set the `index` option to anything that matches `logs-*-*` to make use of the built-in template and ILM policy.
-
-If `dataStream: true` is enabled, AND ( you are using Elasticsearch < 7.9 OR (you have set a custom `index` that does not match `logs-*-*`  AND you have not created a custom matching template in Elasticsearch)), a normal index will be created.
-
 ### Notice
 
 Some "custom" logs may not have the apm trace.
@@ -314,3 +301,25 @@ server.use((req, res, next) => {
 })
 server.on("after", (req, res, route, error) => log.debug("after", { route, error, ...req.apm }))
 ```
+
+## Manual Flushing
+
+Flushing can be manually triggered like this:
+
+```js
+const esTransport = new ElasticsearchTransport(esTransportOpts);
+esTransport.flush();
+```
+
+## Datastreams
+
+Elasticsearch 7.9 and higher supports [Datstreams](https://www.elastic.co/guide/en/elasticsearch/reference/master/data-streams.html).
+
+When `dataStream: true` is set, bulk indexing happens with `create` instead of `index`, and also the default naming convention is `logs-*-*`, which will match the built-in [Index template](https://www.elastic.co/guide/en/elasticsearch/reference/master/index-templates.html) and [ILM](https://www.elastic.co/guide/en/elasticsearch/reference/master/index-lifecycle-management.html) policy,
+automatically creating a datastream.
+
+By default, the datastream will be named `logs-app-default`, but you can modify that by setting `indexPrefix` in options, and `indexInterfix` in a transformer, resulting in `logs-<indexPrefix>-<indexInterfix>`.
+
+Alternatively, you can simply set the `index` option to anything that matches `logs-*-*` to make use of the built-in template and ILM policy.
+
+If `dataStream: true` is enabled, AND ( you are using Elasticsearch < 7.9 OR (you have set a custom `index` that does not match `logs-*-*`  AND you have not created a custom matching template in Elasticsearch)), a normal index will be created.
