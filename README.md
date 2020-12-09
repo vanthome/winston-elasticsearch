@@ -268,8 +268,7 @@ Will produce:
 
 Elasticsearch 7.9 and higher supports [Datstreams](https://www.elastic.co/guide/en/elasticsearch/reference/master/data-streams.html).  
 
-When `dataStream: true` is set, bulk indexing happens with `create` instead of `index`, and also the default naming convention is 
-`logs-*-*`, which will match the built-in [Index template](https://www.elastic.co/guide/en/elasticsearch/reference/master/index-templates.html) and [ILM](https://www.elastic.co/guide/en/elasticsearch/reference/master/index-lifecycle-management.html) policy,
+When `dataStream: true` is set, bulk indexing happens with `create` instead of `index`, and also the default naming convention is `logs-*-*`, which will match the built-in [Index template](https://www.elastic.co/guide/en/elasticsearch/reference/master/index-templates.html) and [ILM](https://www.elastic.co/guide/en/elasticsearch/reference/master/index-lifecycle-management.html) policy,
 automatically creating a datastream.   
 
 By default, the datastream will be named `logs-app-default`, but you can modify that by setting `indexPrefix` in options, and `indexInterfix` in a transformer, resulting in `logs-<indexPrefix>-<indexInterfix>`.  
