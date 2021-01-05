@@ -71,6 +71,7 @@ If multiple objects are provided as arguments, the contents are stringified.
 - `indexSuffixPattern` [`YYYY.MM.DD`] a [Moment.js](http://momentjs.com/) compatible date/ time pattern.
 - `messageType` [`_doc`] The type (path segment after the index path) under which the messages are stored under the index.
 - `transformer` [see below] A transformer function to transform logged data into a different message structure.
+- `useTransformer` [`true`] If set to `true`, the given `transformer` will be used (or the default). Set to `false` if you want to apply custom transformers during Winston's `createLogger`.
 - `ensureMappingTemplate` [`true`] If set to `true`, the given `mappingTemplate` is checked/ uploaded to ES when the module is sending the fist log message to make sure the log messages are mapped in a sensible manner.
 - `mappingTemplate` [see file `index-template-mapping-es-gte-7.json` or `index-template-mapping-es-lte-6.json`] the mapping template to be ensured as parsed JSON.
 - `elasticsearchVersion` [`7`] Elasticsearch version you are using. This helps decide the default mapping template that will be used when `ensureMappingTemplate` is `true` and `mappingTemplate` is `undefined`
