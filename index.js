@@ -36,6 +36,7 @@ class ElasticsearchTransport extends Transport {
       indexSuffixPattern: 'YYYY.MM.DD',
       messageType: '_doc',
       transformer: defaultTransformer,
+      useTransformer: true,
       ensureMappingTemplate: true,
       elasticsearchVersion: 7,
       flushInterval: 2000,
@@ -120,7 +121,9 @@ class ElasticsearchTransport extends Transport {
       meta,
     };
 
-    const entry = this.opts.transformer(logData);
+    const entry = this.opts.useTransformer
+      ? this.opts.transformer(logData)
+      : info;
 
     let index = this.opts.dataStream 
       ? this.getDataStreamName(this.opts) 
