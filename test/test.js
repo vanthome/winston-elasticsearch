@@ -28,16 +28,14 @@ function NullLogger(config) {
 const clientOpts = {
   log: NullLogger,
   node: 'http://localhost:9200'
-}
+};
 
-let elasticsearchVersion = 7;
 function createLogger(buffering) {
   const logger = winston.createLogger({
     transports: [
       new winston.transports.Elasticsearch({
         flushInterval: 1,
         buffering,
-        elasticsearchVersion,
         clientOpts
       })
     ]
@@ -61,7 +59,6 @@ before(() => {
       res.on('error', () => { resolve(); });
       res.on('end', () => {
         body = JSON.parse(body);
-        elasticsearchVersion = parseInt(body.version.number.split('.')[0], 10) || 7;
         resolve();
       });
     });
@@ -212,26 +209,22 @@ describe('a non buffering logger', () => {
   });
 });
 
-
-
-
 function createLoggerWithDataStream(opts) {
   const logger = winston.createLogger({
     transports: [
       new winston.transports.Elasticsearch({
         flushInterval: 1,
         buffering: false,
-        dataStream:true,
-        elasticsearchVersion,
+        dataStream: true,
         clientOpts,
         ...opts
       })
     ]
   });
-  // logger.on('error', (error) => {
-  //   console.error('Error caught', error);
-  //   process.exit(1);
-  // });
+  logger.on('error', (error) => {
+    console.error('Error caught', error.meta.body.error);
+    process.exit(1);
+  });
   return logger;
 }
 
@@ -240,21 +233,19 @@ function sleep(ms) {
 }
 
 describe('an Elasticsearch datastream', () => {
-
   it('should create a datastream called "logs-app-default" with default settings', function(done) {
     this.timeout(16000);
     const logger = createLoggerWithDataStream();
 
-    logger.log(logMessage.level, `${logMessage.message}1`);
+    logger.log(logMessage.level, `${logMessage.message}S1-${new Date()}`);
     logger.on('finish', () => {
-        sleep(5000).then(() => {
-          new Client(clientOpts).indices.getDataStream({name:'logs-app-default'}).then(()=>{
-            done();
-          }).catch((e)=>{
-            done(e);
-          })
+      sleep(5000).then(() => {
+        new Client(clientOpts).indices.getDataStream({ name: 'logs-app-default' }).then(() => {
+          done();
+        }).catch((e) => {
+          done(e);
         });
-        
+      });
     });
     logger.on('error', (err) => {
       should.not.exist(err);
@@ -265,33 +256,28 @@ describe('an Elasticsearch datastream', () => {
   it('should create a datastream called "logs-myapp-mything" when using customization', function(done) {
     this.timeout(16000);
     const logger = createLoggerWithDataStream({
-        indexPrefix:'myapp',
-        transformer: (event) => ({
-            indexInterfix: 'mything',
-            ...defaultTransformer(event)
-        })
-      });
+      index: 'logs-myapp-mything',
+      transformer: (event) => ({
+        ...defaultTransformer(event)
+      })
+    });
 
-    logger.log(logMessage.level, `${logMessage.message}1`);
+    logger.log(logMessage.level, `${logMessage.message}S2-${new Date()}`);
     logger.on('finish', () => {
-        sleep(5000).then(() => {
-          new Client(clientOpts).indices.getDataStream({name:'logs-myapp-mything'}).then(()=>{
-            done();
-          }).catch((e)=>{
-            done(e);
-          })
+      sleep(5000).then(() => {
+        new Client(clientOpts).indices.getDataStream({ name: 'logs-myapp-mything' }).then(() => {
+          done();
+        }).catch((e) => {
+          done(e);
         });
-        
+      });
     });
     logger.on('error', (err) => {
       should.not.exist(err);
     });
     logger.end();
   });
-
 });
-
-
 
 describe('a defective log transport', () => {
   it('emits an error', function(done) {

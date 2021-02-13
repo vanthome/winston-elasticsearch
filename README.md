@@ -66,15 +66,15 @@ If multiple objects are provided as arguments, the contents are stringified.
 ## Options
 
 - `level` [`info`] Messages logged with a severity greater or equal to the given one are logged to ES; others are discarded.
-- `index` [none] The index to be used. This option is mutually exclusive with `indexPrefix`.
-- `indexPrefix` [`logs` | when dataStream:true, `app`] The prefix to use to generate the index name according to the pattern `<indexPrefix>-<indexInterfix>-<indexSuffixPattern>`. Can be string or function, returning the string to use.
-- `indexSuffixPattern` [`YYYY.MM.DD`] a [Moment.js](http://momentjs.com/) compatible date/ time pattern.
+- `index` [non | when `dataStream` is `true`, `logs-app-default`] The index to be used. This option is mutually exclusive with `indexPrefix`.
+- `indexPrefix` [`logs`] The prefix to use to generate the index name according to the pattern `<indexPrefix>-<indexSuffixPattern>`. Can be string or function, returning the string to use.
+- `indexSuffixPattern` [`YYYY.MM.DD`] a Day.js compatible date/ time pattern.
 - `messageType` [`_doc`] The type (path segment after the index path) under which the messages are stored under the index.
 - `transformer` [see below] A transformer function to transform logged data into a different message structure.
 - `useTransformer` [`true`] If set to `true`, the given `transformer` will be used (or the default). Set to `false` if you want to apply custom transformers during Winston's `createLogger`.
 - `ensureMappingTemplate` [`true`] If set to `true`, the given `mappingTemplate` is checked/ uploaded to ES when the module is sending the fist log message to make sure the log messages are mapped in a sensible manner.
 - `mappingTemplate` [see file `index-template-mapping-es-gte-7.json` or `index-template-mapping-es-lte-6.json`] the mapping template to be ensured as parsed JSON.
-- `elasticsearchVersion` [`7`] Elasticsearch version you are using. This helps decide the default mapping template that will be used when `ensureMappingTemplate` is `true` and `mappingTemplate` is `undefined`
+`ensureMappingTemplate` is `true` and `mappingTemplate` is `undefined`
 - `flushInterval` [`2000`] Time span between bulk writes in ms.
 - `retryLimit` [`400`] Number of retries to connect to ES before giving up.
 - `healthCheckTimeout` [`30s`] Timeout for one health check (health checks will be retried forever).
@@ -84,10 +84,10 @@ If multiple objects are provided as arguments, the contents are stringified.
 - `clientOpts` An object hash passed to the ES client. See [its docs](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/client-configuration.html) for supported options.
 - `waitForActiveShards` [`1`] Sets the number of shard copies that must be active before proceeding with the bulk operation.
 - `pipeline` [none] Sets the pipeline id to pre-process incoming documents with. See [the bulk API docs](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html#api-bulk).
-- `buffering` [true] Boolean flag to enable or disable messages buffering. The `bufferLimit` option is ignored if set to `false`.
-- `bufferLimit` [null] Limit for the number of log messages in the buffer.
-- `apm` [null] Inject [apm client](https://www.npmjs.com/package/elastic-apm-node) to link elastic logs with elastic apm traces.
-- `dataStream` [false] Use Elasticsearch [datastreams](https://www.elastic.co/guide/en/elasticsearch/reference/master/data-streams.html).
+- `buffering` [`true`] Boolean flag to enable or disable messages buffering. The `bufferLimit` option is ignored if set to `false`.
+- `bufferLimit` [`null`] Limit for the number of log messages in the buffer.
+- `apm` [`null`] Inject [apm client](https://www.npmjs.com/package/elastic-apm-node) to link elastic logs with elastic apm traces.
+- `dataStream` [`false`] Use Elasticsearch [datastreams](https://www.elastic.co/guide/en/elasticsearch/reference/master/data-streams.html).
 
 ### Logging of ES Client
 
@@ -120,7 +120,6 @@ Returns: Object with the following properties
 - `severity` The log level of the entry
 - `message` The message for the log entry
 - `fields` The meta data for the log entry
-- `indexInterfix` optional, the interfix of the index to use for this entry
 
 The default transformer function's transformation is shown below.
 
@@ -252,7 +251,7 @@ Will produce:
 
 ```js
 {
-  "@timestamp": "2020-03-13T20:35:28.129Z",
+  "@timestamp": "2021-03-13T20:35:28.129Z",
   "message": "Some log message",
   "severity": "info",
   "fields": {},
@@ -319,7 +318,7 @@ Elasticsearch 7.9 and higher supports [Datstreams](https://www.elastic.co/guide/
 When `dataStream: true` is set, bulk indexing happens with `create` instead of `index`, and also the default naming convention is `logs-*-*`, which will match the built-in [Index template](https://www.elastic.co/guide/en/elasticsearch/reference/master/index-templates.html) and [ILM](https://www.elastic.co/guide/en/elasticsearch/reference/master/index-lifecycle-management.html) policy,
 automatically creating a datastream.
 
-By default, the datastream will be named `logs-app-default`, but you can modify that by setting `indexPrefix` in options, and `indexInterfix` in a transformer, resulting in `logs-<indexPrefix>-<indexInterfix>`.
+By default, the datastream will be named `logs-app-default`, but you can modify that by setting `indexPrefix` in options.
 
 Alternatively, you can simply set the `index` option to anything that matches `logs-*-*` to make use of the built-in template and ILM policy.
 

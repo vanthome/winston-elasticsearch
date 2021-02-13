@@ -78,14 +78,13 @@ BulkWriter.prototype.flush = function flush() {
   const body = [];
   // eslint-disable-next-line object-curly-newline
   bulk.forEach(({ index, type, doc, attempts }) => {
-    body.push(
-      { [this.options.dataStream ? 'create' : 'index']: { 
+    body.push({
+      [this.options.dataStream ? 'create' : 'index']: {
         _index: index,
-         _type: type, 
-         pipeline: this.pipeline 
-        }, attempts },
-      doc
-    );
+        pipeline: this.pipeline
+      }, attempts
+    },
+    doc);
   });
   debug('bulk writer is going to write', body);
   return this.write(body);
@@ -103,7 +102,6 @@ BulkWriter.prototype.append = function append(index, type, doc) {
     }
     this.bulk.unshift({
       index,
-      type,
       doc,
       attempts: 0
     });
@@ -114,7 +112,7 @@ BulkWriter.prototype.append = function append(index, type, doc) {
     }
   } else {
     this.write([
-      { index: { _index: index, _type: type, pipeline: this.pipeline } },
+      { [this.options.dataStream ? 'create' : 'index']: { _index: index, pipeline: this.pipeline } },
       doc
     ]);
   }
@@ -122,7 +120,6 @@ BulkWriter.prototype.append = function append(index, type, doc) {
 
 BulkWriter.prototype.write = function write(body) {
   const thiz = this;
-
   debug('writing to ES');
   return this.client
     .bulk({
@@ -266,9 +263,8 @@ BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(
   if (mappingTemplate === null || typeof mappingTemplate === 'undefined') {
     // es version 6 and below will use 'index-template-mapping-es-lte-6.json'
     // 7 and above will use 'index-template-mapping-es-gte-7.json'
-    const esVersion = Number(thiz.options.elasticsearchVersion) >= 7 ? 'gte-7' : 'lte-6';
     const rawdata = fs.readFileSync(
-      path.join(__dirname, 'index-template-mapping-es-' + esVersion + '.json')
+      path.join(__dirname, 'index-template-mapping.json')
     );
     mappingTemplate = JSON.parse(rawdata);
     mappingTemplate.index_patterns = indexPrefix + '-*';

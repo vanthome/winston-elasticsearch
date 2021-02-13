@@ -1,0 +1,45 @@
+{
+  "template": {
+    "settings": {
+      "index": {
+        "mapping": {
+          "total_fields": {
+            "limit": "3000"
+          }
+        },
+        "refresh_interval": "5s",
+        "number_of_shards": "1",
+        "number_of_replicas": "0"
+      }
+    },
+    "mappings": {
+      "_source": {
+        "enabled": true
+      },
+      "properties": {
+        "@timestamp": {
+          "type": "date"
+        },
+        "@version": {
+          "type": "keyword"
+        },
+        "severity": {
+          "index": true,
+          "type": "keyword"
+        },
+        "message": {
+          "index": true,
+          "type": "text"
+        },
+        "fields": {
+          "dynamic": true,
+          "type": "object"
+        }
+      }
+    }
+  },
+  "index_patterns": [
+    "logs-app-default",
+    "logs-*"
+  ]
+}

@@ -24,7 +24,6 @@ export interface ElasticsearchTransportOptions extends TransportStream.Transport
   transformer?: Transformer;
   mappingTemplate?: { [key: string]: any };
   ensureMappingTemplate?: boolean;
-  elasticsearchVersion?: number;
   flushInterval?: number;
   waitForActiveShards?: number | 'all';
   handleExceptions?: boolean;

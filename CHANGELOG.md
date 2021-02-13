@@ -1,3 +1,10 @@
+0.13.0 / 2021-02-12
+===================
+
+- ES 11 JS Client
+- Support for data streams
+- Drop support for ES <= 6
+
 0.12.3 / 2020-12-04
 ===================
 

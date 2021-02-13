@@ -31,14 +31,13 @@ class ElasticsearchTransport extends Transport {
     // Set defaults
     defaults(opts, {
       level: 'info',
-      index: null,
-      indexPrefix: opts.dataStream ? 'app' : 'logs',
+      index: opts.dataStream ? 'logs-app-default' : null,
+      indexPrefix: 'logs',
       indexSuffixPattern: 'YYYY.MM.DD',
       messageType: '_doc',
       transformer: defaultTransformer,
       useTransformer: true,
       ensureMappingTemplate: true,
-      elasticsearchVersion: 7,
       flushInterval: 2000,
       waitForActiveShards: 1,
       handleExceptions: false,
@@ -82,7 +81,6 @@ class ElasticsearchTransport extends Transport {
       indexPrefix: opts.indexPrefix,
       buffering: opts.buffering,
       bufferLimit: opts.buffering ? opts.bufferLimit : 0,
-      elasticsearchVersion: opts.elasticsearchVersion,
       healthCheckTimeout: opts.healthCheckTimeout,
       healthCheckWaitForStatus: opts.healthCheckWaitForStatus,
       healthCheckWaitForNodes: opts.healthCheckWaitForNodes,
@@ -125,14 +123,14 @@ class ElasticsearchTransport extends Transport {
       ? this.opts.transformer(logData)
       : info;
 
-    let index = this.opts.dataStream 
-      ? this.getDataStreamName(this.opts) 
+    let index = this.opts.dataStream
+      ? this.opts.index
       : this.getIndexName(this.opts);
 
     if (entry.indexInterfix !== undefined) {
-      index = this.opts.dataStream 
+      index = this.opts.dataStream
         ? this.getDataStreamName(this.opts, entry.indexInterfix)
-        : this.getIndexName(this.opts, entry.indexInterfix)
+        : this.getIndexName(this.opts, entry.indexInterfix);
       delete entry.indexInterfix;
     }
 
@@ -146,24 +144,6 @@ class ElasticsearchTransport extends Transport {
     this.bulkWriter.append(index, this.opts.messageType, entry);
 
     callback();
-  }
-
-  getDataStreamName(opts, indexInterfix) {
-    let indexName = opts.index;
-    if (indexName === null) {
-
-      let indexPrefix = opts.indexPrefix;
-      if (typeof indexPrefix === 'function') {
-        // eslint-disable-next-line prefer-destructuring
-        indexPrefix = opts.indexPrefix();
-      }
-      
-      indexName = 'logs-' 
-        + opts.indexPrefix
-        + '-'
-        + (indexInterfix !== undefined ? indexInterfix : 'default') 
-    }
-    return indexName;
   }
 
   getIndexName(opts, indexInterfix) {
