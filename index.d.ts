@@ -22,8 +22,8 @@ export interface ElasticsearchTransportOptions extends TransportStream.Transport
   indexSuffixPattern?: string;
   messageType?: string;
   transformer?: Transformer;
-  mappingTemplate?: { [key: string]: any };
-  ensureMappingTemplate?: boolean;
+  indexTemplate?: { [key: string]: any };
+  ensureIndexTemplate?: boolean;
   flushInterval?: number;
   waitForActiveShards?: number | 'all';
   handleExceptions?: boolean;

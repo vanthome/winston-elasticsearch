@@ -225,8 +225,8 @@ BulkWriter.prototype.checkEsConnection = function checkEsConnection(retryLimit) 
               }
             };
             // Ensure mapping template is existing if desired
-            if (thiz.options.ensureMappingTemplate) {
-              thiz.ensureMappingTemplate((res1) => {
+            if (thiz.options.ensureIndexTemplate) {
+              thiz.ensureIndexTemplate((res1) => {
                 fulfill(res1);
                 start();
               }, reject);
@@ -249,7 +249,7 @@ BulkWriter.prototype.checkEsConnection = function checkEsConnection(retryLimit) 
   });
 };
 
-BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(
+BulkWriter.prototype.ensureIndexTemplate = function ensureIndexTemplate(
   fulfill,
   reject
 ) {
@@ -259,29 +259,31 @@ BulkWriter.prototype.ensureMappingTemplate = function ensureMappingTemplate(
     ? thiz.options.indexPrefix()
     : thiz.options.indexPrefix;
   // eslint-disable-next-line prefer-destructuring
-  let mappingTemplate = thiz.options.mappingTemplate;
-  if (mappingTemplate === null || typeof mappingTemplate === 'undefined') {
-    // es version 6 and below will use 'index-template-mapping-es-lte-6.json'
-    // 7 and above will use 'index-template-mapping-es-gte-7.json'
+  let indexTemplate = thiz.options.indexTemplate;
+  if (indexTemplate === null || typeof indexTemplate === 'undefined') {
     const rawdata = fs.readFileSync(
       path.join(__dirname, 'index-template-mapping.json')
     );
-    mappingTemplate = JSON.parse(rawdata);
-    mappingTemplate.index_patterns = indexPrefix + '-*';
+    indexTemplate = JSON.parse(rawdata);
+  }
+
+  let templateName = indexPrefix;
+  if (thiz.options.dataStream) {
+    templateName = thiz.options.index;
   }
 
   const tmplCheckMessage = {
-    name: 'template_' + indexPrefix
+    name: 'template_' + templateName
   };
-  thiz.client.indices.existsTemplate(tmplCheckMessage).then(
+  thiz.client.indices.existsIndexTemplate(tmplCheckMessage).then(
     (res) => {
       if (res.statusCode && res.statusCode === 404) {
         const tmplMessage = {
-          name: 'template_' + indexPrefix,
+          name: 'template_' + templateName,
           create: true,
-          body: mappingTemplate
+          body: indexTemplate
         };
-        thiz.client.indices.putTemplate(tmplMessage).then(
+        thiz.client.indices.putIndexTemplate(tmplMessage).then(
           (res1) => {
             fulfill(res1.body);
           },

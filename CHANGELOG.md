@@ -1,3 +1,9 @@
+0.14.0 / 2021-02-24
+===================
+
+- Renmae config Property `ensureMappingTemplate` to `ensureIndexTemplate` and `mappingTemplate` accordingly
+- Make Index Templates not appear as Legacy ones in Kibana, use `putIndexTemplate` instead of `putTemplate`
+
 0.13.0 / 2021-02-12
 ===================
 

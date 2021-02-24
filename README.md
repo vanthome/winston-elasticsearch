@@ -72,9 +72,9 @@ If multiple objects are provided as arguments, the contents are stringified.
 - `messageType` [`_doc`] The type (path segment after the index path) under which the messages are stored under the index.
 - `transformer` [see below] A transformer function to transform logged data into a different message structure.
 - `useTransformer` [`true`] If set to `true`, the given `transformer` will be used (or the default). Set to `false` if you want to apply custom transformers during Winston's `createLogger`.
-- `ensureMappingTemplate` [`true`] If set to `true`, the given `mappingTemplate` is checked/ uploaded to ES when the module is sending the fist log message to make sure the log messages are mapped in a sensible manner.
-- `mappingTemplate` [see file `index-template-mapping-es-gte-7.json` or `index-template-mapping-es-lte-6.json`] the mapping template to be ensured as parsed JSON.
-`ensureMappingTemplate` is `true` and `mappingTemplate` is `undefined`
+- `ensureIndexTemplate` [`true`] If set to `true`, the given `indexTemplate` is checked/ uploaded to ES when the module is sending the fist log message to make sure the log messages are mapped in a sensible manner.
+- `indexTemplate` [see file `index-template-mapping.json`] the mapping template to be ensured as parsed JSON.
+`ensureIndexTemplate` is `true` and `indexTemplate` is `undefined`
 - `flushInterval` [`2000`] Time span between bulk writes in ms.
 - `retryLimit` [`400`] Number of retries to connect to ES before giving up.
 - `healthCheckTimeout` [`30s`] Timeout for one health check (health checks will be retried forever).
@@ -96,7 +96,7 @@ The default client and options will log through `console`.
 ### Interdependencies of Options
 
 When changing the `indexPrefix` and/ or the `transformer`,
-make sure to provide a matching `mappingTemplate`.
+make sure to provide a matching `indexTemplate`.
 
 ## Transformer
 
