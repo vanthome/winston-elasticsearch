@@ -34,7 +34,6 @@ class ElasticsearchTransport extends Transport {
       index: opts.dataStream ? 'logs-app-default' : null,
       indexPrefix: 'logs',
       indexSuffixPattern: 'YYYY.MM.DD',
-      messageType: '_doc',
       transformer: defaultTransformer,
       useTransformer: true,
       ensureIndexTemplate: true,
@@ -127,6 +126,10 @@ class ElasticsearchTransport extends Transport {
       ? this.opts.index
       : this.getIndexName(this.opts);
 
+    if (this.opts.source) {
+      entry.source = this.opts.source;
+    }
+
     if (entry.indexInterfix !== undefined) {
       index = this.opts.dataStream
         ? this.getDataStreamName(this.opts, entry.indexInterfix)
@@ -141,7 +144,7 @@ class ElasticsearchTransport extends Transport {
       if (apm['span.id']) entry.span = { id: apm['span.id'], ...entry.span };
     }
 
-    this.bulkWriter.append(index, this.opts.messageType, entry);
+    this.bulkWriter.append(index, entry);
 
     callback();
   }

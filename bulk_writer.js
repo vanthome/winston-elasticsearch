@@ -77,7 +77,7 @@ BulkWriter.prototype.flush = function flush() {
   this.bulk = [];
   const body = [];
   // eslint-disable-next-line object-curly-newline
-  bulk.forEach(({ index, type, doc, attempts }) => {
+  bulk.forEach(({ index, doc, attempts }) => {
     body.push({
       [this.options.dataStream ? 'create' : 'index']: {
         _index: index,
@@ -90,7 +90,7 @@ BulkWriter.prototype.flush = function flush() {
   return this.write(body);
 };
 
-BulkWriter.prototype.append = function append(index, type, doc) {
+BulkWriter.prototype.append = function append(index, doc) {
   if (this.options.buffering === true) {
     if (
       typeof this.options.bufferLimit === 'number'
@@ -120,6 +120,7 @@ BulkWriter.prototype.append = function append(index, type, doc) {
 
 BulkWriter.prototype.write = function write(body) {
   const thiz = this;
+  const operation = [thiz.options.dataStream ? 'create' : 'index'];
   debug('writing to ES');
   return this.client
     .bulk({
@@ -148,8 +149,7 @@ BulkWriter.prototype.write = function write(body) {
         const { attempts } = chunk;
         if (attempts < thiz.retryLimit) {
           newBody.push({
-            index: chunk.index._index,
-            type: chunk.index._type,
+            index: chunk[operation]._index,
             doc: chunks[index + 1],
             attempts: attempts + 1,
           });
@@ -157,20 +157,6 @@ BulkWriter.prototype.write = function write(body) {
           debug('retry attempts exceeded');
         }
       });
-      /* for (let i = 0; i < body.length; i += 2) {
-        // eslint-disable-next-line prefer-destructuring
-        const attempts = body[i].attempts;
-        if (attempts < thiz.retryLimit) {
-          newBody.push({
-            index: body[i].index._index,
-            type: body[i].index._type,
-            doc: body[i + 1],
-            attempts: attempts + 1,
-          });
-        } else {
-          debug('retry attempts exceeded');
-        }
-      } */
 
       const lenSum = thiz.bulk.length + newBody.length;
       if (thiz.options.bufferLimit && lenSum >= thiz.options.bufferLimit) {
@@ -269,6 +255,9 @@ BulkWriter.prototype.ensureIndexTemplate = function ensureIndexTemplate(
 
   let templateName = indexPrefix;
   if (thiz.options.dataStream) {
+    if (!thiz.options.index) {
+      console.error('Error while deriving templateName with options', thiz.options);
+    }
     templateName = thiz.options.index;
   }
 

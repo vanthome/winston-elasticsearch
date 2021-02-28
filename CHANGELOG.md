@@ -1,3 +1,10 @@
+0.15.0 / 2021-02-28
+===================
+
+- Introduce `source` parameter
+- Fix some datastream issues
+- Remove _type and don't write it
+
 0.14.0 / 2021-02-24
 ===================
 

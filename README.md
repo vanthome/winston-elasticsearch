@@ -66,10 +66,9 @@ If multiple objects are provided as arguments, the contents are stringified.
 ## Options
 
 - `level` [`info`] Messages logged with a severity greater or equal to the given one are logged to ES; others are discarded.
-- `index` [non | when `dataStream` is `true`, `logs-app-default`] The index to be used. This option is mutually exclusive with `indexPrefix`.
+- `index` [none | when `dataStream` is `true`, `logs-app-default`] The index to be used. This option is mutually exclusive with `indexPrefix`.
 - `indexPrefix` [`logs`] The prefix to use to generate the index name according to the pattern `<indexPrefix>-<indexSuffixPattern>`. Can be string or function, returning the string to use.
 - `indexSuffixPattern` [`YYYY.MM.DD`] a Day.js compatible date/ time pattern.
-- `messageType` [`_doc`] The type (path segment after the index path) under which the messages are stored under the index.
 - `transformer` [see below] A transformer function to transform logged data into a different message structure.
 - `useTransformer` [`true`] If set to `true`, the given `transformer` will be used (or the default). Set to `false` if you want to apply custom transformers during Winston's `createLogger`.
 - `ensureIndexTemplate` [`true`] If set to `true`, the given `indexTemplate` is checked/ uploaded to ES when the module is sending the fist log message to make sure the log messages are mapped in a sensible manner.
@@ -88,6 +87,7 @@ If multiple objects are provided as arguments, the contents are stringified.
 - `bufferLimit` [`null`] Limit for the number of log messages in the buffer.
 - `apm` [`null`] Inject [apm client](https://www.npmjs.com/package/elastic-apm-node) to link elastic logs with elastic apm traces.
 - `dataStream` [`false`] Use Elasticsearch [datastreams](https://www.elastic.co/guide/en/elasticsearch/reference/master/data-streams.html).
+- `source` [none] the source of the log message. This can be useful for microservices to understand from which service a log message origins.
 
 ### Logging of ES Client
 

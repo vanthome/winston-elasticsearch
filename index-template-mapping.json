@@ -1,4 +1,5 @@
 {
+  "priority": 200,
   "template": {
     "settings": {
       "index": {
@@ -21,6 +22,10 @@
           "index": true,
           "type": "keyword"
         },
+        "source": {
+          "index": true,
+          "type": "keyword"
+        },
         "@timestamp": {
           "type": "date"
         },
@@ -39,7 +44,7 @@
     }
   },
   "index_patterns": [
-    "logs-app-default"
+    "logs-app-default*"
   ],
   "data_stream": {},
   "composed_of": []

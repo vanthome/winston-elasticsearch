@@ -36,7 +36,10 @@ function createLogger(buffering) {
       new winston.transports.Elasticsearch({
         flushInterval: 1,
         buffering,
-        clientOpts
+        // index: 'logs-myapp-mything',
+        // dataStream: true,
+        clientOpts,
+        source: 'test-source',
       })
     ]
   });
@@ -217,7 +220,8 @@ function createLoggerWithDataStream(opts) {
         buffering: false,
         dataStream: true,
         clientOpts,
-        ...opts
+        source: 'test-source',
+        ...opts,
       })
     ]
   });

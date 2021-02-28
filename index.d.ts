@@ -20,7 +20,6 @@ export interface ElasticsearchTransportOptions extends TransportStream.Transport
   index?: string;
   indexPrefix?: string;
   indexSuffixPattern?: string;
-  messageType?: string;
   transformer?: Transformer;
   indexTemplate?: { [key: string]: any };
   ensureIndexTemplate?: boolean;
@@ -35,6 +34,7 @@ export interface ElasticsearchTransportOptions extends TransportStream.Transport
   healthCheckTimeout?: string;
   healthCheckWaitForStatus?: string;
   healthCheckWaitForNodes?: string;
+  source?: string;
 }
 
 export class ElasticsearchTransport extends TransportStream {
