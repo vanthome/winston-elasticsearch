@@ -48,6 +48,7 @@ class ElasticsearchTransport extends Transport {
       healthCheckWaitForStatus: 'yellow',
       healthCheckWaitForNodes: '>=1',
       dataStream: false,
+      retryLimit: 400
     });
 
     // Use given client or create one
@@ -83,7 +84,8 @@ class ElasticsearchTransport extends Transport {
       healthCheckTimeout: opts.healthCheckTimeout,
       healthCheckWaitForStatus: opts.healthCheckWaitForStatus,
       healthCheckWaitForNodes: opts.healthCheckWaitForNodes,
-      dataStream: opts.dataStream
+      dataStream: opts.dataStream,
+      retryLimit: opts.retryLimit
     };
 
     this.bulkWriter = new BulkWriter(this, this.client, bulkWriterOpts);
