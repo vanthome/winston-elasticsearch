@@ -12,8 +12,7 @@ export interface Transformer {
   (logData: LogData): any;
 }
 
-export interface ElasticsearchTransportOptions
-  extends TransportStream.TransportStreamOptions {
+export interface ElasticsearchTransportOptions extends TransportStream.TransportStreamOptions {
   dataStream?: boolean;
   apm?: any; // typeof Agent;
   timestamp?: () => string;
@@ -25,7 +24,7 @@ export interface ElasticsearchTransportOptions
   indexTemplate?: { [key: string]: any };
   ensureIndexTemplate?: boolean;
   flushInterval?: number;
-  waitForActiveShards?: number | "all";
+  waitForActiveShards?: number | 'all';
   handleExceptions?: boolean;
   pipeline?: string;
   client?: Client;
