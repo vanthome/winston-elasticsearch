@@ -35,6 +35,7 @@ export interface ElasticsearchTransportOptions extends TransportStream.Transport
   healthCheckWaitForStatus?: string;
   healthCheckWaitForNodes?: string;
   source?: string;
+  retryLimit?: number;
 }
 
 export class ElasticsearchTransport extends TransportStream {
