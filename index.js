@@ -47,8 +47,7 @@ class ElasticsearchTransport extends Transport {
       healthCheckTimeout: '30s',
       healthCheckWaitForStatus: 'yellow',
       healthCheckWaitForNodes: '>=1',
-      dataStream: false,
-      retryLimit: 400
+      dataStream: false
     });
 
     // Use given client or create one
