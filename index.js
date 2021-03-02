@@ -72,6 +72,7 @@ class ElasticsearchTransport extends Transport {
     }
 
     const bulkWriterOpts = {
+      index: opts.index,
       interval: opts.flushInterval,
       waitForActiveShards: opts.waitForActiveShards,
       pipeline: opts.pipeline,

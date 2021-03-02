@@ -6,6 +6,12 @@
 - Fix templateName is undefined or null if options.index is undefined or null
 - Correct npm link in README.md (browsenpm.org isn't connected to npm anymore)
 
+0.15.3 / 2021-03-03
+===================
+
+- Add `retryLimit` option
+- Fix index name not being passed to bulk writer
+
 0.15.1 / 2021-03-02
 ===================
 
