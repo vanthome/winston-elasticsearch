@@ -18,7 +18,7 @@ export interface ElasticsearchTransportOptions extends TransportStream.Transport
   timestamp?: () => string;
   level?: string;
   index?: string;
-  indexPrefix?: string;
+  indexPrefix?: string | Function;
   indexSuffixPattern?: string;
   transformer?: Transformer;
   indexTemplate?: { [key: string]: any };
