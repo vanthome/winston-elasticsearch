@@ -2,7 +2,6 @@ language: node_js
 sudo: required
 dist: xenial
 node_js:
-  - "8"
   - "14"
 jdk:
   - oraclejdk11
