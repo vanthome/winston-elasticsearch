@@ -3,6 +3,8 @@
 
 - Fix ES JS Client (7.11.2 instead of 11)
 - Fix indexPrefix can be of type string | Function
+- Fix travis build process
+- Fix templateName is undefined or null if options.index is undefined or null
 
 0.15.1 / 2021-03-02
 ===================
