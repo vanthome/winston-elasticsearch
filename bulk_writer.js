@@ -82,7 +82,8 @@ BulkWriter.prototype.flush = function flush() {
       [this.options.dataStream ? 'create' : 'index']: {
         _index: index,
         pipeline: this.pipeline
-      }, attempts
+      },
+      attempts
     },
     doc);
   });
@@ -256,9 +257,11 @@ BulkWriter.prototype.ensureIndexTemplate = function ensureIndexTemplate(
   let templateName = indexPrefix;
   if (thiz.options.dataStream) {
     if (!thiz.options.index) {
+      // hm, has this to be a console error or better a throw? is it needed at all?
       console.error('Error while deriving templateName with options', thiz.options);
+    } else {
+      templateName = thiz.options.index;
     }
-    templateName = thiz.options.index;
   }
 
   const tmplCheckMessage = {
