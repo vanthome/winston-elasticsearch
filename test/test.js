@@ -53,7 +53,7 @@ function createLogger(buffering) {
 before(() => {
   return new Promise((resolve) => {
     // get ES version being used
-    http.get('http://localhost:9200', (res) => {
+    http.get(clientOpts.node, (res) => {
       res.setEncoding('utf8');
       let body = '';
       res.on('data', (data) => {
@@ -69,7 +69,7 @@ before(() => {
 });
 
 describe('the default transformer', () => {
-  it('should transform log data from winston into a logstash like structure', function(done) {
+  it('should transform log data from winston into a logstash like structure', (done) => {
     const transformed = defaultTransformer({
       message: 'some message',
       level: 'error',
@@ -233,7 +233,7 @@ function createLoggerWithDataStream(opts) {
 }
 
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 describe('an Elasticsearch datastream', () => {
