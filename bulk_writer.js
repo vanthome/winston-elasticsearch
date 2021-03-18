@@ -132,23 +132,29 @@ BulkWriter.prototype.write = function write(body) {
     .then((response) => {
       const res = response.body;
       if (res && res.errors && res.items) {
+        const err = new Error('ElasticSearch index error');
         res.items.forEach((item, itemIndex) => {
-          if (item.index && item.index.error) {
-            debug('elasticsearch index error', item.index);
-            const err = new Error('ElasticSearch index error');
-            err.indexError = item.index.error;
-            err.causedBy = body[itemIndex];
-            throw err;
+          const bodyOp = body[itemIndex * 2];
+          const bodyData = body[itemIndex * 2 + 1];
+          if (item.index) {
+            if (item.index.error) {
+              debug('elasticsearch index error', item.index);
+              err.indexError = item.index.error;
+              err.causedBy = bodyData;
+            } else if (item.index.result === 'created') {
+              bodyOp.created = true;
+            }
           }
         });
+        throw err;
       }
     })
     .catch((e) => {
       // rollback this.bulk array
       const newBody = [];
       body.forEach((chunk, index, chunks) => {
-        const { attempts } = chunk;
-        if (attempts < thiz.retryLimit) {
+        const { attempts, created } = chunk;
+        if (!created && attempts < thiz.retryLimit) {
           newBody.push({
             index: chunk[operation]._index,
             doc: chunks[index + 1],
