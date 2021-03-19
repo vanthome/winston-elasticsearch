@@ -1,14 +1,11 @@
-0.15.3 / 2021-03-11
+0.15.3 / 2021-03-20
 ===================
 
 - Fix indexPrefix can be of type string | Function
 - Fix travis build process (ES JS Client (7.11.2 instead of 11), nodejs 8 deprecated on yargs)
 - Fix templateName is undefined or null if options.index is undefined or null
 - Correct npm link in README.md (browsenpm.org isn't connected to npm anymore)
-
-0.15.3 / 2021-03-03
-===================
-
+- Prevents resending successfully sent items.
 - Add `retryLimit` option
 - Fix index name not being passed to bulk writer
 
