@@ -1,3 +1,9 @@
+0.15.4 / 2021-04-09
+===================
+
+- Upgrade ES client
+- Add console.log output in case of bulk writer errors
+
 0.15.3 / 2021-03-20
 ===================
 

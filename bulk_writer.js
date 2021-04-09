@@ -139,6 +139,7 @@ BulkWriter.prototype.write = function write(body) {
           if (item.index) {
             if (item.index.error) {
               debug('elasticsearch index error', item.index);
+              console.error('elasticsearch index error', item.index);
               err.indexError = item.index.error;
               err.causedBy = bodyData;
             } else if (item.index.result === 'created') {

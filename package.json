@@ -1,6 +1,6 @@
 {
   "name": "winston-elasticsearch",
-  "version": "0.15.3",
+  "version": "0.15.4",
   "description": "An Elasticsearch transport for winston",
   "main": "index",
   "authors": [
@@ -36,7 +36,7 @@
     "elastic-apm-node": "^3.9.0"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "^7.11.0",
+    "@elastic/elasticsearch": "^7.12.0",
     "dayjs": "^1.10.4",
     "debug": "^4.3.1",
     "lodash.defaults": "^4.2.0",
@@ -49,7 +49,7 @@
   "devDependencies": {
     "babel-eslint": "^10.1.0",
     "coveralls": "^3.1.0",
-    "eslint": "^7.22.0",
+    "eslint": "^7.23.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-json": "^2.1.2",
