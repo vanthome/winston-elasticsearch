@@ -152,6 +152,20 @@ Output A:
 }
 ```
 
+The default transformer can be imported and extended
+## Example
+```js
+  const { ElasticsearchTransformer } = require('winston-elasticsearch');
+  const esTransportOpts = {
+  transformer: (logData) => {
+   const transformed = ElasticsearchTransformer(logdata);
+   transformed.meta.customField = 'customValue'
+   return transformed;
+ }};
+const esTransport = new ElasticsearchTransport(esTransportOpts);
+
+```
+
 Note that in current logstash versions, the only "standard fields" are
 `@timestamp` and `@version`, anything else is just free.
 
