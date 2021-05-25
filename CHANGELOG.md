@@ -1,3 +1,8 @@
+0.15.5 / 2021-05-25
+===================
+
+- Expose transformer function so that it can be adapted.
+
 0.15.4 / 2021-04-09
 ===================
 
