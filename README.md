@@ -79,8 +79,8 @@ If multiple objects are provided as arguments, the contents are stringified.
 - `healthCheckTimeout` [`30s`] Timeout for one health check (health checks will be retried forever).
 - `healthCheckWaitForStatus` [`yellow`] Status to wait for when check upon health. See [its API docs](https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-health.html) for supported options.
 - `healthCheckWaitForNodes` [`>=1`] Nodes to wait for when check upon health. See [its API docs](https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-health.html) for supported options.
-- `client` An [elasticsearch client](https://www.npmjs.com/package/@elastic/elasticsearch) instance. If given, all following options are ignored.
-- `clientOpts` An object hash passed to the ES client. See [its docs](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/client-configuration.html) for supported options.
+- `client` An [elasticsearch client](https://www.npmjs.com/package/@elastic/elasticsearch) instance. If given, the `clientOpts` are ignored.
+- `clientOpts` An object passed to the ES client. See [its docs](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/client-configuration.html) for supported options.
 - `waitForActiveShards` [`1`] Sets the number of shard copies that must be active before proceeding with the bulk operation.
 - `pipeline` [none] Sets the pipeline id to pre-process incoming documents with. See [the bulk API docs](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html#api-bulk).
 - `buffering` [`true`] Boolean flag to enable or disable messages buffering. The `bufferLimit` option is ignored if set to `false`.
@@ -95,7 +95,7 @@ The default client and options will log through `console`.
 
 ### Interdependencies of Options
 
-When changing the `indexPrefix` and/ or the `transformer`,
+When changing the `indexPrefix` and/or the `transformer`,
 make sure to provide a matching `indexTemplate`.
 
 ## Transformer
@@ -153,13 +153,13 @@ Output A:
 ```
 
 The default transformer can be imported and extended
-## Example
+### Example
 ```js
   const { ElasticsearchTransformer } = require('winston-elasticsearch');
   const esTransportOpts = {
   transformer: (logData) => {
-   const transformed = ElasticsearchTransformer(logdata);
-   transformed.meta.customField = 'customValue'
+   const transformed = ElasticsearchTransformer(logData);
+   transformed.fields.customField = 'customValue'
    return transformed;
  }};
 const esTransport = new ElasticsearchTransport(esTransportOpts);
@@ -169,7 +169,7 @@ const esTransport = new ElasticsearchTransport(esTransportOpts);
 Note that in current logstash versions, the only "standard fields" are
 `@timestamp` and `@version`, anything else is just free.
 
-A custom transformer function can be provided in the options hash.
+A custom transformer function can be provided in the options initiation.
 
 ## Events
 
@@ -327,7 +327,7 @@ esTransport.flush();
 
 ## Datastreams
 
-Elasticsearch 7.9 and higher supports [Datstreams](https://www.elastic.co/guide/en/elasticsearch/reference/master/data-streams.html).
+Elasticsearch 7.9 and higher supports [Datastreams](https://www.elastic.co/guide/en/elasticsearch/reference/master/data-streams.html).
 
 When `dataStream: true` is set, bulk indexing happens with `create` instead of `index`, and also the default naming convention is `logs-*-*`, which will match the built-in [Index template](https://www.elastic.co/guide/en/elasticsearch/reference/master/index-templates.html) and [ILM](https://www.elastic.co/guide/en/elasticsearch/reference/master/index-lifecycle-management.html) policy,
 automatically creating a datastream.
