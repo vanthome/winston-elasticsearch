@@ -1,3 +1,8 @@
+0.15.7 / 2021-06-25
+===================
+
+- Upgrade optional APM dependency for making it work with node 16.
+
 0.15.6 / 2021-06-02
 ===================
 
