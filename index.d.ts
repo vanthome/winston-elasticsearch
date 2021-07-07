@@ -46,3 +46,15 @@ export class ElasticsearchTransport extends TransportStream {
   query<T>(q: string): Promise<ApiResponse<T>>;
   getIndexName(opts: ElasticsearchTransportOptions): string;
 }
+
+interface TransformedData {
+  '@timestamp': string
+  message: string
+  severity: string
+  fields: string
+  transaction?: { id: string }
+  trace?: { id: string }
+  span?: { id: string }
+}
+
+export function ElasticsearchTransformer(logData: LogData): TransformedData;
