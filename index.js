@@ -106,7 +106,7 @@ class ElasticsearchTransport extends Transport {
     });
   }
 
-  log(info, callback) {
+  async log(info, callback) {
     const { level, message, timestamp } = info;
     const meta = Object.assign({}, omit(info, ['level', 'message']));
     setImmediate(() => {
@@ -121,7 +121,7 @@ class ElasticsearchTransport extends Transport {
     };
 
     const entry = this.opts.useTransformer
-      ? this.opts.transformer(logData)
+      ? await this.opts.transformer(logData)
       : info;
 
     let index = this.opts.dataStream
