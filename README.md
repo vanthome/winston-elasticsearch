@@ -52,10 +52,10 @@ const logger = winston.createLogger({
 });
 // Compulsory error handling
 logger.on('error', (error) => {
-  console.error('Error caught', error);
+  console.error('Error in logger caught', error);
 });
-esTransport.on('warning', (error) => {
-  console.error('Error caught', error);
+esTransport.on('error', (error) => {
+  console.error('Error in logger caught', error);
 });
 ```
 

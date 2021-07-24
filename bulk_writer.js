@@ -132,19 +132,15 @@ BulkWriter.prototype.write = function write(body) {
     .then((response) => {
       const res = response.body;
       if (res && res.errors && res.items) {
-        const err = new Error('ElasticSearch index error');
+        const err = new Error('Elasticsearch error');
         res.items.forEach((item, itemIndex) => {
-          const bodyOp = body[itemIndex * 2];
           const bodyData = body[itemIndex * 2 + 1];
-          if (item.index) {
-            if (item.index.error) {
-              debug('elasticsearch index error', item.index);
-              console.error('elasticsearch index error', item.index);
-              err.indexError = item.index.error;
-              err.causedBy = bodyData;
-            } else if (item.index.result === 'created') {
-              bodyOp.created = true;
-            }
+          const opKey = Object.keys(item)[0];
+          if (item[opKey] && item[opKey].error) {
+            debug('elasticsearch indexing error', item[opKey].error);
+            console.error('elasticsearch indexing error', item[opKey].error, bodyData);
+            err.indexError = item[opKey].error;
+            err.causedBy = bodyData;
           }
         });
         throw err;
