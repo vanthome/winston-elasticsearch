@@ -33,11 +33,11 @@
     "logstash"
   ],
   "optionalDependencies": {
-    "elastic-apm-node": "^3.16.0"
+    "elastic-apm-node": "^3.20.0"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "^7.13.0",
-    "dayjs": "^1.10.6",
+    "@elastic/elasticsearch": "^7.14.1",
+    "dayjs": "^1.10.7",
     "debug": "^4.3.2",
     "lodash.defaults": "^4.2.0",
     "lodash.omit": "^4.5.0",
