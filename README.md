@@ -71,7 +71,7 @@ If multiple objects are provided as arguments, the contents are stringified.
 - `indexSuffixPattern` [`YYYY.MM.DD`] a Day.js compatible date/ time pattern.
 - `transformer` [see below] A transformer function to transform logged data into a different message structure.
 - `useTransformer` [`true`] If set to `true`, the given `transformer` will be used (or the default). Set to `false` if you want to apply custom transformers during Winston's `createLogger`.
-- `ensureIndexTemplate` [`true`] If set to `true`, the given `indexTemplate` is checked/ uploaded to ES when the module is sending the fist log message to make sure the log messages are mapped in a sensible manner.
+- `ensureIndexTemplate` [`true`] If set to `true`, the given `indexTemplate` is checked/ uploaded to ES when the module is sending the first log message to make sure the log messages are mapped in a sensible manner.
 - `indexTemplate` [see file `index-template-mapping.json`] the mapping template to be ensured as parsed JSON.
 `ensureIndexTemplate` is `true` and `indexTemplate` is `undefined`
 - `flushInterval` [`2000`] Time span between bulk writes in ms.
