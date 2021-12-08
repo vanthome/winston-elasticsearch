@@ -1,3 +1,10 @@
+0.16.0 / 2021-12-08
+===================
+
+- Add more debug output
+- Upgrade dependencies
+- Fix duplicate entries when buffering is used
+
 0.15.9 / 2021-09-14
 ===================
 
