@@ -270,6 +270,7 @@ BulkWriter.prototype.ensureIndexTemplate = function ensureIndexTemplate(
   const tmplCheckMessage = {
     name: 'template_' + templateName
   };
+  debug('Checking tpl name', tmplCheckMessage);
   thiz.client.indices.existsIndexTemplate(tmplCheckMessage).then(
     (res) => {
       if (res.statusCode && res.statusCode === 404) {
@@ -280,9 +281,11 @@ BulkWriter.prototype.ensureIndexTemplate = function ensureIndexTemplate(
         };
         thiz.client.indices.putIndexTemplate(tmplMessage).then(
           (res1) => {
+            debug('Index template created successfully');
             fulfill(res1.body);
           },
           (err1) => {
+            debug('Failed to create index template');
             thiz.transport.emit('warning', err1);
             reject(err1);
           }
@@ -292,6 +295,7 @@ BulkWriter.prototype.ensureIndexTemplate = function ensureIndexTemplate(
       }
     },
     (res) => {
+      debug('Failed to check for index template');
       thiz.transport.emit('warning', res);
       reject(res);
     }
