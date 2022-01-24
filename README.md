@@ -88,6 +88,7 @@ If multiple objects are provided as arguments, the contents are stringified.
 - `apm` [`null`] Inject [apm client](https://www.npmjs.com/package/elastic-apm-node) to link elastic logs with elastic apm traces.
 - `dataStream` [`false`] Use Elasticsearch [datastreams](https://www.elastic.co/guide/en/elasticsearch/reference/master/data-streams.html).
 - `source` [none] the source of the log message. This can be useful for microservices to understand from which service a log message origins.
+- `internalLogger` [`console.error`] A logger of last resort to log internal errors.
 
 ### Logging of ES Client
 

@@ -1,3 +1,9 @@
+0.16.1 / 2022-01-24
+===================
+
+- Upgrade dependencies
+- Expose option `internalLogger` for last resort logger
+
 0.16.0 / 2021-12-08
 ===================
 
