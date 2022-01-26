@@ -1,10 +1,13 @@
 # winston-elasticsearch
 
-[![Version npm][version]](https://www.npmjs.com/package/winston-elasticsearch)[![Build Status][build]](https://travis-ci.org/vanthome/winston-elasticsearch)[![Dependencies][david]](https://david-dm.org/vanthome/winston-elasticsearch)[![Coverage Status][cover]](https://coveralls.io/r/vanthome/winston-elasticsearch?branch=master)
+[![Version npm][version]](https://www.npmjs.com/package/winston-elasticsearch)
+[![Build Status][build]](https://travis-ci.org/vanthome/winston-elasticsearch)
+[![Dependencies][dependencies]](https://david-dm.org/vanthome/winston-elasticsearch)
+[![Coverage Status][cover]](https://coveralls.io/r/vanthome/winston-elasticsearch?branch=master)
 
 [version]: http://img.shields.io/npm/v/winston-elasticsearch.svg?style=flat-square
 [build]: http://img.shields.io/travis/vanthome/winston-elasticsearch/master.svg?style=flat-square
-[david]: https://img.shields.io/david/vanthome/winston-elasticsearch.svg?style=flat-square
+[dependencies]: https://img.shields.io/librariesio/release/npm/winston-elasticsearch.svg?style=flat-square
 [cover]: http://img.shields.io/coveralls/vanthome/winston-elasticsearch/master.svg?style=flat-square
 
 An [elasticsearch](https://www.elastic.co/products/elasticsearch)
