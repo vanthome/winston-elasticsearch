@@ -1,7 +1,5 @@
 /* eslint no-underscore-dangle: ['error', { 'allow': ['_index', '_type'] }] */
 
-const fs = require('fs');
-const path = require('path');
 const Promise = require('promise');
 const debug = require('debug')('winston:elasticsearch');
 const retry = require('retry');
@@ -54,10 +52,10 @@ BulkWriter.prototype.tick = function tick() {
   }
   this.flush()
     .then(() => {
-      // Emulate finally with last .then()
+    // Emulate finally with last .then()
     })
     .then(() => {
-      // finally()
+    // finally()
       thiz.schedule();
     });
 };
@@ -78,14 +76,16 @@ BulkWriter.prototype.flush = function flush() {
   const body = [];
   // eslint-disable-next-line object-curly-newline
   bulk.forEach(({ index, doc, attempts }) => {
-    body.push({
-      [this.options.dataStream ? 'create' : 'index']: {
-        _index: index,
-        pipeline: this.pipeline
+    body.push(
+      {
+        [this.options.dataStream ? 'create' : 'index']: {
+          _index: index,
+          pipeline: this.pipeline
+        },
+        attempts
       },
-      attempts
-    },
-    doc);
+      doc
+    );
   });
   debug('bulk writer is going to write', body);
   return this.write(body);
@@ -147,7 +147,7 @@ BulkWriter.prototype.write = function write(body) {
       }
     })
     .catch((e) => {
-      // rollback this.bulk array
+    // rollback this.bulk array
       const newBody = [];
       body.forEach((chunk, index, chunks) => {
         const { attempts, created } = chunk;
@@ -248,14 +248,8 @@ BulkWriter.prototype.ensureIndexTemplate = function ensureIndexTemplate(
   const indexPrefix = typeof thiz.options.indexPrefix === 'function'
     ? thiz.options.indexPrefix()
     : thiz.options.indexPrefix;
-  // eslint-disable-next-line prefer-destructuring
-  let indexTemplate = thiz.options.indexTemplate;
-  if (indexTemplate === null || typeof indexTemplate === 'undefined') {
-    const rawdata = fs.readFileSync(
-      path.join(__dirname, 'index-template-mapping.json')
-    );
-    indexTemplate = JSON.parse(rawdata);
-  }
+
+  const { indexTemplate } = thiz.options;
 
   let templateName = indexPrefix;
   if (thiz.options.dataStream) {
