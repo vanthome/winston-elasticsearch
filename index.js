@@ -8,6 +8,7 @@ const omit = require('lodash.omit');
 const { Client } = require('@elastic/elasticsearch');
 const defaultTransformer = require('./transformer');
 const BulkWriter = require('./bulk_writer');
+const mappingTemplate = require('./index-template-mapping.json');
 
 class ElasticsearchTransport extends Transport {
   constructor(opts) {
@@ -78,7 +79,7 @@ class ElasticsearchTransport extends Transport {
       waitForActiveShards: opts.waitForActiveShards,
       pipeline: opts.pipeline,
       ensureIndexTemplate: opts.ensureIndexTemplate,
-      indexTemplate: opts.indexTemplate,
+      indexTemplate: opts.indexTemplate || mappingTemplate,
       indexPrefix: opts.indexPrefix,
       buffering: opts.buffering,
       bufferLimit: opts.buffering ? opts.bufferLimit : 0,
