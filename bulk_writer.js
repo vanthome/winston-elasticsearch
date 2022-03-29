@@ -126,7 +126,7 @@ BulkWriter.prototype.write = function write(body) {
   return this.client
     .bulk({
       body,
-      waitForActiveShards: this.waitForActiveShards,
+      wait_for_active_shards: this.waitForActiveShards,
       timeout: this.interval + 'ms',
     })
     .then((response) => {
