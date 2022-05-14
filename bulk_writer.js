@@ -147,7 +147,7 @@ BulkWriter.prototype.write = function write(body) {
       }
     })
     .catch((e) => {
-    // rollback this.bulk array
+      // rollback this.bulk array
       const newBody = [];
       body.forEach((chunk, index, chunks) => {
         const { attempts, created } = chunk;

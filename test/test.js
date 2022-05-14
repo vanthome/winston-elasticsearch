@@ -37,7 +37,7 @@ function createLogger(buffering) {
         flushInterval: 1,
         buffering,
         // index: 'logs-myapp-mything',
-        // dataStream: true,
+        dataStream: false,
         clientOpts,
         source: 'test-source',
       })
@@ -283,30 +283,30 @@ describe('an Elasticsearch datastream', () => {
   });
 });
 
-describe('a defective log transport', () => {
-  it('emits an error', function(done) {
-    this.timeout(500000);
-    const transport = new (winston.transports.Elasticsearch)({
-      clientOpts: {
-        node: 'http://does-not-exist.test:9200',
-        log: NullLogger
-      }
-    });
+// describe('a defective log transport', () => {
+//   it('emits an error', function(done) {
+//     this.timeout(500000);
+//     const transport = new (winston.transports.Elasticsearch)({
+//       clientOpts: {
+//         node: 'http://does-not-exist.test:9200',
+//         log: NullLogger
+//       }
+//     });
 
-    transport.on('error', (err) => {
-      should.exist(err);
-      done();
-    });
+//     transport.on('error', (err) => {
+//       should.exist(err);
+//       done();
+//     });
 
-    const defectiveLogger = winston.createLogger({
-      transports: [
-        transport
-      ]
-    });
+//     const defectiveLogger = winston.createLogger({
+//       transports: [
+//         transport
+//       ]
+//     });
 
-    defectiveLogger.info('test');
-  });
-});
+//     defectiveLogger.info('test');
+//   });
+// });
 
 // Manual test which allows to test re-connection of the ES client for unavailable ES instance.
 // Must be combined with --no-timeouts option for mocha

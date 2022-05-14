@@ -1,3 +1,8 @@
+0.17.0 / 2022-05-15
+===================
+
+- Upgrade dependencies, major new ES client version
+
 0.16.1 / 2022-01-24
 ===================
 
