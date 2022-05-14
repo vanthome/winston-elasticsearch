@@ -1,4 +1,4 @@
-import { Client, ClientOptions, ApiResponse } from '@elastic/elasticsearch';
+import { Client, ClientOptions, estypes } from '@elastic/elasticsearch';
 import TransportStream = require('winston-transport');
 
 export interface LogData {
@@ -43,8 +43,8 @@ export class ElasticsearchTransport extends TransportStream {
   constructor(opts?: ElasticsearchTransportOptions);
   flush(): Promise<any>;
 
-  query<T>(options: any, callback?: () => void): Promise<ApiResponse<T>>;
-  query<T>(q: string): Promise<ApiResponse<T>>;
+  query<T>(options: any, callback?: () => void): Promise<estypes.SearchResponse<T>>;
+  query<T>(q: string): Promise<estypes.SearchResponse<T>>;
   getIndexName(opts: ElasticsearchTransportOptions): string;
 }
 
