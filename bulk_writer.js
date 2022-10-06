@@ -173,12 +173,12 @@ BulkWriter.prototype.write = function write(body) {
       debug('error occurred during writing', e);
       this.stop();
       this.checkEsConnection(thiz.retryLimit)
-        .catch((err) => thiz.transport.emit('error', err));
+        .catch((err) => thiz.transport.emit('warning', err));
       thiz.transport.emit('warning', e);
 
       thiz.bulk.forEach((bulk) => {
         if (bulk.attempts === thiz.retryLimit) {
-          this.transport.emit('error', e);
+          this.transport.emit('warning', e);
         }
       });
     });
