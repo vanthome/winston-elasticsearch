@@ -36,24 +36,24 @@
     "elastic-apm-node": "^3.20.0"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "^8.2.0-patch.1",
-    "dayjs": "^1.11.2",
+    "@elastic/elasticsearch": "^8.6.0",
+    "dayjs": "^1.11.7",
     "debug": "^4.3.4",
     "lodash.defaults": "^4.2.0",
     "lodash.omit": "^4.5.0",
-    "promise": "^8.1.0",
+    "promise": "^8.3.0",
     "retry": "^0.13.1",
-    "winston": "^3.7.2",
+    "winston": "^3.8.2",
     "winston-transport": "^4.5.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
     "coveralls": "^3.1.1",
-    "eslint": "^8.15.0",
+    "eslint": "^8.34.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-json": "^3.1.0",
-    "mocha": "^10.0.0",
+    "mocha": "^10.2.0",
     "nyc": "^15.1.0",
     "should": "^13.2.3"
   },
