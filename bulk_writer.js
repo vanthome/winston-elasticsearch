@@ -129,8 +129,7 @@ BulkWriter.prototype.write = function write(body) {
       wait_for_active_shards: this.waitForActiveShards,
       timeout: this.interval + 'ms',
     })
-    .then((response) => {
-      const res = response.body;
+    .then((res) => {
       if (res && res.errors && res.items) {
         const err = new Error('Elasticsearch error');
         res.items.forEach((item, itemIndex) => {
