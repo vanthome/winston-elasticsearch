@@ -19,11 +19,14 @@ const BulkWriter = function BulkWriter(transport, client, options) {
   this.bulk = []; // bulk to be flushed
   this.running = false;
   this.timer = false;
+  this.connected = false;
   debug('created', this);
 };
 
 BulkWriter.prototype.start = function start() {
-  this.checkEsConnection(this.retryLimit);
+  this.checkEsConnection(this.retryLimit).finally(() => {
+    this.connected = true;
+  });
   debug('started');
 };
 
@@ -107,7 +110,7 @@ BulkWriter.prototype.append = function append(index, doc) {
       attempts: 0
     });
     // resume the buffering process
-    if (!this.running) {
+    if (!this.running && this.connected) {
       this.running = true;
       this.tick();
     }
@@ -264,7 +267,7 @@ BulkWriter.prototype.ensureIndexTemplate = function ensureIndexTemplate(
     name: 'template_' + templateName
   };
   debug('Checking tpl name', tmplCheckMessage);
-  thiz.client.indices.existsIndexTemplate(tmplCheckMessage).then(
+  thiz.client.indices.existsIndexTemplate(tmplCheckMessage, { meta: true }).then(
     (res) => {
       if (res.statusCode && res.statusCode === 404) {
         const tmplMessage = {
