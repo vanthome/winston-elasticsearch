@@ -19,6 +19,7 @@ const BulkWriter = function BulkWriter(transport, client, options) {
   this.bulk = []; // bulk to be flushed
   this.running = false;
   this.timer = false;
+  this.inConnecting = false;
   debug('created', this);
 };
 
@@ -92,6 +93,9 @@ BulkWriter.prototype.flush = function flush() {
 };
 
 BulkWriter.prototype.append = function append(index, doc) {
+  if (!this.esConnection) {
+    this.checkEsConnection(this.retryLimit);
+  }
   if (this.options.buffering === true) {
     if (
       typeof this.options.bufferLimit === 'number'
@@ -106,12 +110,11 @@ BulkWriter.prototype.append = function append(index, doc) {
       doc,
       attempts: 0
     });
-    // resume the buffering process
-    if (!this.running) {
-      this.running = true;
-      this.tick();
-    }
   } else {
+    if (!this.esConnection) {
+      debug('message discarded because es not connected');
+      return;
+    }
     this.write([
       { [this.options.dataStream ? 'create' : 'index']: { _index: index, pipeline: this.pipeline } },
       doc
@@ -171,8 +174,7 @@ BulkWriter.prototype.write = function write(body) {
       }
       debug('error occurred during writing', e);
       this.stop();
-      this.checkEsConnection(thiz.retryLimit)
-        .catch((err) => thiz.transport.emit('error', err));
+      this.checkEsConnection(thiz.retryLimit);
       thiz.transport.emit('warning', e);
 
       thiz.bulk.forEach((bulk) => {
@@ -185,6 +187,10 @@ BulkWriter.prototype.write = function write(body) {
 
 BulkWriter.prototype.checkEsConnection = function checkEsConnection(retryLimit) {
   const thiz = this;
+  if (thiz.inConnecting) {
+    return Promise.resolve();
+  }
+  thiz.inConnecting = true;
   thiz.esConnection = false;
 
   const operation = retry.operation({
@@ -206,6 +212,7 @@ BulkWriter.prototype.checkEsConnection = function checkEsConnection(retryLimit) 
         .then(
           (res) => {
             thiz.esConnection = true;
+            thiz.inConnecting = false;
             const start = () => {
               if (thiz.options.buffering === true) {
                 debug('starting bulk writer');
@@ -230,8 +237,11 @@ BulkWriter.prototype.checkEsConnection = function checkEsConnection(retryLimit) 
               return;
             }
             thiz.esConnection = false;
+            thiz.inConnecting = false;
             debug('cannot connect to ES');
-            reject(new Error('Cannot connect to ES'));
+            const e = new Error('Cannot connect to ES');
+            thiz.transport.emit('error', e);
+            reject(e);
           }
         );
     });
