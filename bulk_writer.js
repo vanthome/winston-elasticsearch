@@ -133,6 +133,7 @@ BulkWriter.prototype.write = function write(body) {
       if (res && res.errors && res.items) {
         const err = new Error('Elasticsearch error');
         res.items.forEach((item, itemIndex) => {
+          const bodyOp = body[itemIndex * 2];
           const bodyData = body[itemIndex * 2 + 1];
           const opKey = Object.keys(item)[0];
           if (item[opKey] && item[opKey].error) {
@@ -140,6 +141,8 @@ BulkWriter.prototype.write = function write(body) {
             thiz.options.internalLogger('elasticsearch indexing error', item[opKey].error, bodyData);
             err.indexError = item[opKey].error;
             err.causedBy = bodyData;
+          } else if (item[opKey] && item[opKey].result === 'created') {
+            bodyOp.created = true;
           }
         });
         throw err;
