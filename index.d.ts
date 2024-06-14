@@ -52,7 +52,7 @@ interface TransformedData {
   '@timestamp': string
   message: string
   severity: string
-  fields: string
+  fields: any
   transaction?: { id: string }
   trace?: { id: string }
   span?: { id: string }
